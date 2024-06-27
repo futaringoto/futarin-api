@@ -1,0 +1,28 @@
+services:
+  web:
+    container_name: web
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - ./web/conf.d:/etc/nginx/conf.d
+    networks:
+      - nginx-network
+
+  app:
+    container_name: app
+    image: futarin-api
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    expose:
+      - 8000
+    networks:
+      - nginx-network
+
+networks:
+  nginx-network:
+    driver: bridge
+

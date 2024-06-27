@@ -1,11 +1,21 @@
-FROM python:3.9
+FROM python:3.12-alpine
 
-WORKDIR /code
+WORKDIR /app
 
-COPY ./requirements.txt /code/requirements.txt
+RUN apk update && apk add --no-cache \
+    gcc musl-dev libffi-dev build-base curl
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="/root/.local/bin:$PATH"
 
-COPY ./app /code/app
+COPY ./pyproject.toml /app/pyproject.toml
+COPY ./poetry.lock /app/poetry.lock
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-root
+
+COPY ./src /app
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "80"]
