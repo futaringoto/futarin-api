@@ -32,20 +32,22 @@ docker compose up -d # detach
 http://localhost/
 
 ## Structure
-- app (Fast API)
-- web (nginx)
+- api (application - FastAPI)
+- nginx (web-server)
 ```
 .
 ├── README.md
-├── app
-│   ├── Dockerfile
+├── _docker
+│   ├── api
+│   │   └── Dockerfile
+│   └── nginx
+│       └── conf.d
+│           └── app.conf
+├── api
 │   ├── poetry.lock
 │   ├── pyproject.toml
 │   └── src
 │       ├── __init__.py
 │       └── main.py
-├── docker-compose.yml
-└── web
-    └── conf.d
-        └── app.conf
+└── docker-compose.yml
 ```
