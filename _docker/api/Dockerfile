@@ -1,6 +1,6 @@
 FROM python:3.12-alpine
 
-WORKDIR /app
+WORKDIR /api
 
 RUN apk update && apk add --no-cache \
     gcc musl-dev libffi-dev build-base curl
@@ -8,13 +8,13 @@ RUN apk update && apk add --no-cache \
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/root/.local/bin:$PATH"
 
-COPY ./pyproject.toml /app/pyproject.toml
-COPY ./poetry.lock /app/poetry.lock
+COPY ./api/pyproject.toml .
+COPY ./api/poetry.lock .
 
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
-COPY ./src /app
+COPY ./api/src .
 
 EXPOSE 8000
 
