@@ -1,22 +1,22 @@
 services:
-  web:
-    container_name: web
+  nginx:
+    container_name: nginx
     image: nginx:alpine
     ports:
       - "80:80"
     depends_on:
-      - app
+      - api
     volumes:
-      - ./web/conf.d:/etc/nginx/conf.d
+      - ./_docker/nginx/conf.d:/etc/nginx/conf.d
     networks:
       - nginx-network
 
-  app:
-    container_name: app
+  api:
+    container_name: api
     image: futarin-api
     build:
-      context: ./app
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: _docker/api/Dockerfile
     expose:
       - 8000
     networks:
