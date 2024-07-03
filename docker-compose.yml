@@ -1,22 +1,19 @@
 services:
   nginx:
     container_name: nginx
-    image: nginx:alpine
+    image: futarincontainerregistry.azurecr.io/nginx:latest
     ports:
       - "80:80"
     depends_on:
       - api
-    volumes:
-      - ./_docker/nginx/conf.d:/etc/nginx/conf.d
     networks:
       - nginx-network
 
   api:
-    container_name: api
-    image: futarin-api
-    build:
-      context: .
-      dockerfile: _docker/api/Dockerfile
+    container_name: futarin-api
+    image: futarincontainerregistry.azurecr.io/futarin-api:latest
+    ports:
+      - "8000:8000"
     expose:
       - 8000
     networks:
