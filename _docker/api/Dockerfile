@@ -14,7 +14,7 @@ COPY ./api/poetry.lock .
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
-COPY ./api/src .
+COPY ./api/ .
 
 EXPOSE 8000
 
