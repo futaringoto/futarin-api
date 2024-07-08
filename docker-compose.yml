@@ -14,6 +14,8 @@ services:
   api:
     container_name: api
     image: futarin-api
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: _docker/api/Dockerfile
