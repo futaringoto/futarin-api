@@ -10,7 +10,7 @@
 ## Getting Started
 1. Clone this repository
 ```
-git@github.com:futaringoto/futarin-api.git
+git clone git@github.com:futaringoto/futarin-api.git
 ```
 
 2. Change directory
@@ -18,17 +18,23 @@ git@github.com:futaringoto/futarin-api.git
 cd futarin-api
 ```
 
-3. Build docker image (Only first time)
+3. Create `.env` file
+```
+touch .env
+echo "VOICEVOX_URL=[endpoint url]" >> .env
+```
+
+4. Build docker image (Only first time)
 ```
 docker compose build
 ```
 
-4. Build and Start image
+5. Build and Start image
 ```
 docker compose up
 docker compose up -d # detach
 ```
-5. access to localhost
+6. access to localhost
 http://localhost/
 
 ## Structure
@@ -44,10 +50,14 @@ http://localhost/
 │       └── conf.d
 │           └── app.conf
 ├── api
+│   ├── __init__.py
+│   ├── main.py
 │   ├── poetry.lock
 │   ├── pyproject.toml
-│   └── src
-│       ├── __init__.py
-│       └── main.py
+│   ├── routers
+│   │   ├── __init__.py
+│   │   └── raspi.py
+│   └── schemas
+│       └── __init__.py
 └── docker-compose.yml
 ```
