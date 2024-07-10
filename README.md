@@ -22,6 +22,7 @@ cd futarin-api
 ```
 touch .env
 echo "VOICEVOX_URL=[endpoint url]" >> .env
+echo "OPENAI_API_KEY=[openAI api key]" >> .env
 ```
 
 4. Build docker image (Only first time)

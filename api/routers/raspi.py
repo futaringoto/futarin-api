@@ -1,6 +1,7 @@
 import json
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi.responses import FileResponse, JSONResponse
+from services.whisper import speech2text
 import httpx
 import tempfile
 import os
@@ -52,3 +53,26 @@ async def audio(
         filename="audio.wav"
     )
 
+@router.post(
+    "/raspi/transcript"
+)
+async def transcript(
+    file: UploadFile = File(...)
+) -> JSONResponse:
+    try:
+        content: bytes = await file.read()
+        """
+        with open(f"uploaded_{file.filename}", "wb") as f:
+            f.write(contents)
+        """
+        transcript: str = speech2text(content)
+
+        return JSONResponse(
+            content={"transcript": transcript},
+            status_code=200
+        )
+    except Exception as e:
+        return JSONResponse(
+            content={"error": str(e)},
+            status_code=500
+        )
