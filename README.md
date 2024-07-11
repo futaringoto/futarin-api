@@ -58,7 +58,13 @@ http://localhost/
 │   ├── routers
 │   │   ├── __init__.py
 │   │   └── raspi.py
-│   └── schemas
-│       └── __init__.py
+│   ├── schemas
+│   │   └── __init__.py
+│   ├── services
+│   │   ├── __init__.py
+│   │   └── whisper.py
+│   └── utils
+│       ├── __init__.py
+│       └── config.py
 └── docker-compose.yml
 ```

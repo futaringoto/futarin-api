@@ -8,6 +8,9 @@ import os
 
 router = APIRouter()
 
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 @router.post(
     "/raspi/audio",
     tags=["voicevox クエリ作成"],
@@ -53,22 +56,18 @@ async def audio(
         filename="audio.wav"
     )
 
-@router.post(
-    "/raspi/transcript"
-)
-async def transcript(
-    file: UploadFile = File(...)
-) -> JSONResponse:
+@router.post("/raspi/transcript")
+async def transcript(file: UploadFile = File(...)) -> JSONResponse:
+    file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
         content: bytes = await file.read()
-        """
-        with open(f"uploaded_{file.filename}", "wb") as f:
-            f.write(contents)
-        """
-        transcript: str = speech2text(content)
+        with open(file_location, "wb") as f:
+            f.write(content)
+        transcription: str = speech2text(file_location)
+        os.remove(file_location)
 
         return JSONResponse(
-            content={"transcript": transcript},
+            content={"transcript": transcription.text},
             status_code=200
         )
     except Exception as e:
