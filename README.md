@@ -22,6 +22,7 @@ cd futarin-api
 ```
 touch .env
 echo "VOICEVOX_URL=[endpoint url]" >> .env
+echo "OPENAI_API_KEY=[openAI api key]" >> .env
 ```
 
 4. Build docker image (Only first time)
@@ -57,7 +58,13 @@ http://localhost/
 │   ├── routers
 │   │   ├── __init__.py
 │   │   └── raspi.py
-│   └── schemas
-│       └── __init__.py
+│   ├── schemas
+│   │   └── __init__.py
+│   ├── services
+│   │   ├── __init__.py
+│   │   └── whisper.py
+│   └── utils
+│       ├── __init__.py
+│       └── config.py
 └── docker-compose.yml
 ```
