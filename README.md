@@ -62,6 +62,8 @@ http://localhost/
 │   │   └── __init__.py
 │   ├── services
 │   │   ├── __init__.py
+│   │   ├── gpt.py
+│   │   ├── voicevox.py
 │   │   └── whisper.py
 │   └── utils
 │       ├── __init__.py
