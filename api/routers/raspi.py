@@ -13,6 +13,41 @@ router = APIRouter()
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+@router.post("/raspi/")
+async def all(
+    speaker: int = 1,
+    file: UploadFile = File(...)
+) -> JSONResponse:
+    file_location = os.path.join(UPLOAD_DIR, file.filename)
+    try:
+        # whisper
+        content: bytes = await file.read()
+        with open(file_location, "wb") as f:
+            f.write(content)
+        transcription: str = speech2text(file_location)
+        os.remove(file_location)
+        print(f"transcription: {transcription.text}")
+
+        # chatgpt
+        generated_text: str = generate_text(transcription.text)
+        print(f"generated text: {generated_text}")
+
+        # voicevox
+        query: Dict[str, Any] = await audio_query(generated_text, speaker)
+        audio: bytes = await synthesis(query, speaker)
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+        with open(temp_file.name, "wb") as f:
+            f.write(audio)
+    except RequestError as e:
+        raise HTTPException(status_code=500, detail=f"RequestError fetching data: {str(e)}")
+    except HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=f"Error fetching data: {str(e)}")
+    return FileResponse(
+        temp_file.name,
+        media_type="audio/wav",
+        filename="audio.wav"
+    )
+
 @router.post(
     "/raspi/audio",
     tags=["voicevox クエリ作成"],

@@ -18,7 +18,7 @@ async def audio_query(text: str, speaker: int) -> Dict[str, Any]:
         return query
 
 async def synthesis(query: Dict[str, Any], speaker: int) -> bytes:
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(20.0)) as client:
         res = await client.post(
             urllib.parse.urljoin(url, "/synthesis"),
             params={"speaker": speaker},
