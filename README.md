@@ -35,8 +35,8 @@ docker compose build
 docker compose up
 docker compose up -d # detach
 ```
-6. access to localhost
-http://localhost/
+6. access to localhost to check docs
+http://localhost/docs
 
 ## Structure
 - api (application - FastAPI)
