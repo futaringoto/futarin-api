@@ -13,7 +13,11 @@ router = APIRouter()
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@router.post("/raspi/")
+@router.post(
+    "/raspi/",
+    tags=["raspi"],
+    summary="一連の動作全て"
+)
 async def all(
     speaker: int = 1,
     file: UploadFile = File(...)
@@ -50,8 +54,8 @@ async def all(
 
 @router.post(
     "/raspi/audio",
-    tags=["voicevox クエリ作成"],
-    summary="音声合成用のクエリを作成する"
+    tags=["raspi"],
+    summary="VOICEVOXによる音声合成"
 )
 async def audio(text: str, speaker: int = 1):
     try:
@@ -70,7 +74,11 @@ async def audio(text: str, speaker: int = 1):
         filename="audio.wav"
     )
 
-@router.post("/raspi/transcript")
+@router.post(
+    "/raspi/transcript",
+    tags=["raspi"],
+    summary="whisperによる文字起こし"
+)
 async def transcript(file: UploadFile = File(...)) -> JSONResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
@@ -90,7 +98,11 @@ async def transcript(file: UploadFile = File(...)) -> JSONResponse:
             status_code=500
         )
 
-@router.post("/raspi/gpt")
+@router.post(
+    "/raspi/gpt",
+    tags=["raspi"],
+    summary="chatGPTによる文章生成"
+)
 async def gpt(text: str) -> JSONResponse:
     try:
         generated_text: str = generate_text(text)
