@@ -1,6 +1,7 @@
 from typing import Any, Dict
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
+from services.gpt import generate_text
 from services.voicevox import audio_query, synthesis
 from services.whisper import speech2text
 from httpx import RequestError, HTTPStatusError
@@ -46,6 +47,20 @@ async def transcript(file: UploadFile = File(...)) -> JSONResponse:
 
         return JSONResponse(
             content={"transcript": transcription.text},
+            status_code=200
+        )
+    except Exception as e:
+        return JSONResponse(
+            content={"error": str(e)},
+            status_code=500
+        )
+
+@router.post("/raspi/gpt")
+async def gpt(text: str) -> JSONResponse:
+    try:
+        generated_text: str = generate_text(text)
+        return JSONResponse(
+            content={"generatedText": generated_text},
             status_code=200
         )
     except Exception as e:
