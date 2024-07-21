@@ -10,6 +10,7 @@ def generate_text(input_text: str) -> str:
         messages=[
             {"role": "system", "content": "テスト期間中の学生を親の視点から励ますような言葉を生成してください。日本語で40文字程度になるようにお願いします。"},
             {"role": "user", "content": input_text}
-        ]
+        ],
+        max_tokens=60
     )
     return completion.choices[0].message.content
