@@ -45,7 +45,7 @@ async def all(
             "transcription": transcription.text,
             "generated_text": generated_text
         }
-        #upload_json_to_blob(log_data)
+        upload_json_to_blob(log_data)
 
         # voicevox
         query: Dict[str, Any] = await audio_query(generated_text, speaker)
