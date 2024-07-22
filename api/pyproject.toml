@@ -10,6 +10,7 @@ package-mode = false
 python = "^3.12"
 fastapi = "^0.111.0"
 openai = "^1.35.10"
+azure-storage-blob = "^12.21.0"
 
 
 [tool.poetry.group.dev.dependencies]
