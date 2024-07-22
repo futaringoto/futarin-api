@@ -23,6 +23,8 @@ cd futarin-api
 touch .env
 echo "VOICEVOX_URL=[endpoint url]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
+echo "STORAGE_ACCOUNT_NAME=[azure storage-account-name]" >> .env
+echo "SAS_TOKEN=[azure storage-account SAS token]" >> .env
 ```
 
 4. Build docker image (Only first time)
@@ -67,6 +69,7 @@ http://localhost/docs
 │   │   └── whisper.py
 │   └── utils
 │       ├── __init__.py
-│       └── config.py
+│       ├── config.py
+│       └── log.py
 └── docker-compose.yml
 ```
