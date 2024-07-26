@@ -5,6 +5,7 @@ from datetime import datetime
 from services.gpt import generate_text
 from services.voicevox import audio_query, synthesis
 from services.whisper import speech2text
+from services.tts import text2speech
 from utils.log import upload_json_to_blob
 from httpx import RequestError, HTTPStatusError
 import tempfile
@@ -48,8 +49,9 @@ async def all(
         upload_json_to_blob(log_data)
 
         # voicevox
-        query: Dict[str, Any] = await audio_query(generated_text, speaker)
-        audio: bytes = await synthesis(query, speaker)
+        #query: Dict[str, Any] = await audio_query(generated_text, speaker)
+        #audio: bytes = await synthesis(query, speaker)
+        audio: bytes = text2speech(generated_text)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
         with open(temp_file.name, "wb") as f:
             f.write(audio)
@@ -72,6 +74,23 @@ async def audio(text: str, speaker: int = 1):
     try:
         query: Dict[str, Any] = await audio_query(text, speaker)
         content: bytes = await synthesis(query, speaker)
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+        with open(temp_file.name, 'wb') as f:
+            f.write(content)
+    except RequestError as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching data: {str(e)}")
+    except HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail=f"Error fetching data: {str(e)}")
+    return FileResponse(
+        temp_file.name,
+        media_type="audio/wav",
+        filename="audio.wav"
+    )
+
+@router.post("/raspi/tts")
+async def tts(text):
+    try:
+        content: bytes = text2speech(text)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
         with open(temp_file.name, 'wb') as f:
             f.write(content)
