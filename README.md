@@ -21,7 +21,6 @@ cd futarin-api
 3. Create `.env` file
 ```
 touch .env
-echo "VOICEVOX_URL=[endpoint url]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
 echo "STORAGE_ACCOUNT_NAME=[azure storage-account-name]" >> .env
 echo "SAS_TOKEN=[azure storage-account SAS token]" >> .env
@@ -31,13 +30,13 @@ Create `VOICEVOX_API_KEY` from https://su-shiki.com/api/
 
 4. Build docker image (Only first time)
 ```
-docker compose build
+sudo docker compose build
 ```
 
 5. Build and Start image
 ```
-docker compose up
-docker compose up -d # detach
+sudo docker compose up
+sudo docker compose up -d # detach
 ```
 6. access to localhost to check docs
 http://localhost/docs
