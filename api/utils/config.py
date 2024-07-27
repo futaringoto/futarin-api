@@ -11,3 +11,6 @@ def get_storage_account_name():
 
 def get_sas_token():
     return os.getenv("SAS_TOKEN")
+
+def get_voicevox_api_key():
+    return os.getenv("VOICEVOX_API_KEY")

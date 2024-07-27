@@ -5,7 +5,8 @@ from datetime import datetime
 from services.gpt import generate_text
 from services.voicevox import audio_query, synthesis
 from services.whisper import speech2text
-from services.tts import text2speech
+#from services.tts import text2speech
+from services.voicevox_api import get_voicevox_audio
 from utils.log import upload_json_to_blob
 from httpx import RequestError, HTTPStatusError
 import tempfile
@@ -51,7 +52,8 @@ async def all(
         # voicevox
         #query: Dict[str, Any] = await audio_query(generated_text, speaker)
         #audio: bytes = await synthesis(query, speaker)
-        audio: bytes = text2speech(generated_text)
+        #audio: bytes = text2speech(generated_text)
+        audio: bytes = await get_voicevox_audio(generated_text, speaker)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
         with open(temp_file.name, "wb") as f:
             f.write(audio)
