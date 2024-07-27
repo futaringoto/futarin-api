@@ -1,5 +1,9 @@
 import os
 
+def is_dev_mode() -> bool:
+    IS_DEV = os.getenv("DEV_MODE")
+    return True if IS_DEV==1 else False
+
 def get_voicevox_url():
     return os.getenv("VOICEVOX_URL")
 

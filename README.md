@@ -21,10 +21,16 @@ cd futarin-api
 3. Create `.env` file
 ```
 touch .env
+# default 0(prod)
+echo "DEV_MODE=1"
+
+echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
+echo "VOICEVOX_URL=[endpoint url]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
+
+# Only production mode (NOT DEV_MODE=1)
 echo "STORAGE_ACCOUNT_NAME=[azure storage-account-name]" >> .env
 echo "SAS_TOKEN=[azure storage-account SAS token]" >> .env
-echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 ```
 Create `VOICEVOX_API_KEY` from https://su-shiki.com/api/
 
