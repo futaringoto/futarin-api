@@ -25,7 +25,9 @@ echo "VOICEVOX_URL=[endpoint url]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
 echo "STORAGE_ACCOUNT_NAME=[azure storage-account-name]" >> .env
 echo "SAS_TOKEN=[azure storage-account SAS token]" >> .env
+echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 ```
+Create `VOICEVOX_API_KEY` from https://su-shiki.com/api/
 
 4. Build docker image (Only first time)
 ```
@@ -65,7 +67,9 @@ http://localhost/docs
 │   ├── services
 │   │   ├── __init__.py
 │   │   ├── gpt.py
+│   │   ├── tts.py
 │   │   ├── voicevox.py
+│   │   ├── voicevox_api.py
 │   │   └── whisper.py
 │   └── utils
 │       ├── __init__.py
@@ -73,3 +77,8 @@ http://localhost/docs
 │       └── log.py
 └── docker-compose.yml
 ```
+
+## VOICEVOX API
+有志のVOICEVOX APIを使用しています。
+- https://voicevox.su-shiki.com/su-shikiapis/
+- https://github.com/ts-klassen/ttsQuestV3Voicevox/
