@@ -1,0 +1,4 @@
+services:
+  api:
+    environment:
+      - IS_DEV_MODE=1

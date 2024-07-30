@@ -17,8 +17,8 @@ def check_env_variables():
         raise EnvironmentError(f"Missing environment variables: {', '.join(missing_vars)}")
 
 def get_is_dev_mode() -> bool:
-    IS_DEV = os.getenv("DEV_MODE")
-    return True if IS_DEV==1 else False
+    is_dev_mode = os.getenv("IS_DEV_MODE")
+    return int(is_dev_mode)==1
 
 def get_voicevox_url():
     return os.getenv("VOICEVOX_URL")

@@ -14,6 +14,8 @@ services:
   api:
     container_name: api
     image: futarin-api
+    environment:
+      - IS_DEV_MODE=0
     env_file:
       - .env
     build:
