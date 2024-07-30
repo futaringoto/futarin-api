@@ -1,19 +1,8 @@
 from typing import Union
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-import os
 from routers import raspi
-
-def check_env_variables():
-    env_vars = [
-        "OPENAI_API_KEY",
-        "VOICEVOX_API_KEY",
-        "STORAGE_ACCOUNT_NAME",
-        "SAS_TOKEN",
-    ]
-    missing_vars = [var for var in env_vars if os.getenv(var) is None]
-    if missing_vars:
-        raise EnvironmentError(f"Missing environment variables: {', '.join(missing_vars)}")
+from utils.config import check_env_variables
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
