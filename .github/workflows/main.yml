@@ -30,7 +30,7 @@ jobs:
 
       - name: 'Compose Customized Docker Image'
         run: |
-          docker buildx build --platform linux/amd64, linux/arm64 \
+          docker buildx build --platform linux/amd64,linux/arm64 \
             -f ./_docker/api/Dockerfile \
             -t ${{ vars.LOGIN_SERVER }}/${{ env.IMAGE }}:${{ env.TAG }} \
             --push .
