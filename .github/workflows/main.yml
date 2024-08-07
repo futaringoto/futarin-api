@@ -1,4 +1,37 @@
-name: docker_build_push_acr
- 
+name: Build container and push to ACR
+
 on:
-  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+env:
+  IMAGE: 'futarin-api'
+  TAG: 'latest'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v4
+
+      - name: 'Set up Docker Buildx'
+        uses: docker/setup-buildx-action@v1
+
+      - name: 'Docker Login'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: 'Compose Customized Docker Image'
+        run: |
+          docker buildx build --platform linux/amd64, linux/arm64 \
+            -f ./_docker/api/Dockerfile \
+            -t ${{ vars.LOGIN_SERVER }}/${{ env.IMAGE }}:${{ env.TAG }} \
+            --push .
+
+
