@@ -2,10 +2,6 @@ name: CI
 
 on: push
 
-env:
-  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-  VOICEVOX_API_KEY: ${{ secrets.VOICEVOX_API_KEY }}
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,6 +9,12 @@ jobs:
     steps:
       - name: Check out repositry
         uses: actions/checkout@v4
+
+      - name: Create .env file
+        run |
+          touch .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+          echo "VOICEVOX_API_KEY=${{ secrets.VOICEVOX_API_KEY }}" >> .env
 
       - name: Run docker-compose Build
         run: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
