@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - development
+    pull_request:
+
+env:
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  VOICEVOX_API_KEY: ${{ secrets.VOICEVOX_API_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repositry
+        uses: actions/checkout@v4
+
+      - name: Run docker-compose Build
+        run: docker compose \
+          -f docker-compose.yml \
+          -f docker-compose.dev.yml \
+          up --build -d
+
+      - name: Run test
+        run: docker compose run --entrypoint "poetry run pytest" api
