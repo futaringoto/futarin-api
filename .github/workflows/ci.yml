@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create .env file
-        run |
+        run: |
           touch .env
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
           echo "VOICEVOX_API_KEY=${{ secrets.VOICEVOX_API_KEY }}" >> .env
