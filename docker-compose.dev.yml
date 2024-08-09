@@ -5,3 +5,15 @@ services:
     volumes:
       - ./api:/api
     command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
+
+      #  test:
+      #    build: .
+      #    environment:
+      #      - IS_DEV_MODE=1
+      #    env_file:
+      #      - .env
+      #    volumes:
+      #      - ./api:/api
+      #    command: pytest --disable-warnings --maxfail=1
+      #    depends_on:
+      #      - api

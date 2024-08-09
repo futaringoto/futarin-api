@@ -11,9 +11,9 @@ def client():
 async def test_transcribe_and_respond(client: TestClient):
     audio_file_path = "tests/audio1.wav"
     with open(audio_file_path, "rb") as audio_file:
-        files = {'file': (audio_file_path, audio_file, 'multipart/form-data')}
+        files = {'file': ("audio1.wav", audio_file, 'multipart/form-data')}
 
-        response = await client.post("/raspi", files=files)
+        response = client.post("/raspi", files=files)
 
     assert response.status_code == 200
     assert response.headers["content-type"] == "audio/wav"
