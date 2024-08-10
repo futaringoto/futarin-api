@@ -1,0 +1,32 @@
+MIT License
+
+Copyright (c) 2024 futaringoto
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+This project uses the following libraries that are licensed under the LGPL v3:
+- VOICEVOX/voicevox_engine
+The LGPL v3 license applies to the use and distribution of these libraries. You can find the full text of the LGPL v3 license at [link to LGPL license text] or in the accompanying LICENSE file.
+
+---
+
+This project uses the following libraries that are licensed under the Apache-2.0:
+- openai/openai-python
+The Apache-2.0 license applies to the use and distribution of these libraries. You can find the full text of the Apache-2.0 license at [link to Apache license text] or in the accompanying LICENSE file.
