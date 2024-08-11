@@ -16,7 +16,7 @@ def generate_text(prompt: str) -> str:
     vs_name = "professional counselor"
     vector_store = client.beta.vector_stores.create(name=vs_name)
 
-    file_streams = [open("./api./utils./cheering.txt", "rb")]
+    file_streams = [open("../utils/cheering.txt", "rb")]
 
     file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
         vector_store_id=vector_store.id, files=file_streams
