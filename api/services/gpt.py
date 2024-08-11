@@ -1,5 +1,6 @@
 from openai import OpenAI
 from utils.config import get_openai_api_key
+import os
 
 OpenAI.api_key = get_openai_api_key()
 client = OpenAI()
@@ -8,7 +9,7 @@ def generate_text(prompt: str) -> str:
     assistant = client.beta.assistants.create(
         name="futarin",
         instructions=
-            "あなたは、プロのカウンセラーです。与えられたファイルをもとに相談者の気持ちに寄り添い、解決策を提示しながら、簡潔でフレンドリーなメッセージを生成してください。",
+            "あなたは、プロのカウンセラーです。与えられたファイルをもとに相談者の気持ちに寄り添い、解決策を提示しながら、簡潔でフレンドリーなひとまとまりのメッセージを生成してください。",
         model="gpt-4o-mini",
         tools=[{"type": "file_search"}],
     )
@@ -16,7 +17,17 @@ def generate_text(prompt: str) -> str:
     vs_name = "professional counselor"
     vector_store = client.beta.vector_stores.create(name=vs_name)
 
-    file_streams = [open("../utils/cheering.txt", "rb")]
+    # このスクリプトが存在するディレクトリのパスを取得
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # cheering.txt への相対パスを作成
+    file_path = os.path.join(current_dir, '../utils/cheering.txt')
+    
+    # ファイルを開く
+    # with open(file_path, 'r') as file:
+    #     file_streams = file.read()
+ 
+    file_streams = [open(file_path, "rb")]
 
     file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
         vector_store_id=vector_store.id, files=file_streams
