@@ -3,15 +3,17 @@ from fastapi.testclient import TestClient
 
 from main import app
 
+
 @pytest.fixture
 def client():
     return TestClient(app)
+
 
 @pytest.mark.asyncio
 async def test_transcribe_and_respond(client: TestClient):
     audio_file_path = "tests/audio1.wav"
     with open(audio_file_path, "rb") as audio_file:
-        files = {'file': ("audio1.wav", audio_file, 'multipart/form-data')}
+        files = {"file": ("audio1.wav", audio_file, "multipart/form-data")}
 
         response = client.post("/raspi", files=files)
 

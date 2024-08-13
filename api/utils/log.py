@@ -7,8 +7,10 @@ import time
 STORAGE_ACCOUNT_NAME = get_storage_account_name()
 SAS_TOKEN = get_sas_token()
 
+
 def upload_json_to_blob(json_data):
-    if get_is_dev_mode: return 0
+    if get_is_dev_mode:
+        return 0
     account_url = f"https://{STORAGE_ACCOUNT_NAME}.blob.core.windows.net"
     blob_service_client = BlobServiceClient(account_url, credential=SAS_TOKEN)
     container_name = "futarin-log"
