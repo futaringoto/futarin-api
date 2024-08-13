@@ -1,6 +1,8 @@
-from typing import Union
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+from typing import Union
+
+from fastapi import FastAPI
+
 from routers import raspi
 from utils.config import check_env_variables
 

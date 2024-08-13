@@ -1,7 +1,9 @@
 import json
-from typing import Any, Dict
-import httpx
 import urllib.parse
+from typing import Any, Dict
+
+import httpx
+
 from utils.config import get_voicevox_url
 
 url: str = get_voicevox_url()

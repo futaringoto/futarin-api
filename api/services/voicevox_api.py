@@ -1,4 +1,5 @@
 import httpx
+
 from utils.config import get_voicevox_api_key
 
 url: str = "https://deprecatedapis.tts.quest/v2/voicevox/audio/"

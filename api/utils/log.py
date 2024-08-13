@@ -1,8 +1,10 @@
-from azure.storage.blob import BlobServiceClient
-from utils.config import get_storage_account_name, get_sas_token, get_is_dev_mode
-import logging
 import json
+import logging
 import time
+
+from azure.storage.blob import BlobServiceClient
+
+from utils.config import get_is_dev_mode, get_sas_token, get_storage_account_name
 
 STORAGE_ACCOUNT_NAME = get_storage_account_name()
 SAS_TOKEN = get_sas_token()

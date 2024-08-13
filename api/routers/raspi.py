@@ -1,17 +1,18 @@
+import os
+import tempfile
+from datetime import datetime
 from typing import Any, Dict
+
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
-from datetime import datetime
-from services.gpt import generate_text
-from services.voicevox import audio_query, synthesis
-from services.whisper import speech2text
+from httpx import HTTPStatusError, RequestError
 
+from services.gpt import generate_text
 from services.tts import text2speech
+from services.voicevox import audio_query, synthesis
 from services.voicevox_api import get_voicevox_audio
+from services.whisper import speech2text
 from utils.log import upload_json_to_blob
-from httpx import RequestError, HTTPStatusError
-import tempfile
-import os
 
 router = APIRouter()
 
