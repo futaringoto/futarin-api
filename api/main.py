@@ -17,8 +17,38 @@ async def lifespan(app: FastAPI):
     yield
     print("Shutting down...")
 
+tags_metadata = [
+    {
+        "name": "raspi",
+        "description": "[futairn-raspi]()から使用するエンドポイント",
+    },
+    {
+        "name": "sandbox",
+        "description": "デバッグ用",
+    },
+    {
+        "name": "v0 (deprecated)",
+        "description": "**Deprecated (非推奨)** URI変更なし",
+    },
+]
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    openapi_tags=tags_metadata,
+
+    title="futarin-api",
+    description="詳しくは[github](https://github.com/futaringoto/futarin-api)",
+    summary="「ふたりんごと」のAPI",
+    version="v1",
+    contact={
+        "name": "futaringoto",
+        "url": "https://github.com/futaringoto",
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://github.com/futaringoto/futarin-api/blob/main/LICENSE",
+    }
+)
 app.include_router(v0_raspi.router)
 app.include_router(v1_raspi.router, prefix="/v1/raspi")
 app.include_router(v1_sandbox.router, prefix="/v1/sandbox")
