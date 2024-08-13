@@ -1,8 +1,8 @@
 import os
 
-from fastapi import APIRouter, File, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, File, HTTPException, UploadFile
 
+from v1.schemas.text_response import TextResponse
 from v1.services.gpt import generate_text
 from v1.services.whisper import speech2text
 
@@ -12,8 +12,13 @@ UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-@router.post("/transcript", tags=["sandbox"], summary="whisperによる文字起こし")
-async def transcript(file: UploadFile = File(...)) -> JSONResponse:
+@router.post(
+    "/transcript",
+    tags=["sandbox"],
+    summary="whisperによる文字起こし",
+    response_model=TextResponse,
+)
+async def transcript(file: UploadFile = File(...)) -> TextResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
         content: bytes = await file.read()
@@ -22,15 +27,20 @@ async def transcript(file: UploadFile = File(...)) -> JSONResponse:
         transcription: str = speech2text(file_location)
         os.remove(file_location)
 
-        return JSONResponse(content={"transcript": transcription.text}, status_code=200)
+        return TextResponse(text=transcription.text)
     except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/gpt", tags=["sandbox"], summary="chatGPTによる文章生成")
-async def gpt(text: str) -> JSONResponse:
+@router.post(
+    "/gpt",
+    tags=["sandbox"],
+    summary="chatGPTによる文章生成",
+    response_model=TextResponse
+)
+async def gpt(text: str) -> TextResponse:
     try:
         generated_text: str = generate_text(text)
-        return JSONResponse(content={"generatedText": generated_text}, status_code=200)
+        return TextResponse(text=generated_text)
     except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+        raise HTTPException(status_code=500, detail=str(e))
