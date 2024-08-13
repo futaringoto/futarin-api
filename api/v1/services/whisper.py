@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-from utils.config import get_openai_api_key
+from v1.utils.config import get_openai_api_key
 
 OpenAI.api_key = get_openai_api_key()
 client = OpenAI()
