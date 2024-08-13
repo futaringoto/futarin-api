@@ -28,7 +28,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
         }
     }
 )
-async def all(speaker: int = 1, file: UploadFile = File(...)) -> JSONResponse:
+async def all(speaker: int = 1, file: UploadFile = File(...)) -> FileResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
         # whisper

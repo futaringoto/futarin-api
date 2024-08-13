@@ -2,7 +2,7 @@ import os
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from v1.schemas.text_response import TextResponse
+from v1.schemas.sandbox import TextResponse
 from v1.services.gpt import generate_text
 from v1.services.whisper import speech2text
 
