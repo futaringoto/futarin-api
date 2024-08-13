@@ -4,7 +4,7 @@ from typing import Any, Dict
 
 import httpx
 
-from utils.config import get_voicevox_url
+from v0.utils.config import get_voicevox_url
 
 url: str = get_voicevox_url()
 

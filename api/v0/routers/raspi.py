@@ -7,12 +7,12 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from httpx import HTTPStatusError, RequestError
 
-from services.gpt import generate_text
-from services.tts import text2speech
-from services.voicevox import audio_query, synthesis
-from services.voicevox_api import get_voicevox_audio
-from services.whisper import speech2text
-from utils.log import upload_json_to_blob
+from v0.services.gpt import generate_text
+from v0.services.tts import text2speech
+from v0.services.voicevox import audio_query, synthesis
+from v0.services.voicevox_api import get_voicevox_audio
+from v0.services.whisper import speech2text
+from v0.utils.log import upload_json_to_blob
 
 router = APIRouter()
 
