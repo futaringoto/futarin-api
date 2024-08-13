@@ -20,7 +20,7 @@ UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-@router.post("/raspi/", tags=["raspi"], summary="一連の動作全て")
+@router.post("/raspi/", tags=["v0 (deprecated)"], summary="一連の動作全て")
 async def all(speaker: int = 1, file: UploadFile = File(...)) -> JSONResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
@@ -64,7 +64,7 @@ async def all(speaker: int = 1, file: UploadFile = File(...)) -> JSONResponse:
     return FileResponse(temp_file.name, media_type="audio/wav", filename="audio.wav")
 
 
-@router.post("/raspi/audio", tags=["raspi"], summary="VOICEVOXによる音声合成")
+@router.post("/raspi/audio", tags=["v0 (deprecated)"], summary="VOICEVOXによる音声合成")
 async def audio(text: str, speaker: int = 1):
     try:
         query: Dict[str, Any] = await audio_query(text, speaker)
@@ -81,7 +81,7 @@ async def audio(text: str, speaker: int = 1):
     return FileResponse(temp_file.name, media_type="audio/wav", filename="audio.wav")
 
 
-@router.post("/raspi/tts")
+@router.post("/raspi/tts", tags=["v0 (deprecated)"], summary="OpenAI TTSによる音声合成")
 async def tts(text):
     try:
         content: bytes = text2speech(text)
@@ -97,7 +97,7 @@ async def tts(text):
     return FileResponse(temp_file.name, media_type="audio/wav", filename="audio.wav")
 
 
-@router.post("/raspi/transcript", tags=["raspi"], summary="whisperによる文字起こし")
+@router.post("/raspi/transcript", tags=["v0 (deprecated)"], summary="whisperによる文字起こし")
 async def transcript(file: UploadFile = File(...)) -> JSONResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
@@ -112,7 +112,7 @@ async def transcript(file: UploadFile = File(...)) -> JSONResponse:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
-@router.post("/raspi/gpt", tags=["raspi"], summary="chatGPTによる文章生成")
+@router.post("/raspi/gpt", tags=["v0 (deprecated)"], summary="chatGPTによる文章生成")
 async def gpt(text: str) -> JSONResponse:
     try:
         generated_text: str = generate_text(text)
