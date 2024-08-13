@@ -3,7 +3,9 @@ from typing import Union
 
 from fastapi import FastAPI
 
-from v0.routers import raspi
+from v0.routers import raspi as v0_raspi
+from v1.routers import raspi as v1_raspi
+from v1.routers import sandbox as v1_sandbox
 from v0.utils.config import check_env_variables
 
 
@@ -15,7 +17,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(raspi.router)
+app.include_router(v0_raspi.router)
+app.include_router(v1_raspi.router, prefix="/v1/raspi")
+app.include_router(v1_sandbox.router, prefix="/v1/sandbox")
 
 
 @app.get("/")
