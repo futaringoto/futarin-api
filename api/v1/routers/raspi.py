@@ -15,8 +15,20 @@ UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-@router.post("/", tags=["raspi"], summary="一連の動作全て")
-async def all(speaker: int = 1, file: UploadFile = File(...)) -> JSONResponse:
+@router.post(
+    "/",
+    tags=["raspi"],
+    summary="一連の動作全て",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {
+                "audio/wav": {"schema": {"type": "string", "format": "binary"}}
+            }
+        }
+    }
+)
+async def all(speaker: int = 1, file: UploadFile = File(...)) -> FileResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
         # whisper
