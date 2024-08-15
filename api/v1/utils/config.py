@@ -7,8 +7,7 @@ def check_env_variables():
         "OPENAI_API_KEY",
         "VOICEVOX_API_KEY",
     ]
-    env_vars_prod: list[str] = [
-    ]
+    env_vars_prod: list[str] = []
     if not is_dev_mode:
         env_vars.extend(env_vars_prod)
     missing_vars = [var for var in env_vars if os.getenv(var) is None]

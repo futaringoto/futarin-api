@@ -4,9 +4,9 @@ from typing import Union
 from fastapi import FastAPI
 
 from v0.routers import raspi as v0_raspi
+from v0.utils.config import check_env_variables as v0_check_env_variables
 from v1.routers import raspi as v1_raspi
 from v1.routers import sandbox as v1_sandbox
-from v0.utils.config import check_env_variables as v0_check_env_variables
 from v1.utils.config import check_env_variables as v1_check_env_variables
 
 
@@ -16,6 +16,7 @@ async def lifespan(app: FastAPI):
     v1_check_env_variables()
     yield
     print("Shutting down...")
+
 
 tags_metadata = [
     {
@@ -35,7 +36,6 @@ tags_metadata = [
 app = FastAPI(
     lifespan=lifespan,
     openapi_tags=tags_metadata,
-
     title="futarin-api",
     description="詳しくは[github](https://github.com/futaringoto/futarin-api)",
     summary="「ふたりんごと」のAPI",
@@ -47,7 +47,7 @@ app = FastAPI(
     license_info={
         "name": "MIT",
         "url": "https://github.com/futaringoto/futarin-api/blob/main/LICENSE",
-    }
+    },
 )
 app.include_router(v0_raspi.router)
 app.include_router(v1_raspi.router, prefix="/v1/raspi")

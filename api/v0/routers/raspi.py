@@ -97,7 +97,9 @@ async def tts(text):
     return FileResponse(temp_file.name, media_type="audio/wav", filename="audio.wav")
 
 
-@router.post("/raspi/transcript", tags=["v0 (deprecated)"], summary="whisperによる文字起こし")
+@router.post(
+    "/raspi/transcript", tags=["v0 (deprecated)"], summary="whisperによる文字起こし"
+)
 async def transcript(file: UploadFile = File(...)) -> JSONResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
