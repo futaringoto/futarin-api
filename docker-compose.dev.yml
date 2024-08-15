@@ -2,8 +2,6 @@ services:
   api:
     environment:
       - IS_DEV_MODE=1
-    volumes:
-      - ./api:/api
     command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
 
       #  test:

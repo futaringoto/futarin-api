@@ -23,6 +23,8 @@ services:
       dockerfile: _docker/api/Dockerfile
     ports:
       - "80:80"
+    volumes:
+      - ./api:/api
         #    expose:
         #      - 8000
         #    networks:
