@@ -19,14 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-This project uses the following libraries that are licensed under the LGPL v3:
-- VOICEVOX/voicevox_engine
-The LGPL v3 license applies to the use and distribution of these libraries. You can find the full text of the LGPL v3 license at [link to LGPL license text] or in the accompanying LICENSE file.
-
----
-
-This project uses the following libraries that are licensed under the Apache-2.0:
-- openai/openai-python
-The Apache-2.0 license applies to the use and distribution of these libraries. You can find the full text of the Apache-2.0 license at [link to Apache license text] or in the accompanying LICENSE file.
