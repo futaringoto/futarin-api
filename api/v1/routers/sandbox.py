@@ -36,7 +36,7 @@ async def transcript(file: UploadFile = File(...)) -> TextResponse:
     "/gpt",
     tags=["sandbox"],
     summary="chatGPTによる文章生成",
-    response_model=TextResponse
+    response_model=TextResponse,
 )
 async def gpt(text: str) -> TextResponse:
     try:
