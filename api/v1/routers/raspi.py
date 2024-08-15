@@ -2,7 +2,7 @@ import os
 import tempfile
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
 
 from v1.services.gpt import generate_text
