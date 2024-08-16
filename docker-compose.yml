@@ -20,6 +20,8 @@ services:
       - .env
     build:
       context: .
+      args:
+        - ENV=production
       dockerfile: _docker/api/Dockerfile
     ports:
       - "80:80"
