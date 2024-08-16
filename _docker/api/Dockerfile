@@ -18,6 +18,7 @@ RUN poetry install --no-root
 
 COPY ./api/ .
 
+ARG ENV
 # production stage
 FROM python:3.12-alpine as production
 
