@@ -8,8 +8,10 @@ from httpx import HTTPStatusError, RequestError
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
+from v1.utils.logging import get_logger
 
 router = APIRouter()
+logger = get_logger()
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -35,11 +37,11 @@ async def all(speaker: int = 1, file: UploadFile = File(...)) -> FileResponse:
             f.write(content)
         transcription: str = speech2text(file_location)
         os.remove(file_location)
-        print(f"transcription: {transcription.text}")
+        logger.info(f"transcription: {transcription.text}")
 
         # chatgpt
         generated_text: str = generate_text(transcription.text)
-        print(f"generated text: {generated_text}")
+        logger.info(f"generated text: {generated_text}")
 
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
