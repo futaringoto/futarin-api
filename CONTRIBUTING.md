@@ -56,14 +56,14 @@ echo "OPENAI_API_KEY=[openAI api key]" >> .env
 ```
 環境変数を設定してください。詳しくは[README](https://github.com/futaringoto/futarin-api/blob/main/README.md)へ
 ```
-sudo docker compose build
+sudo make build
 ```
 > [!IMPORTANT]
-> Dockerfileを更新した際は、キャッシュが使われないよう、`build --no-cache`でビルドしましょう
+> Dockerfileを更新した際は、キャッシュが使われないよう、`sudo docker compose build --no-cache`でビルドしましょう
 
 ## コード実行
 ```
-sudo docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+sudo make run-dev
 ```
 > [!TIP]
 > ホットリロードを採用しています。pythonファイルの変更が保存されると再度自動でビルドが走ります
@@ -87,20 +87,19 @@ docker compose run --entrypoint "poetry update" api
 ### リント
 安全性の向上のため、リンターの`flake8`を導入しています。
 ```
-docker compose run --entrypoint "flake8" api
+sudo make lint
 ```
 ### 整形
 可読性の向上のため、フォーマッタの`black`と`isort`を導入しています。
 ```
-docker compose run --entrypoint "black ." api
-docker compose run --entrypoint "isort ." api
+sudo make format
 ```
 
 ## テスト
 自動テストを採用しています。テストランナーは`pytest`です。
 ### コードをテストする
 ```
-docker compose run --entrypoint "pytest" api
+sudo make test
 ```
 
 ## GitHub Actions
