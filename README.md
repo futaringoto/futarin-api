@@ -33,34 +33,27 @@ cd futarin-api
 touch .env
 echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
-
-# Only production mode(開発環境用)
-echo "STORAGE_ACCOUNT_NAME=[azure storage-account-name]" >> .env
-echo "SAS_TOKEN=[azure storage-account SAS token]" >> .env
 ```
 `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、  
 `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から取得します
 
 3. Dockerイメージのビルド
 ```
-sudo docker compose build
+sudo make build
 ```
 
 4. コンテナ起動
 ```
-# Production(本番環境)
-sudo docker compose up
-# Development(開発環境)
-sudo docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+sudo make run-dev
 # Detachモード
-sudo docker compose up -d
+sudo make run-dev-d
 ```
 5. localhost でドキュメントを開いてみましょう
 http://localhost/docs
 
 6. コンテナの停止
 ```
-docker compose down
+sudo make stop
 ```
 
 ## APIエンドポイント(v1)
@@ -74,51 +67,79 @@ docker compose down
 > [!WARNING]
 > 従来の`/raspi/xxx`系のエンドポイントはdeprecated(非推奨)となりました。
 
+## `make`コマンドについて
+本リポジトリは`Makefile`を採用しています。
+| Make | 実行する処理 | 元のコマンド |
+| :--- | :-------- | :-------- |
+| `make build` | コンテナのビルド | `docker compose -f docker-compose.yml -f docker-compose.dev.yml build` |
+| `make run-dev` | コンテナの起動 | `docker compose -f docker-compose.yml -f docker-compose.dev.yml up` |
+| `make run-dev-d` | コンテナの起動（デタッチ） | `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d` |
+| `make stop` | コンテナの停止 | `docker compose down` |
+| `make lint` | リントの実行 | `docker compose run --entrypoint "flake8" api` |
+| `make format` | フォーマットの実行 | `docker compose run --entrypoint "black ." api` |
+| `make test` | テストの実行 | `docker compose run --entrypoint "pytest" api` |
+
+
 ## ディレクトリ構成
 - api (application - FastAPI)
 - nginx (web-server)
 ```
 .
-├── main.py
-├── poetry.lock
-├── pyproject.toml
-├── tests
-│   ├── __init__.py
-│   ├── audio1.wav
-│   └── test_v1_raspi.py
-├── v0
-│   ├── __init__.py
-│   ├── routers
+├── CONTRIBUTING.md
+├── LICENSE
+├── Makefile
+├── README.md
+├── _docker
+│   ├── api
+│   │   └── Dockerfile
+│   └── nginx
+│       └── conf.d
+│           └── app.conf
+├── api
+│   ├── main.py
+│   ├── poetry.lock
+│   ├── pyproject.toml
+│   ├── tests
 │   │   ├── __init__.py
-│   │   └── raspi.py
-│   ├── services
+│   │   ├── audio1.wav
+│   │   └── test_v1_raspi.py
+│   ├── uploads
+│   ├── v0
 │   │   ├── __init__.py
-│   │   ├── gpt.py
-│   │   ├── tts.py
-│   │   ├── voicevox.py
-│   │   ├── voicevox_api.py
-│   │   └── whisper.py
-│   └── utils
+│   │   ├── routers
+│   │   │   ├── __init__.py
+│   │   │   └── raspi.py
+│   │   ├── services
+│   │   │   ├── __init__.py
+│   │   │   ├── gpt.py
+│   │   │   ├── tts.py
+│   │   │   ├── voicevox.py
+│   │   │   ├── voicevox_api.py
+│   │   │   └── whisper.py
+│   │   └── utils
+│   │       ├── __init__.py
+│   │       ├── config.py
+│   │       └── log.py
+│   └── v1
 │       ├── __init__.py
-│       ├── config.py
-│       └── log.py
-└── v1
-    ├── __init__.py
-    ├── routers
-    │   ├── __init__.py
-    │   ├── raspi.py
-    │   └── sandbox.py
-    ├── schemas
-    │   ├── __init__.py
-    │   └── sandbox.py
-    ├── services
-    │   ├── __init__.py
-    │   ├── gpt.py
-    │   ├── voicevox_api.py
-    │   └── whisper.py
-    └── utils
-        ├── __init__.py
-        └── config.py
+│       ├── routers
+│       │   ├── __init__.py
+│       │   ├── raspi.py
+│       │   └── sandbox.py
+│       ├── schemas
+│       │   ├── __init__.py
+│       │   └── sandbox.py
+│       ├── services
+│       │   ├── __init__.py
+│       │   ├── gpt.py
+│       │   ├── voicevox_api.py
+│       │   └── whisper.py
+│       └── utils
+│           ├── __init__.py
+│           ├── config.py
+│           └── logging.py
+├── docker-compose.dev.yml
+└── docker-compose.yml
 ```
 
 ## VOICEVOX
