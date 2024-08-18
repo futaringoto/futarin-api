@@ -2,7 +2,7 @@ name: Deploy API doc to Pages
 
 on:
   push:
-    branches: ["main"]
+    #branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -24,14 +24,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Create .env file
+        run: |
+          touch .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+          echo "VOICEVOX_API_KEY=${{ secrets.VOICEVOX_API_KEY }}" >> .env
       - name: Run docker-compose Build
-        run: docker compose -f docker-compose.yml -f docker-compose.dev.yml build
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+          sleep 5
+          curl http://localhost
+          
+      - name: Wait for the API to be ready
+        run: |
+          for i in {1..60}; do
+            curl -s http://localhost/openapi.json && break
+            echo "Waiting for API to be ready..."
+            sleep 2
+          done
+          
       - name: Download OpenAPI Specification
         run: |
           curl -o openapi.json http://localhost/openapi.json
       - name: Generate Redoc HTML
         run: |
           mkdir -p docs
+          cp openapi.json docs/
           echo '<!DOCTYPE html>
           <html>
           <head>
@@ -45,18 +63,15 @@ jobs:
           <body>
             <div id="redoc-container"></div>
             <script>
-              Redoc.init("https://your-fastapi-app-domain.com/openapi.json", {}, document.getElementById("redoc-container"));
+              Redoc.init("openapi.json", {}, document.getElementById("redoc-container"));
             </script>
           </body>
           </html>' > docs/index.html
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'docs/index.html'
+          path: 'docs/'
           retention-days: 7
           
       - name: Deploy to GitHub Pages
