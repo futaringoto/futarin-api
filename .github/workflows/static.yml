@@ -1,0 +1,64 @@
+name: Deploy API doc to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run docker-compose Build
+        run: docker compose -f docker-compose.yml -f docker-compose.dev.yml build
+      - name: Download OpenAPI Specification
+        run: |
+          curl -o openapi.json http://localhost/openapi.json
+      - name: Generate Redoc HTML
+        run: |
+          mkdir -p docs
+          echo '<!DOCTYPE html>
+          <html>
+          <head>
+            <title>API Documentation</title>
+            <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+            <style>
+              body { margin: 0; }
+              #redoc-container { padding: 20px; }
+            </style>
+          </head>
+          <body>
+            <div id="redoc-container"></div>
+            <script>
+              Redoc.init("https://your-fastapi-app-domain.com/openapi.json", {}, document.getElementById("redoc-container"));
+            </script>
+          </body>
+          </html>' > docs/index.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/index.html'
+          retention-days: 7
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
