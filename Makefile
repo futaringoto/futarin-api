@@ -4,19 +4,24 @@ CONTAINER_NAME=api
 # "api"が立ち上がっているか否かを判定
 CHECK_CONTAINER=$(shell docker-compose ps -q $(CONTAINER_NAME) | xargs docker inspect -f '{{.State.Running}}' 2>/dev/null)
 
-build:
+.PHONY: build
+build: ## ビルド
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml build
 
-run-dev:
+.PHONY: run-dev
+run-dev: ## コンテナ起動
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml up
 
-run-dev-d:
+.PHONY: run-dev-d
+run-dev-d: ## コンテナ起動（デタッチ）
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 
-stop:
+.PHONY: stop
+stop: ## コンテナ停止
 	docker compose down
 
-test:
+.PHONY: test
+test: ## テスト
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
 		docker compose run --entrypoint "pytest" api; \
@@ -24,7 +29,8 @@ test:
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi
 
-lint:
+.PHONY: lint
+lint: ## リント
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
 			docker compose run --entrypoint "flake8" api; \
@@ -32,7 +38,8 @@ lint:
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi
 
-format:
+.PHONY: format
+format: ## フォーマット
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
 		docker compose run --entrypoint "black ." api; \
@@ -40,3 +47,6 @@ format:
 	else \
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi
+
+.PHONY: pre-commit
+pre-commit: format lint test
