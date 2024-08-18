@@ -34,7 +34,7 @@ touch .env
 echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
 ```
-`VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、  
+`VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
 `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から取得します
 
 3. Dockerイメージのビルド
@@ -57,7 +57,7 @@ sudo make stop
 ```
 
 ## APIエンドポイント(v1)
-詳しくは http://localhost/docs を参照してください。
+詳しくは https://futaringoto.github.io/futarin-api/ を参照してください。
 | メソッド | パス | 概要 |
 | :----- | :-- | :-- |
 | POST | `/v1/raspi` | 一連の処理全て |
