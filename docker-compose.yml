@@ -23,12 +23,12 @@ services:
       args:
         - ENV=production
       dockerfile: _docker/api/Dockerfile
-    ports:
-      - "80:80"
-        #    expose:
-        #      - 8000
-        #    networks:
-        #      - nginx-network
+    #ports:
+      #- "80:80"
+      expose:
+        - 8000
+      networks:
+        - nginx-network
 
         #  azurite:
         #    image: mcr.microsoft.com/azure-storage/azurite
@@ -38,7 +38,7 @@ services:
         #      - ./data:/data
         #    command: "azurite-blob --blobHost 0.0.0.0 --location /data --debug /data/debug.log"
 
-        #networks:
-        #  nginx-network:
-        #    driver: bridge
+networks:
+  nginx-network:
+    driver: bridge
 
