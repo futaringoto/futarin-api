@@ -23,8 +23,8 @@ services:
       args:
         - ENV=production
       dockerfile: _docker/api/Dockerfile
-    #ports:
-      #- "80:80"
+      ports:
+        - "80:8000"
       expose:
         - 8000
       networks:
