@@ -23,12 +23,12 @@ services:
       args:
         - ENV=production
       dockerfile: _docker/api/Dockerfile
-      ports:
-        - "80:8000"
-      expose:
-        - 8000
-      networks:
-        - nginx-network
+    ports:
+      - "80:8000"
+    expose:
+      - 8000
+    networks:
+      - nginx-network
 
         #  azurite:
         #    image: mcr.microsoft.com/azure-storage/azurite
