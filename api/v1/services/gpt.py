@@ -18,7 +18,7 @@ def generate_text(prompt: str) -> str:
     vector_store = client.beta.vector_stores.create(name=vs_name)
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_dir, '../assets/file_seatch.txt')
+    file_path = os.path.join(current_dir, '../assets/file_search.txt')
 
     file_streams = [open(file_path, 'rb')]
 
