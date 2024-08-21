@@ -56,4 +56,5 @@ def generate_text(prompt: str) -> str:
             cited_file = client.files.retrieve(file_citation.file_id)
             citations.append(f"[{index}] {cited_file.filename}")
 
-    return message_content.value
+    message = message_content.value.replace("\n", "")
+    return message
