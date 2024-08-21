@@ -20,9 +20,6 @@ def generate_text(prompt: str) -> str:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, '../assets/file_seatch.txt')
 
-    with open(file_path, 'r') as file:
-        file_streams = file.read()
-
     file_streams = [open(file_path, 'rb')]
 
     file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
