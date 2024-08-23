@@ -13,27 +13,28 @@ db_config = {
     'database': os.environ['MYSQL_DATABASE']
 }
 
-try:
+def create_table():
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor()
 
-    create_table_query = '''
-        CREATE TABLES texts (
-            text_id INT AUTO_INCREMENT PRIMARY KEY,
-            prompt TEXT NOT NULL,
-            generated_text TEXT NOT NULL,
-            created_at TEXT NOT NULL
-        )
-    '''
+    try:
+        create_table_query = '''
+            CREATE TABLES texts (
+                text_id INT AUTO_INCREMENT PRIMARY KEY,
+                prompt TEXT NOT NULL,
+                generated_text TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            )
+        '''
 
-    cursor.execute(create_table_query)
-    print('正常にテーブルが作成されました')
+        cursor.execute(create_table_query)
+        print('正常にテーブルが作成されました')
 
-except mysql.connector.Error as e:
-    print(f"Error: {e}")
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
 
-finally:
-    if conn.is_connected():
-        cursor.close()
-        conn.close()
-        print('MySQLの接続が閉じられました')
+    finally:
+        if conn.is_connected():
+            cursor.close()
+            conn.close()
+            print('MySQLの接続が閉じられました')
