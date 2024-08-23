@@ -30,6 +30,20 @@ services:
     networks:
       - nginx-network
 
+  db:
+    container_name: mysql-container
+    build:
+      context: .
+      dockerfile: ./_docker/mysql/Dockerfile
+    platform: linux/x86_64
+    ports:
+      - 3306:3306
+    env_file:
+      - ./.env_mysql
+    volumes:
+      - mysql-data:/var/lib/mysql
+    
+
         #  azurite:
         #    image: mcr.microsoft.com/azure-storage/azurite
         #    ports:
@@ -42,3 +56,5 @@ networks:
   nginx-network:
     driver: bridge
 
+volumes:
+  mysql_data:
