@@ -1,4 +1,5 @@
 import os
+import datetime
 import mysql.connector
 from dotenv import load_dotenv
 import mysql.connector.errorcode
@@ -38,3 +39,25 @@ def create_table():
             cursor.close()
             conn.close()
             print('MySQLの接続が閉じられました')
+
+def insert_data(prompt: str, generated_text: str):
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor()
+
+    dt_now = datetime.datetime.now()
+    created_at = dt_now.strftime('%Y年%m月%d日 %H:%M:%S')
+
+    try:
+        insert_query = f'''
+            INSERT INTO texts VALUES (0, {prompt}, {generated_text}, {created_at});
+        '''
+
+        cursor.execute(insert_query)
+
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+
+    finally:
+        if conn.is_connected():
+            cursor.close()
+            conn.close()
