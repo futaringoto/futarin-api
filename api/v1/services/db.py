@@ -61,5 +61,3 @@ def insert_data(prompt: str, generated_text: str):
         if conn.is_connected():
             cursor.close()
             conn.close()
-
-create_table()
