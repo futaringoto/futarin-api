@@ -8,6 +8,7 @@ from httpx import HTTPStatusError, RequestError
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
+from v1.utils.audio_converter import wav2mp3
 from v1.utils.logging import get_logger
 
 router = APIRouter()
@@ -44,9 +45,23 @@ async def all(speaker: int = 1, file: UploadFile = File(...)) -> FileResponse:
         logger.info(f"generated text: {generated_text}")
 
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
-        with open(temp_file.name, "wb") as f:
-            f.write(audio)
+
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_wav:
+            tmp_wav_path = tmp_wav.name
+            with open(tmp_wav_path, "wb") as f:
+                f.write(audio)
+
+        with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp_mp3:
+            tmp_mp3_path = tmp_mp3.name
+
+        # temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+        # with open(tmp_wav_path, "wb") as f:
+        #    f.write(audio)
+        print(f"tmp_wav_path: {tmp_wav_path} exist: {os.path.isfile(tmp_wav_path)}")
+        print(f"tmp_mp3_path: {tmp_mp3_path} exist: {os.path.isfile(tmp_mp3_path)}")
+        wav2mp3(tmp_wav_path, tmp_mp3_path)
+        return FileResponse(tmp_mp3_path, media_type="audio/mp3", filename="audio.mp3")
+
     except RequestError as e:
         raise HTTPException(
             status_code=500, detail=f"RequestError fetching data: {str(e)}"
@@ -55,4 +70,6 @@ async def all(speaker: int = 1, file: UploadFile = File(...)) -> FileResponse:
         raise HTTPException(
             status_code=e.response.status_code, detail=f"Error fetching data: {str(e)}"
         )
-    return FileResponse(temp_file.name, media_type="audio/wav", filename="audio.wav")
+    # finally:
+    # os.remove(tmp_wav_path)
+    # os.remove(tmp_mp3_path)

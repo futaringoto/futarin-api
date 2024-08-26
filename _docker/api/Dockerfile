@@ -5,7 +5,7 @@ FROM python:3.12-alpine as development
 WORKDIR /api
 
 RUN apk update && apk add --no-cache \
-    gcc musl-dev libffi-dev build-base curl
+    gcc musl-dev libffi-dev build-base curl ffmpeg
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/root/.local/bin:$PATH"
@@ -25,7 +25,7 @@ FROM python:3.12-alpine as production
 WORKDIR /api
 
 RUN apk update && apk add --no-cache \
-    gcc musl-dev libffi-dev build-base curl
+    gcc musl-dev libffi-dev build-base curl ffmpeg
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/root/.local/bin:$PATH"
