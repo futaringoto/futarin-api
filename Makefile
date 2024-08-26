@@ -8,6 +8,10 @@ CHECK_CONTAINER=$(shell docker-compose ps -q $(CONTAINER_NAME) | xargs docker in
 build: ## ビルド
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml build
 
+.PHONY: build-no-cache
+build-no-cache: ## ビルド(キャッシュなし)
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache
+
 .PHONY: run-dev
 run-dev: ## コンテナ起動
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml up
@@ -24,7 +28,7 @@ stop: ## コンテナ停止
 test: ## テスト
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
-		docker compose run --entrypoint "pytest" api; \
+		docker compose exec api pytest; \
 	else \
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi

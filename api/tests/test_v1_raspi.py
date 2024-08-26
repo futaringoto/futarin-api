@@ -18,5 +18,5 @@ async def test_transcribe_and_respond(client: TestClient):
         response = client.post("/v1/raspi", files=files)
 
     assert response.status_code == 200
-    assert response.headers["content-type"] == "audio/wav"
+    assert response.headers["content-type"] == "audio/mp3"
     assert response.content is not None
