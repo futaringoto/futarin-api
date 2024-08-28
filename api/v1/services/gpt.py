@@ -1,7 +1,7 @@
 import os
 from openai import OpenAI
 from v1.utils.config import get_openai_api_key
-from v1.services.db import insert_data
+# from v1.services.db import insert_data
 
 OpenAI.api_key = get_openai_api_key()
 client = OpenAI()
@@ -58,5 +58,5 @@ def generate_text(prompt: str) -> str:
             citations.append(f"[{index}] {cited_file.filename}")
 
     message = message_content.value.replace("\n", "")
-    insert_data(prompt, message)
+    # insert_data(prompt, message)
     return message
