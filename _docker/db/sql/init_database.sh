@@ -1,0 +1,1 @@
+mysql -u docker -pdocker futaringoto_db < "/docker-entrypoint-initdb.d/create_tables.sql"
