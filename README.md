@@ -4,12 +4,12 @@
 [![Dependabot Updates](https://github.com/futaringoto/futarin-api/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/futaringoto/futarin-api/actions/workflows/dependabot/dependabot-updates)
 
 ## 目次
-- [貢献者ガイド(CONTRIBUTING.md)](#貢献者ガイド(CONTRIBUTING.md))
-- [動作環境](#動作環境)
+- [貢献者ガイド(CONTRIBUTING.md)](#貢献者ガイドcontributingmd)
+- [動作環境（確認済み）](#動作環境確認済み)
 - [動作確認](#動作確認)
-- [APIエンドポイント(v1)](#APIエンドポイント(v1))
+- [APIエンドポイント(v1)](#apiエンドポイントv1)
 - [ディレクトリ構成](#ディレクトリ構成)
-- [VOICEVOX](#VOICEVOX)
+- [VOICEVOX](#voicevox)
 - [ライセンス](#ライセンス)
 
 ## 貢献者ガイド(CONTRIBUTING.md)
@@ -56,16 +56,16 @@ http://localhost/docs
 sudo make stop
 ```
 
-## APIエンドポイント(v1)
+## APIエンドポイントv1
 詳しくは https://futaringoto.github.io/futarin-api/ を参照してください。
 | メソッド | パス | 概要 |
 | :----- | :-- | :-- |
-| POST | `/v1/raspi` | 一連の処理全て |
-| POST | `/v1/sandbox/gpt` | ChatGPTによる文章生成 |
-| POST | `/v1/sandbox/transcript` | whisperによる文字起こし |
+| POST | `/v1/raspi/` | 一連の処理全て |
+| POST | `/v1/sandbox/gpt/` | ChatGPTによる文章生成 |
+| POST | `/v1/sandbox/transcript/` | whisperによる文字起こし |
 
 > [!WARNING]
-> 従来の`/raspi/xxx`系のエンドポイントはdeprecated(非推奨)となりました。
+> 従来の`/raspi/xxx/`系のエンドポイントはdeprecated(非推奨)となりました。
 
 ## `make`コマンドについて
 本リポジトリは`Makefile`を採用しています。
