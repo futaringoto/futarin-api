@@ -31,7 +31,9 @@ services:
       - nginx-network
 
   mysql:
-    build: ./_docker/db/Dockerfile
+    build:
+      context: .
+      dockerfile: _docker/db/Dockerfile
     container_name: mysql_host
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
