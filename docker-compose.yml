@@ -41,20 +41,23 @@ services:
       TZ: ${TZ}
     command:  mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - ./_docker/db/data:/var/lib/mysql
-      - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./_docker/db/sql:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+      # - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      # - ./_docker/db/sql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
 
   phpmyadmin:
     container_name: test_phpmyadmin
     image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql_host
     environment:
       PMA_HOST: db
-
     ports:
       - 8080:80
+    volumes:
+      - pma-sessions:/sessions
 
         #  azurite:
         #    image: mcr.microsoft.com/azure-storage/azurite
@@ -69,4 +72,5 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_host:
+  mysql-data:
+  pma-sessions:
