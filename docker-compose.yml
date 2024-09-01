@@ -51,7 +51,7 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     environment:
-      PMA_HOST: mysql
+      - PMA_HOST=mysql
     ports:
       - 8080:80
 
