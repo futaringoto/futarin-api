@@ -30,7 +30,7 @@ services:
     networks:
       - nginx-network
 
-  db:
+  mysql:
     image: mysql:latest
     container_name: mysql_host
     environment:
