@@ -34,6 +34,7 @@ services:
     image: mysql:latest
     container_name: mysql_host
     environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_USER: root
       MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -68,4 +69,4 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_host:
+  ./_docker/db/data:
