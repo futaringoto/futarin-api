@@ -31,7 +31,7 @@ services:
       - nginx-network
 
   mysql:
-    image: mysql:latest
+    build: ./_docker/db/Dockerfile
     container_name: mysql_host
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -39,30 +39,23 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       TZ: ${TZ}
-    command:  mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command:  mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --secure-file-priv="/_docker/db/docker-entrypoint-initdb.d"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - ./_docker/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       # - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
       # - ./_docker/db/sql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
-    networks:
-      - my_network
 
   phpmyadmin:
     container_name: test_phpmyadmin
-    image: phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
     depends_on:
       - mysql
     environment:
       PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - 8080:80
-    volumes:
-      - pma-sessions:/sessions
-    networks:
-      - my_network
+      - '127.0.0.1:8080:80'
 
         #  azurite:
         #    image: mcr.microsoft.com/azure-storage/azurite
