@@ -50,7 +50,10 @@ services:
     container_name: test_phpmyadmin
     image: phpmyadmin/phpmyadmin
     environment:
-      - PMA_HOST = db
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      
     ports:
       - 8080:80
 
