@@ -34,7 +34,7 @@ services:
     # build:
     #   context: .
     #   dockerfile: _docker/db/Dockerfile
-    image: mysql:latest    
+    image: mysql:5.7
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
