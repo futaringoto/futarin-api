@@ -49,7 +49,7 @@ services:
 
   phpmyadmin:
     container_name: test_phpmyadmin
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin
     depends_on:
       - mysql
     environment:
