@@ -1,17 +1,17 @@
 USE futaringoto_db;
 
-DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `raspis`;
-DROP TABLE IF EXISTS `groups`;
-DROP TABLE IF EXISTS `texts`;
-DROP TABLE IF EXISTS `messages`;
+-- DROP TABLE IF EXISTS `users`;
+-- DROP TABLE IF EXISTS `raspis`;
+-- DROP TABLE IF EXISTS `groups`;
+-- DROP TABLE IF EXISTS `texts`;
+-- DROP TABLE IF EXISTS `messages`;
 
 CREATE TABLE `users` (
     `id` CHAR(36),
     `username` VARCHAR(20),
     PRIMARY KEY (`id`)
 );
-INSERT INTO `users` (`id`, `username`) VALUES (`1`, `ゲスト`);
+INSERT INTO `users` (`id`, `username`) VALUES ('1', 'ゲスト');
 
 -- CREATE TABLE `users` (
 --     `id` CHAR(36),
