@@ -51,7 +51,7 @@ services:
     container_name: test_phpmyadmin
     image: phpmyadmin/phpmyadmin
     depends_on:
-      - mysql_host
+      - mysql
     environment:
       PMA_HOST: db
     ports:
