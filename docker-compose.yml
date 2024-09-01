@@ -32,22 +32,30 @@ services:
 
   mysql:
     image: mysql:8.0.27
+    container_name: mysql
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${TZ}
     volumes:
       - db-data:/var/lib/mysql
+      - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./_docker/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   phpmyadmin:
     image: phpmyadmin
+    container_name: phpmyadmin
     depends_on:
       - mysql
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOSTS=mysql
+      - PMA_USER=${MYSQL_USER}
+      - PMA_PASSWORD=${MYSQL_PASSWORD}
     ports:
       - "3001:80"
 volumes:
