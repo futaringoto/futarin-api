@@ -69,4 +69,4 @@ networks:
     driver: bridge
 
 volumes:
-  ./_docker/db/data:
+  mysql_host:
