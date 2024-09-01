@@ -53,7 +53,7 @@ services:
     depends_on:
       - mysql
     environment:
-      PMA_HOST: db
+      PMA_HOST: mysql
     ports:
       - 8080:80
     volumes:
