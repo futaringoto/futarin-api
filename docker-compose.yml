@@ -46,6 +46,8 @@ services:
       # - ./_docker/db/sql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
+    networks:
+      - my_network
 
   phpmyadmin:
     container_name: test_phpmyadmin
@@ -58,6 +60,8 @@ services:
       - 8080:80
     volumes:
       - pma-sessions:/sessions
+    networks:
+      - my_network
 
         #  azurite:
         #    image: mcr.microsoft.com/azure-storage/azurite
@@ -68,6 +72,8 @@ services:
         #    command: "azurite-blob --blobHost 0.0.0.0 --location /data --debug /data/debug.log"
 
 networks:
+  my_network:
+    driver: bridge
   nginx-network:
     driver: bridge
 
