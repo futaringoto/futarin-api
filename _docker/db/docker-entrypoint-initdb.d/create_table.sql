@@ -1,4 +1,4 @@
-GRANT ALL ON *.* TO root@'%';
+USE futaringoto_db;
 
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `raspis`;
