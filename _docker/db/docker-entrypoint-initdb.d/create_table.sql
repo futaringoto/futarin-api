@@ -1,24 +1,14 @@
 USE futaringoto_db;
 
 DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `raspis`;
 DROP TABLE IF EXISTS `groups`;
 DROP TABLE IF EXISTS `texts`;
 DROP TABLE IF EXISTS `messages`;
 
-CREATE TABLE `raspis` (
-    `id` CHAR(36),
-    `mac_address` CHAR(17),
-    PRIMARY KEY (`id`)
-);
-
 CREATE TABLE `users` (
     `id` CHAR(36),
     `username` VARCHAR(20),
-    `raspi_id` CHAR(36),
-    `group_id` CHAR(36),
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`raspi_id`) REFERENCES `raspis` (`id`)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `groups` (
@@ -29,11 +19,6 @@ CREATE TABLE `groups` (
     FOREIGN KEY (`uuid_1`) REFERENCES `users` (`id`),
     FOREIGN KEY (`uuid_2`) REFERENCES `users` (`id`)
 );
-
-ALTER TABLE
-    `users`
-ADD
-    FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`);
 
 CREATE TABLE texts (
     `id` CHAR(36),
