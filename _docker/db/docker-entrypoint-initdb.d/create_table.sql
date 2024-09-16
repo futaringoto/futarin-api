@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS `messages`;
 CREATE TABLE `users` (
     `id` CHAR(36),
     `username` VARCHAR(20),
-    PRIMARY KEY (`id`),
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `groups` (
