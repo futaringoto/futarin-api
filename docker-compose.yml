@@ -38,8 +38,8 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      TZ: ${TZ}
+      MYSQL_DATABASE: "futaringoto_db"
+      TZ: "Asia/Tokyo"
     volumes:
       - db-data:/var/lib/mysql
       - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
@@ -68,6 +68,6 @@ volumes:
         #      - ./data:/data
         #    command: "azurite-blob --blobHost 0.0.0.0 --location /data --debug /data/debug.log"
 
-    #networks:
-    #  nginx-network:
-    #    driver: bridge
+        #networks:
+        #  nginx-network:
+        #    driver: bridge
