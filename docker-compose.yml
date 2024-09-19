@@ -41,8 +41,8 @@ services:
       TZ: "Asia/Tokyo"
     volumes:
       - db-data:/var/lib/mysql
-      - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./_docker/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      # - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      # - ./_docker/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   phpmyadmin:
     image: phpmyadmin
