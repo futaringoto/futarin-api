@@ -24,11 +24,11 @@ services:
         - ENV=production
       dockerfile: _docker/api/Dockerfile
     ports:
-      - "80:80"
-    expose:
-      - 8000
-    networks:
-      - nginx-network
+      - "80:8000"
+        #    expose:
+        #      - 8000
+        #    networks:
+        #      - nginx-network
 
   mysql:
     image: mysql:8.0.27
@@ -67,8 +67,7 @@ volumes:
         #      - ./data:/data
         #    command: "azurite-blob --blobHost 0.0.0.0 --location /data --debug /data/debug.log"
 
-networks:
-  nginx-network:
-    driver: bridge
-
+        #networks:
+        #  nginx-network:
+        #    driver: bridge
 
