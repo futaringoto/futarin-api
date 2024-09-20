@@ -7,10 +7,7 @@ def check_env_variables():
         "OPENAI_API_KEY",
         "VOICEVOX_API_KEY",
     ]
-    env_vars_prod: list[str] = [
-        "STORAGE_ACCOUNT_NAME",
-        "SAS_TOKEN",
-    ]
+    env_vars_prod: list[str] = []
     if not is_dev_mode:
         env_vars.extend(env_vars_prod)
     missing_vars = [var for var in env_vars if os.getenv(var) is None]
@@ -31,14 +28,6 @@ def get_voicevox_url():
 
 def get_openai_api_key():
     return os.getenv("OPENAI_API_KEY")
-
-
-def get_storage_account_name():
-    return os.getenv("STORAGE_ACCOUNT_NAME")
-
-
-def get_sas_token():
-    return os.getenv("SAS_TOKEN")
 
 
 def get_voicevox_api_key():
