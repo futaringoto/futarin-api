@@ -29,6 +29,7 @@ jobs:
       - name: 'Compose Customized Docker Image'
         run: |
           docker buildx build --platform linux/amd64,linux/arm64 \
+            --build-arg ENV=production \
             -f ./_docker/api/Dockerfile \
             -t ${{ vars.LOGIN_SERVER }}/${{ env.IMAGE }}:${{ github.sha }} \
             --push .
