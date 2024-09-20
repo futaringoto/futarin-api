@@ -30,7 +30,6 @@ services:
         #    networks:
         #      - nginx-network
 
-
   mysql:
     image: mysql:8.0.27
     container_name: mysql
