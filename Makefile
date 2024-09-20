@@ -24,7 +24,7 @@ stop: ## コンテナ停止
 test: ## テスト
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
-		docker compose run --entrypoint "pytest" api; \
+		docker compose exec $(CONTAINER_NAME) pytest; \
 	else \
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi
@@ -33,7 +33,7 @@ test: ## テスト
 lint: ## リント
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
-			docker compose run --entrypoint "flake8" api; \
+		docker compose exec $(CONTAINER_NAME) flake8; \
 	else \
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi
@@ -42,8 +42,8 @@ lint: ## リント
 format: ## フォーマット
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
-		docker compose run --entrypoint "black ." api; \
-		docker compose run --entrypoint "flake8 " api; \
+		docker compose exec $(CONTAINER_NAME) black .; \
+		docker compose exec $(CONTAINER_NAME) flake8; \
 	else \
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi
