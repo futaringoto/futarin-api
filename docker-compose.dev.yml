@@ -2,9 +2,12 @@ services:
   api:
     environment:
       - IS_DEV_MODE=1
+    build:
+      args:
+        - ENV=development
     volumes:
       - ./api:/api
-    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
       #  test:
       #    build: .
