@@ -22,7 +22,7 @@ jobs:
       - name: Run docker-compose Build
         run: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
       - name: Run flake8
-        run: docker compose run --entrypoint "flake8" api
+        run: docker compose exec api flake8
 
       - name: Run test
-        run: docker compose run --entrypoint "pytest" api
+        run: docker compose exec api pytest
