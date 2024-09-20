@@ -1,6 +1,5 @@
 import os
 import tempfile
-from datetime import datetime
 from typing import Any, Dict
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
@@ -12,7 +11,6 @@ from v0.services.tts import text2speech
 from v0.services.voicevox import audio_query, synthesis
 from v0.services.voicevox_api import get_voicevox_audio
 from v0.services.whisper import speech2text
-from v0.utils.log import upload_json_to_blob
 
 router = APIRouter()
 
@@ -35,15 +33,6 @@ async def all(speaker: int = 1, file: UploadFile = File(...)) -> JSONResponse:
         # chatgpt
         generated_text: str = generate_text(transcription.text)
         print(f"generated text: {generated_text}")
-
-        now = datetime.now()
-        iso_time = now.isoformat()
-        log_data = {
-            "timestamp": iso_time,
-            "transcription": transcription.text,
-            "generated_text": generated_text,
-        }
-        upload_json_to_blob(log_data)
 
         # voicevox
         # query: Dict[str, Any] = await audio_query(generated_text, speaker)
