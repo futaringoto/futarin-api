@@ -1,0 +1,38 @@
+USE futaringoto_db;
+
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `groups`;
+DROP TABLE IF EXISTS `texts`;
+DROP TABLE IF EXISTS `messages`;
+
+CREATE TABLE `users` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `couple_id` INT UNSIGNED,
+    `username` VARCHAR(20),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`couple_id`) REFERENCES `couples` (`id`)
+);
+
+CREATE TABLE `couples` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `couple_name` VARCHAR(20),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+);
+
+CREATE TABLE texts (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED,
+    `prompt` VARCHAR(1000),
+    `generated_text` VARCHAR(1000),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+);
+
+CREATE TABLE messages (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED,
+    `send_message` VARCHAR(1000),
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+);
