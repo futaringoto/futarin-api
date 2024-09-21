@@ -59,14 +59,6 @@ services:
 volumes:
   db-data:
 
-        #  azurite:
-        #    image: mcr.microsoft.com/azure-storage/azurite
-        #    ports:
-        #      - "10000:10000" # Blob
-        #    volumes:
-        #      - ./data:/data
-        #    command: "azurite-blob --blobHost 0.0.0.0 --location /data --debug /data/debug.log"
-
         #networks:
         #  nginx-network:
         #    driver: bridge
