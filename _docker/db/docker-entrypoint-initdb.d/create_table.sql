@@ -6,34 +6,33 @@ DROP TABLE IF EXISTS `texts`;
 DROP TABLE IF EXISTS `messages`;
 
 CREATE TABLE `users` (
-    `id` CHAR(36),
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `couple_id` INT UNSIGNED,
     `username` VARCHAR(20),
-    PRIMARY KEY (`id`)
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`couple_id`) REFERENCES `couples` (`id`)
 );
 
-CREATE TABLE `groups` (
-    `id` CHAR(36),
-    `uuid_1` CHAR(36),
-    `uuid_2` CHAR(36),
-    PRIMARY KEY (id),
-    FOREIGN KEY (`uuid_1`) REFERENCES `users` (`id`),
-    FOREIGN KEY (`uuid_2`) REFERENCES `users` (`id`)
+CREATE TABLE `couples` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `couple_name` VARCHAR(20),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 );
 
 CREATE TABLE texts (
-    `id` CHAR(36),
-    `uuid` CHAR(36),
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED,
     `prompt` VARCHAR(1000),
     `generated_text` VARCHAR(1000),
-    `created_at` DATE,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`uuid`) REFERENCES `users` (`id`)
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 );
 
 CREATE TABLE messages (
-    `id` CHAR(36),
-    `uuid` CHAR(36),
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED,
     `send_message` VARCHAR(1000),
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`uuid`) REFERENCES `users` (`id`)
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 );
