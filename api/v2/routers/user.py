@@ -1,5 +1,7 @@
 from fastapi import APIRouter
+from typing import List
 from v2.utils.logging import get_logger
+import v2.schemas.user as user_schema
 
 router = APIRouter()
 logger = get_logger()
@@ -9,9 +11,10 @@ logger = get_logger()
     "/",
     tags=["users"],
     summary="ユーザの取得",
+    response_model=List[user_schema.User(couple_id=1)],
 )
 async def list_users():
-    pass
+    return [user_schema.User()]
 
 
 @router.post(
