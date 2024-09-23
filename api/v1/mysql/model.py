@@ -1,7 +1,4 @@
-import uuid
-
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, ForeignKey, DateTime
 from sqlalchemy.sql.functions import current_timestamp
 
 from db import Base

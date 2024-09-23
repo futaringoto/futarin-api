@@ -16,15 +16,21 @@ engine = create_engine(DB_URL, echo=True)
 
 Base = declarative_base()
 
+
 class Couple(Base):
     __tablename__ = "couples"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(20))
     created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
-    updated_at = Column(TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
-    
+    updated_at = Column(
+        TIMESTAMP,
+        server_default=func.current_timestamp(),
+        onupdate=func.current_timestamp(),
+    )
+
     users = relationship("User", back_populates="couple")
+
 
 class User(Base):
     __tablename__ = "users"
@@ -38,6 +44,7 @@ class User(Base):
     couple = relationship("Couple", back_populates="couples")
     texts = relationship("Text", back_populates="user")
     messages = relationship("Message", back_populates="user")
+
 
 class Text(Base):
     __tablename__ = "texts"
@@ -59,6 +66,7 @@ class Message(Base):
     send_message = Column(String(1000))
 
     user = relationship("User", back_populates="messages")
+
 
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
