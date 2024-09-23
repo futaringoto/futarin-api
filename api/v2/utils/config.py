@@ -31,14 +31,14 @@ def get_voicevox_api_key():
 
 
 def get_async_db_url():
-    password = os.getenv("MYSQL_PASSWORD")
+    password = os.getenv("MYSQL_ROOT_PASSWORD")
     db_name = os.getenv("MYSQL_DATABASE")
-    url = f"mysql+aiomysql://root:password@0.0.0.0:3306/{db_name}?charset=utf8"
+    url = f"mysql+aiomysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
     return url
 
 
 def get_db_url():
-    password = os.getenv("MYSQL_PASSWORD")
+    password = os.getenv("MYSQL_ROOT_PASSWORD")
     db_name = os.getenv("MYSQL_DATABASE")
-    url = f"mysql+pymysql://root:password@mysql:3306/{db_name}?charset=utf8"
+    url = f"mysql+pymysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
     return url

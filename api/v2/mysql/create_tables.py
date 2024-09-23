@@ -1,7 +1,20 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, create_engine
+from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.sql import func
-from v2.mysql.db import Base
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.declarative import declarative_base
+from v2.utils.config import get_db_url, get_async_db_url
+
+ASYNC_DB_URL = get_async_db_url()
+async_engine = create_async_engine(ASYNC_DB_URL, echo=True)
+async_session = sessionmaker(
+    autocommit=False, autoflush=False, bind=async_engine, class_=AsyncSession
+)
+
+DB_URL = get_db_url()
+engine = create_engine(DB_URL, echo=True)
+
+Base = declarative_base()
 
 class Couple(Base):
     __tablename__ = "couples"
@@ -29,7 +42,7 @@ class User(Base):
 class Text(Base):
     __tablename__ = "texts"
 
-    id = Column(String, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     prompt = Column(String(1000))
     generated_text = Column(String(1000))
@@ -41,8 +54,11 @@ class Text(Base):
 class Message(Base):
     __tablename__ = "messages"
 
-    id = Column(String, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     send_message = Column(String(1000))
 
     user = relationship("User", back_populates="messages")
+
+Base.metadata.drop_all(bind=engine)
+Base.metadata.create_all(bind=engine)
