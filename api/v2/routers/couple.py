@@ -1,5 +1,7 @@
+from typing import List
 from fastapi import APIRouter
 from v2.utils.logging import get_logger
+import v2.schemas.couple as couple_schema
 
 router = APIRouter()
 logger = get_logger()
@@ -9,15 +11,17 @@ logger = get_logger()
     "/",
     tags=["couples"],
     summary="ペアの取得",
+    response_model=List[couple_schema.CoupleResponse],
 )
 async def list_couples():
-    pass
+    return [couple_schema.CoupleResponse()]
 
 
 @router.post(
     "/",
     tags=["couples"],
     summary="新規ペアの作成",
+    response_model=couple_schema.CoupleResponse,
 )
 async def create_couple():
     pass
@@ -27,6 +31,7 @@ async def create_couple():
     "/{id}",
     tags=["couples"],
     summary="ペアの更新",
+    response_model=couple_schema.CoupleResponse,
 )
 async def update_couple():
     pass
