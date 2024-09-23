@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+
 from v2.mysql.model import Base
 from v2.utils.config import get_db_url
 
