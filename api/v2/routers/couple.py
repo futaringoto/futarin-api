@@ -1,8 +1,10 @@
 from datetime import datetime
 from typing import List
+
 from fastapi import APIRouter
-from v2.utils.logging import get_logger
+
 import v2.schemas.couple as couple_schema
+from v2.utils.logging import get_logger
 
 router = APIRouter()
 logger = get_logger()
@@ -27,7 +29,7 @@ async def list_couples():
 async def create_couple(couple: couple_schema.CoupleCreate):
     new_couple = {
         "id": 1,
-        "couple_name": couple.couple_name,
+        "name": couple.name,
         "created_at": datetime.now(),
         "updated_at": datetime.now(),
     }
@@ -43,7 +45,7 @@ async def create_couple(couple: couple_schema.CoupleCreate):
 async def update_couple(id: int, couple: couple_schema.CoupleUpdate):
     updated_couple = {
         "id": id,
-        "couple_name": couple.couple_name,
+        "name": couple.name,
         "created_at": datetime.now(),
         "updated_at": datetime.now(),
     }

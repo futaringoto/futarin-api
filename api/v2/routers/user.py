@@ -1,8 +1,10 @@
 from datetime import datetime
-from fastapi import APIRouter
 from typing import List
-from v2.utils.logging import get_logger
+
+from fastapi import APIRouter
+
 import v2.schemas.user as user_schema
+from v2.utils.logging import get_logger
 
 router = APIRouter()
 logger = get_logger()
@@ -28,7 +30,7 @@ async def create_user(user: user_schema.UserCreate):
     new_user = {
         "id": 1,
         "couple_id": user.couple_id,
-        "username": user.username,
+        "name": user.name,
         "created_at": datetime.now(),
         "updated_at": datetime.now(),
     }
@@ -44,7 +46,7 @@ async def update_user(id: int, user: user_schema.UserUpdate):
     updated_user = {
         "id": id,
         "couple_id": user.couple_id,
-        "username": user.username,
+        "name": user.name,
         "created_at": datetime.now(),
         "updated_at": datetime.now(),
     }

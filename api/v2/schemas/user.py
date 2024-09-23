@@ -1,6 +1,7 @@
-from typing import Optional
-from pydantic import BaseModel, Field
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 def generate_default_username() -> str:
@@ -8,11 +9,12 @@ def generate_default_username() -> str:
 
 
 class UserBase(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     couple_id: Optional[int] = Field(
         None,
         description="couple_id is optional",
     )
-    username: str = Field(..., default_factory=generate_default_username)
+    name: str = Field(..., default_factory=generate_default_username)
 
 
 class UserCreate(UserBase):
@@ -21,7 +23,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(UserBase):
     # override
-    username: Optional[str]
+    name: Optional[str]
 
 
 class UserResponse(UserBase):

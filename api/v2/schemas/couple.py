@@ -1,16 +1,16 @@
-from typing import Optional
-from pydantic import BaseModel, Extra, Field
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 def generate_default_couplename() -> str:
     return f"couple_{datetime.now().strftime('%Y%m%d%H%M%S')}"
 
 
-class CoupleBase(BaseModel, extra=Extra.forbid):
-    couple_name: str = Field(
-        default_factory=generate_default_couplename
-    )
+class CoupleBase(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(default_factory=generate_default_couplename)
 
 
 class CoupleCreate(CoupleBase):
@@ -19,7 +19,7 @@ class CoupleCreate(CoupleBase):
 
 class CoupleUpdate(CoupleBase):
     # override
-    couple_name: Optional[str]
+    name: Optional[str]
 
 
 class CoupleResponse(CoupleBase):
