@@ -8,6 +8,8 @@ from v0.utils.config import check_env_variables as v0_check_env_variables
 from v1.routers import raspi as v1_raspi
 from v1.routers import sandbox as v1_sandbox
 from v1.utils.config import check_env_variables as v1_check_env_variables
+from v2.routers import couple as v2_couple
+from v2.routers import user as v2_user
 
 
 @asynccontextmanager
@@ -52,6 +54,8 @@ app = FastAPI(
 app.include_router(v0_raspi.router)
 app.include_router(v1_raspi.router, prefix="/v1/raspi")
 app.include_router(v1_sandbox.router, prefix="/v1/sandbox")
+app.include_router(v2_user.router, prefix="/v2/users")
+app.include_router(v2_couple.router, prefix="/v2/couples")
 
 
 @app.get("/")
