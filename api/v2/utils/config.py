@@ -28,3 +28,11 @@ def get_openai_api_key():
 
 def get_voicevox_api_key():
     return os.getenv("VOICEVOX_API_KEY")
+
+
+def get_db_url():
+    username = os.getenv("MYSQL_USER")
+    password = os.getenv("@Kharuya0830")
+    db_name = os.getenv("MYSQL_DATABASE")
+    url = f"mysql+pymysql://{username}:{password}@0.0.0.0:3306/{db_name}?charset=utf8"
+    return url
