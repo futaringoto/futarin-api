@@ -1,5 +1,6 @@
 import mysql.connector
-from v1.utils.config import get_mysql_root_pass, get_mysql_name
+
+from v1.utils.config import get_mysql_name, get_mysql_root_pass
 
 conn = mysql.connector.connect(
     host="localhost",
