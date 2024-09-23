@@ -1,14 +1,11 @@
-import uuid
-
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, ForeignKey, DateTime
 from sqlalchemy.sql.functions import current_timestamp
 
 from db import Base
 
 
 class User(Base):
-    __tablename__ ="users"
+    __tablename__ = "users"
 
     id = Column(String, primary_key=True)
     username = Column(String)
@@ -38,5 +35,3 @@ class Group(Base):
     id = Column(String, primary_key=True)
     uuid1 = Column(String, ForeignKey("users.id"))
     uuid2 = Column(String, ForeignKey("users.id"))
-
-    
