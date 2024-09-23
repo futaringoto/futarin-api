@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
-from db import Base
-from v1.utils.config import get_db_url
+from v2.mysql.db import Base
+from v2.utils.config import get_db_url
 
 DB_URL = get_db_url()
+
 engine = create_engine(DB_URL, echo=True)
 
 
