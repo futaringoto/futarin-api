@@ -7,7 +7,7 @@
 - [貢献者ガイド(CONTRIBUTING.md)](#貢献者ガイドcontributingmd)
 - [動作環境（確認済み）](#動作環境確認済み)
 - [動作確認](#動作確認)
-- [APIエンドポイント(v1)](#apiエンドポイントv1)
+- [APIエンドポイント](#apiエンドポイント)
 - [ディレクトリ構成](#ディレクトリ構成)
 - [VOICEVOX](#voicevox)
 - [ライセンス](#ライセンス)
@@ -34,7 +34,6 @@ touch .env
 echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
 echo "MYSQL_ROOT_PASSWORD=password" >> .env
-```
 ```
 `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
 `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から取得します
