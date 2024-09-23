@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from fastapi import APIRouter
 from v2.utils.logging import get_logger
@@ -23,8 +24,14 @@ async def list_couples():
     summary="新規ペアの作成",
     response_model=couple_schema.CoupleResponse,
 )
-async def create_couple():
-    pass
+async def create_couple(couple: couple_schema.CoupleCreate):
+    new_couple = {
+        "id": 1,
+        "couple_name": couple.couple_name,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now(),
+    }
+    return new_couple
 
 
 @router.put(
@@ -33,8 +40,14 @@ async def create_couple():
     summary="ペアの更新",
     response_model=couple_schema.CoupleResponse,
 )
-async def update_couple():
-    pass
+async def update_couple(id: int, couple: couple_schema.CoupleUpdate):
+    updated_couple = {
+        "id": id,
+        "couple_name": couple.couple_name,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now(),
+    }
+    return updated_couple
 
 
 @router.delete(
