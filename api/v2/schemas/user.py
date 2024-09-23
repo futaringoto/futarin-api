@@ -20,7 +20,8 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    pass
+    # override
+    username: Optional[str]
 
 
 class UserResponse(UserBase):

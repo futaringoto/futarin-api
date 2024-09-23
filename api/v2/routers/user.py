@@ -28,8 +28,8 @@ async def create_user(user: user_schema.UserCreate):
     new_user = {
         "id": 1,
         "couple_id": user.couple_id,
-        "user_name": user.username,
-        "create_at": datetime.now(),
+        "username": user.username,
+        "created_at": datetime.now(),
         "updated_at": datetime.now(),
     }
     return new_user
@@ -40,8 +40,15 @@ async def create_user(user: user_schema.UserCreate):
     tags=["users"],
     summary="ユーザの更新",
 )
-async def update_user():
-    pass
+async def update_user(id: int, user: user_schema.UserUpdate):
+    updated_user = {
+        "id": id,
+        "couple_id": user.couple_id,
+        "username": user.username,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now(),
+    }
+    return updated_user
 
 
 @router.delete(
