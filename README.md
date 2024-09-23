@@ -33,9 +33,12 @@ cd futarin-api
 touch .env
 echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
+echo "MYSQL_ROOT_PASSWORD=password" >> .env
+```
 ```
 `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
 `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から取得します
+`MYSQL_ROOT_PASSWORD` は開発用の任意のパスワードを設定します。
 
 3. Dockerイメージのビルド
 ```
@@ -56,8 +59,15 @@ http://localhost/docs
 sudo make stop
 ```
 
-## APIエンドポイントv1
+## APIエンドポイント
 詳しくは https://futaringoto.github.io/futarin-api/ を参照してください。
+### v2(未実装)
+| メソッド | パス | 概要 |
+| :----- | :-- | :-- |
+| GET POST PUT DELETE | `/v2/users/` | ユーザ関連 |
+| GET POST PUT DELETE | `/v2/couples/` | ペア関連 |
+
+### v1
 | メソッド | パス | 概要 |
 | :----- | :-- | :-- |
 | POST | `/v1/raspi/` | 一連の処理全て |
@@ -72,12 +82,13 @@ sudo make stop
 | Make | 実行する処理 | 元のコマンド |
 | :--- | :-------- | :-------- |
 | `make build` | コンテナのビルド | `docker compose -f docker-compose.yml -f docker-compose.dev.yml build` |
+| `make build-no-build` | コンテナのビルド(キャッシュなし) | `docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-build` |
 | `make run-dev` | コンテナの起動 | `docker compose -f docker-compose.yml -f docker-compose.dev.yml up` |
 | `make run-dev-d` | コンテナの起動（デタッチ） | `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d` |
 | `make stop` | コンテナの停止 | `docker compose down` |
-| `make lint` | リントの実行 | `docker compose run --entrypoint "flake8" api` |
-| `make format` | フォーマットの実行 | `docker compose run --entrypoint "black ." api` |
-| `make test` | テストの実行 | `docker compose run --entrypoint "pytest" api` |
+| `make lint` | リントの実行 | `docker compose exec api flake8` |
+| `make format` | フォーマットの実行 | `docker compose exec api black .` `docker compose exec api isort .` |
+| `make test` | テストの実行 | `docker compose exec api pytest` |
 
 
 ## ディレクトリ構成
@@ -92,6 +103,10 @@ sudo make stop
 ├── _docker
 │   ├── api
 │   │   └── Dockerfile
+│   ├── db
+│   │   ├── docker-entrypoint-initdb.d
+│   │   │   └── create_table.sql
+│   │   └── my.cnf
 │   └── nginx
 │       └── conf.d
 │           └── app.conf
@@ -118,28 +133,46 @@ sudo make stop
 │   │   │   └── whisper.py
 │   │   └── utils
 │   │       ├── __init__.py
+│   │       └── config.py
+│   ├── v1
+│   │   ├── __init__.py
+│   │   ├── routers
+│   │   │   ├── __init__.py
+│   │   │   ├── raspi.py
+│   │   │   └── sandbox.py
+│   │   ├── schemas
+│   │   │   ├── __init__.py
+│   │   │   └── sandbox.py
+│   │   ├── services
+│   │   │   ├── __init__.py
+│   │   │   ├── db.py
+│   │   │   ├── gpt.py
+│   │   │   ├── voicevox_api.py
+│   │   │   └── whisper.py
+│   │   └── utils
+│   │       ├── __init__.py
 │   │       ├── config.py
-│   │       └── log.py
-│   └── v1
+│   │       └── logging.py
+│   └── v2
 │       ├── __init__.py
 │       ├── routers
 │       │   ├── __init__.py
-│       │   ├── raspi.py
-│       │   └── sandbox.py
+│       │   ├── couple.py
+│       │   └── user.py
 │       ├── schemas
 │       │   ├── __init__.py
-│       │   └── sandbox.py
+│       │   ├── couple.py
+│       │   ├── sandbox.py
+│       │   └── user.py
 │       ├── services
-│       │   ├── __init__.py
-│       │   ├── gpt.py
-│       │   ├── voicevox_api.py
-│       │   └── whisper.py
+│       │   └── __init__.py
 │       └── utils
 │           ├── __init__.py
 │           ├── config.py
 │           └── logging.py
 ├── docker-compose.dev.yml
-└── docker-compose.yml
+├── docker-compose.yml
+└── init_mysql.sh
 ```
 
 ## VOICEVOX

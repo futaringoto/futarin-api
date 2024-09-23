@@ -8,6 +8,10 @@ CHECK_CONTAINER=$(shell docker-compose ps -q $(CONTAINER_NAME) | xargs docker in
 build: ## ビルド
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml build
 
+.PHONY: build-no-cache
+build-no-cache: ## ビルド
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache
+
 .PHONY: run-dev
 run-dev: ## コンテナ起動
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml up
@@ -43,6 +47,7 @@ format: ## フォーマット
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
 		docker compose exec $(CONTAINER_NAME) black .; \
+		docker compose exec $(CONTAINER_NAME) isort .; \
 		docker compose exec $(CONTAINER_NAME) flake8; \
 	else \
 		echo "Container $(CONTAINER_NAME) is not running."; \
