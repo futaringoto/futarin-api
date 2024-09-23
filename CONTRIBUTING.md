@@ -53,13 +53,14 @@ cd futarin-api
 touch .env
 echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
+echo "MYSQL_ROOT_PASSWORD=password" >> .env
 ```
 環境変数を設定してください。詳しくは[README](https://github.com/futaringoto/futarin-api/blob/main/README.md)へ
 ```
 sudo make build
 ```
 > [!IMPORTANT]
-> Dockerfileを更新した際は、キャッシュが使われないよう、`sudo docker compose build --no-cache`でビルドしましょう
+> Dockerfileを更新した際は、キャッシュが使われないよう、`make build-no-cache`でビルドしましょう
 
 ## コード実行
 ```
