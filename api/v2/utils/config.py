@@ -30,9 +30,15 @@ def get_voicevox_api_key():
     return os.getenv("VOICEVOX_API_KEY")
 
 
-def get_mysql_root_pass():
-    return os.getenv("MYSQL_ROOT_PASSWORD")
+def get_async_db_url():
+    password = os.getenv("MYSQL_ROOT_PASSWORD")
+    db_name = os.getenv("MYSQL_DATABASE")
+    url = f"mysql+aiomysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
+    return url
 
 
-def get_mysql_name():
-    return os.getenv("MYSQL_DATABASE")
+def get_db_url():
+    password = os.getenv("MYSQL_ROOT_PASSWORD")
+    db_name = os.getenv("MYSQL_DATABASE")
+    url = f"mysql+pymysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
+    return url

@@ -44,3 +44,4 @@ def get_openai_assistant_id():
 
 def get_openai_thread_id():
     return os.getenv("OPENAI_THREAD_ID")
+

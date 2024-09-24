@@ -1,10 +1,10 @@
 from openai import OpenAI
-
 from v1.utils.config import (
     get_openai_api_key,
     get_openai_assistant_id,
     get_openai_thread_id,
 )
+
 
 OpenAI.api_key = get_openai_api_key()
 ASSISTANT_ID = get_openai_assistant_id()
