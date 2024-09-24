@@ -36,13 +36,15 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: "password"
       MYSQL_DATABASE: "futaringoto_db"
       TZ: "Asia/Tokyo"
+    cap_add:
+      - SYS_NICE
     volumes:
       - db-data:/var/lib/mysql
-      - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./_docker/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      # - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      # - ./_docker/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   phpmyadmin:
     image: phpmyadmin
