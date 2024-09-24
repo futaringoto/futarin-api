@@ -94,7 +94,7 @@ sudo make stop
 | `make lint` | リントの実行 | `docker compose exec api flake8` |
 | `make format` | フォーマットの実行 | `docker compose exec api black .` `docker compose exec api isort .` |
 | `make test` | テストの実行 | `docker compose exec api pytest` |
-
+| `make create-table` | テーブルの作成 | `docker compose exec api python migrate_db.py` |
 
 ## ディレクトリ構成
 - api (application - FastAPI)
