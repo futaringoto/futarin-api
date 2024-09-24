@@ -18,6 +18,8 @@ jobs:
           touch .env
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
           echo "VOICEVOX_API_KEY=${{ secrets.VOICEVOX_API_KEY }}" >> .env
+          echo "OPENAI_ASSISTANT_ID=${{ vars.OPENAI_ASSISTANT_ID }}" >> .env
+          echo "OPENAI_THREAD_ID =${{ vars.OPENAI_THREAD_ID }}" >> .env
 
       - name: Run docker-compose Build
         run: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d

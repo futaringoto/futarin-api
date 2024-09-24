@@ -35,6 +35,8 @@ echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
 echo "MYSQL_DATABASE=futaringoto_db" >> .env
 echo "MYSQL_ROOT_PASSWORD=password" >> .env
+echo "OPENAI_ASSISTANT_ID=[openAI assistant id]" >> .env
+echo "OPENAI_THREAD_ID=[openAI thread id]" >> .env
 ```
 `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
 `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から取得します
