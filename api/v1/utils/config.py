@@ -36,3 +36,11 @@ def get_mysql_root_pass():
 
 def get_mysql_name():
     return os.getenv("MYSQL_DATABASE")
+
+
+def get_openai_assistant_id():
+    return os.getenv("OPENAI_ASSISTANT_ID")
+
+
+def get_openai_thread_id():
+    return os.getenv("OPENAI_THREAD_ID")
