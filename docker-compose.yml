@@ -31,6 +31,7 @@ services:
         #      - nginx-network
 
   mysql:
+    platform: linux/amd64
     image: mysql:8.0.27
     container_name: mysql
     ports:
