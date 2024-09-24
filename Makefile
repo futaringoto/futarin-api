@@ -24,6 +24,15 @@ run-dev-d: ## コンテナ起動（デタッチ）
 stop: ## コンテナ停止
 	docker compose down
 
+.PHONY: create-table
+create-table: ## テーブル作成
+	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
+		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
+		docker compose exec $(CONTAINER_NAME) python migrate_db.py; \
+	else \
+		echo "Container $(CONTAINER_NAME) is not running."; \
+	fi
+
 .PHONY: test
 test: ## テスト
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \

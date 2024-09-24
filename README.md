@@ -33,11 +33,11 @@ cd futarin-api
 touch .env
 echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
+echo "MYSQL_DATABASE=futaringoto_db" >> .env
 echo "MYSQL_ROOT_PASSWORD=password" >> .env
 ```
 `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
 `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から取得します
-`MYSQL_ROOT_PASSWORD` は開発用の任意のパスワードを設定します。
 
 3. Dockerイメージのビルド
 ```
@@ -50,10 +50,16 @@ sudo make run-dev
 # Detachモード
 sudo make run-dev-d
 ```
-5. localhost でドキュメントを開いてみましょう
+
+5. テーブル作成
+```
+sudo make create-table
+```
+
+6. localhost でドキュメントを開いてみましょう
 http://localhost/docs
 
-6. コンテナの停止
+7. コンテナの停止
 ```
 sudo make stop
 ```
@@ -81,7 +87,7 @@ sudo make stop
 | Make | 実行する処理 | 元のコマンド |
 | :--- | :-------- | :-------- |
 | `make build` | コンテナのビルド | `docker compose -f docker-compose.yml -f docker-compose.dev.yml build` |
-| `make build-no-build` | コンテナのビルド(キャッシュなし) | `docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-build` |
+| `make build-no-cache` | コンテナのビルド(キャッシュなし) | `docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache` |
 | `make run-dev` | コンテナの起動 | `docker compose -f docker-compose.yml -f docker-compose.dev.yml up` |
 | `make run-dev-d` | コンテナの起動（デタッチ） | `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d` |
 | `make stop` | コンテナの停止 | `docker compose down` |
