@@ -37,3 +37,6 @@ class UserResponse(UserBase):
     updated_at: datetime = Field(
         default_factory=lambda: datetime.now(),
     )
+
+    class Config:
+        orm_mode = True
