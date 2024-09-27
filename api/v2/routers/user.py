@@ -4,8 +4,8 @@ from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import v2.schemas.user as user_schema
 import v2.cruds.user as user_crud
+import v2.schemas.user as user_schema
 from db import get_db
 from v2.utils.logging import get_logger
 
@@ -29,11 +29,9 @@ async def list_users():
     summary="新規ユーザの作成",
     response_model=user_schema.UserResponse,
 )
-async def create_user(
-    user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)
-):
+async def create_user(user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
     return await user_crud.create_user(db, user)
-    
+
     # new_user = {
     #     "id": 1,
     #     "couple_id": user.couple_id,
