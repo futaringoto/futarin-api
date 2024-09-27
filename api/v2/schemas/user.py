@@ -27,6 +27,7 @@ class UserUpdate(UserBase):
 
 
 class UserResponse(UserBase):
+    model_config = ConfigDict(from_attributes=True)
     id: Optional[int] = Field(
         None,
         description="Auto-incremented ID, set by the database",
@@ -37,6 +38,3 @@ class UserResponse(UserBase):
     updated_at: datetime = Field(
         default_factory=lambda: datetime.now(),
     )
-
-    class Config:
-        orm_mode = True
