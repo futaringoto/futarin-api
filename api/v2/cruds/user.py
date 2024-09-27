@@ -1,3 +1,5 @@
+from sqlalchemy import select
+from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.models.user as user_model
@@ -13,3 +15,16 @@ async def create_user(
     await db.commit()
     await db.refresh(user)
     return user
+
+
+async def get_users(db: AsyncSession):
+    result: Result = await db.execute(
+        select(
+            user_model.User.id,
+            user_model.User.couple_id,
+            user_model.User.name,
+            user_model.User.created_at,
+            user_model.User.updated_at,
+        )
+    )
+    return result.all()

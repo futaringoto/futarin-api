@@ -19,8 +19,8 @@ logger = get_logger()
     summary="ユーザの取得",
     response_model=List[user_schema.UserResponse],
 )
-async def list_users():
-    return [user_schema.UserResponse()]
+async def list_users(db: AsyncSession = Depends(get_db)):
+    return await user_crud.get_users(db)
 
 
 @router.post(
