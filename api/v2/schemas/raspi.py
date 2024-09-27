@@ -1,5 +1,10 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
-class Raspi(BaseModel):
+
+class RaspiBase(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    user_id: int
+
+
+class RaspiMessageResponse(RaspiBase):
+    id: int
+    message: str = Field(None, json_schema_extra={"example": "successed!"})

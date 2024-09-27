@@ -5,13 +5,12 @@ from typing import Any
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
-from sqlalchemy import except_
 
+import v2.schemas.raspi as raspi_schema
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
 from v1.utils.logging import get_logger
-import v2.schemas.raspi as raspi_schema
 
 router = APIRouter()
 logger = get_logger()
@@ -70,17 +69,13 @@ async def all(
     "/{id}/messages",
     tags=["raspi"],
     summary="メッセージ送信",
+    response_model=raspi_schema.RaspiMessageResponse,
 )
-async def send_message(id: int, file: UploadFile = File(...)) -> Any:
+async def create_message(id: int, file: UploadFile = File(...)) -> Any:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
-    try:
-        content: bytes = await file.read()
-        with open(file_location, "wb") as f:
-            f.write(content)
-        os.remove(file_location)
-    except:
-        raise HTTPException(
-            status_code=500
-        )
+    content: bytes = await file.read()
+    with open(file_location, "wb") as f:
+        f.write(content)
+    os.remove(file_location)
 
     return {"id": id, "message": "successed!"}
