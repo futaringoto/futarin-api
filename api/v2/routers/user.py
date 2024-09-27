@@ -32,15 +32,6 @@ async def list_users():
 async def create_user(user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
     return await user_crud.create_user(db, user)
 
-    # new_user = {
-    #     "id": 1,
-    #     "couple_id": user.couple_id,
-    #     "name": user.name,
-    #     "created_at": datetime.now(),
-    #     "updated_at": datetime.now(),
-    # }
-    # return new_user
-
 
 @router.put(
     "/{id}",
