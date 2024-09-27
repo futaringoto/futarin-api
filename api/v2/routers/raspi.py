@@ -1,9 +1,11 @@
 import os
 import tempfile
+from typing import Any
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
+from sqlalchemy import except_
 
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
@@ -19,7 +21,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post(
-    "/",
+    "/{id}",
     tags=["raspi"],
     summary="一連の動作全て",
     response_class=FileResponse,
@@ -30,13 +32,13 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
     },
 )
 async def all(
-    raspi: raspi_schema.Raspi,
+    id: int,
     file: UploadFile = File(...),
     speaker: int = 1,
 ) -> FileResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
-        print(raspi.user_id)
+        print(id)
         # whisper
         content: bytes = await file.read()
         with open(file_location, "wb") as f:
@@ -62,3 +64,23 @@ async def all(
             status_code=e.response.status_code, detail=f"Error fetching data: {str(e)}"
         )
     return FileResponse(temp_file.name, media_type="audio/wav", filename="audio.wav")
+
+
+@router.post(
+    "/{id}/messages",
+    tags=["raspi"],
+    summary="メッセージ送信",
+)
+async def send_message(id: int, file: UploadFile = File(...)) -> Any:
+    file_location = os.path.join(UPLOAD_DIR, file.filename)
+    try:
+        content: bytes = await file.read()
+        with open(file_location, "wb") as f:
+            f.write(content)
+        os.remove(file_location)
+    except:
+        raise HTTPException(
+            status_code=500
+        )
+
+    return {"id": id, "message": "successed!"}
