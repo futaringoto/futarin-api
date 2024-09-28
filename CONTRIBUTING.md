@@ -116,6 +116,8 @@ sudo make test
 | name               | description         |
 | :----------------- | :------------------ |
 | LOGIN_SERVER | Azure Container Registry(ACR) サーバURL |
+| OPENAI_ASSISTANT_ID | テスト用 OpenAI Assistant のAssistant ID |
+| OPENAI_THREAD_ID | テスト用 OpenAI Assistant のThread ID |
 
 
 ### Secrets
