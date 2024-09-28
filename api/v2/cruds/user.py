@@ -28,3 +28,27 @@ async def get_users(db: AsyncSession):
         )
     )
     return result.all()
+
+
+async def get_user(db: AsyncSession, user_id: int):
+    result: Result = await db.execute(
+        select(user_model.User).filter(user_model.User.id == user_id)
+    )
+    user = result.first()
+    return user[0] if user is not None else None
+
+
+async def update_user(
+    db: AsyncSession, user_create: user_schema.UserCreate, original: user_model.User
+) -> user_model.User:
+    original.couple_id = user_create.couple_id
+    original.name = user_create.name
+    db.add(original)
+    await db.commit()
+    await db.refresh(original)
+    return original
+
+
+async def delete_user(db: AsyncSession, original: user_model.User) -> None:
+    await db.delete(original)
+    await db.commit()
