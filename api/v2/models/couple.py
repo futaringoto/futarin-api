@@ -9,7 +9,7 @@ class Couple(Base):
     __tablename__ = "couples"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(20))
+    name = Column(String(20), nullable=False)
     created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
     updated_at = Column(
         TIMESTAMP,

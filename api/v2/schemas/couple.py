@@ -23,6 +23,7 @@ class CoupleUpdate(CoupleBase):
 
 
 class CoupleResponse(CoupleBase):
+    model_config = ConfigDict(from_attributes=True)
     id: Optional[int] = Field(
         None,
         description="Auto-incremented ID, set by the database",
