@@ -1,9 +1,11 @@
+import requests
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.models.user as user_model
 import v2.schemas.user as user_schema
+from v2.utils.config import get_openai_api_key
 
 
 async def create_user(
@@ -11,6 +13,21 @@ async def create_user(
 ) -> user_model.User:
     # 引数にスキーマuser_create: user_schema.UserCreateを受け取りDBモデルのuser_model.Userに変換する
     user = user_model.User(**user_create.dict())
+
+    # Chatgpt apiのthreadを作りthread_idに保存する
+    GPT_API_KEY = get_openai_api_key()
+    url = "https://api.openai.com/v1/threads"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {GPT_API_KEY}",
+        "OpenAI-Beta": "assistants=v2",
+    }
+    data = {}
+    response = requests.post(url, headers=headers, json=data)
+    response_data = response.json()
+    thread_id = response_data.get("id")
+    user.thread_id = thread_id
+
     db.add(user)
     await db.commit()
     await db.refresh(user)

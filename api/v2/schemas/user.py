@@ -15,6 +15,7 @@ class UserBase(BaseModel):
         description="couple_id is optional",
     )
     name: str = Field(..., default_factory=generate_default_username)
+    raspi_id: int = Field(...)
 
 
 class UserCreate(UserBase):
@@ -32,6 +33,7 @@ class UserResponse(UserBase):
         None,
         description="Auto-incremented ID, set by the database",
     )
+    thread_id: str = Field(..., pattern=r"^thread_")
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(),
     )
@@ -39,6 +41,4 @@ class UserResponse(UserBase):
         default_factory=lambda: datetime.now(),
     )
 
-    model_config = {
-        "orm_mode": True
-    }
+    model_config = {"orm_mode": True}

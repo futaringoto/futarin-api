@@ -11,9 +11,10 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     couple_id = Column(Integer, ForeignKey("couples.id"), nullable=True)
     name = Column(String(20))
+    thread_id = Column(String(45), nullable=False)
+    raspi_id = Column(Integer, unique=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
     couple = relationship("Couple", back_populates="users")
-    texts = relationship("Text", back_populates="user")
     messages = relationship("Message", back_populates="user")
