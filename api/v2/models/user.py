@@ -10,7 +10,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     couple_id = Column(Integer, ForeignKey("couples.id"), nullable=True)
-    name = Column(String(20))
+    name = Column(String(20), nullable=False)
     thread_id = Column(String(45), nullable=False)
     raspi_id = Column(Integer, unique=True)
     created_at = Column(TIMESTAMP, server_default=func.now())

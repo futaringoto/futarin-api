@@ -25,6 +25,7 @@ class UserCreate(UserBase):
 class UserUpdate(UserBase):
     # override
     name: Optional[str]
+    raspi_id: Optional[int]
 
 
 class UserResponse(UserBase):
@@ -41,4 +42,4 @@ class UserResponse(UserBase):
         default_factory=lambda: datetime.now(),
     )
 
-    model_config = {"orm_mode": True}
+    # model_config = {"orm_mode": True}
