@@ -37,13 +37,16 @@ async def get_couple(db: AsyncSession, couple_id: int):
 
 
 async def update_couple(
-    db: AsyncSession, couple_update: couple_schema.CoupleUpdate, original: couple_model.Couple
+    db: AsyncSession,
+    couple_update: couple_schema.CoupleUpdate,
+    original: couple_model.Couple,
 ) -> couple_model.Couple:
     original.name = couple_update.name
     db.add(original)
     await db.commit()
     await db.refresh(original)
     return original
+
 
 async def delete_couple(db: AsyncSession, original: couple_model.Couple) -> None:
     await db.delete(original)

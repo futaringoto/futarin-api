@@ -39,6 +39,4 @@ class UserResponse(UserBase):
         default_factory=lambda: datetime.now(),
     )
 
-    model_config = {
-        "orm_mode": True
-    }
+    model_config = {"orm_mode": True}
