@@ -14,7 +14,8 @@ class CoupleBase(BaseModel):
 
 
 class CoupleCreate(CoupleBase):
-    pass
+    user1_id: int
+    user2_id: int
 
 
 class CoupleUpdate(CoupleBase):
