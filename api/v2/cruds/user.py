@@ -17,19 +17,6 @@ async def create_user(
 ) -> user_model.User:
     # 引数にスキーマuser_create: user_schema.UserCreateを受け取りDBモデルのuser_model.Userに変換する
     user = user_model.User(**user_create.dict())
-
-    # Chatgpt apiのthreadを作りthread_idに保存する
-    # GPT_API_KEY = get_openai_api_key()
-    # url = "https://api.openai.com/v1/threads"
-    # headers = {
-    #     "Content-Type": "application/json",
-    #     "Authorization": f"Bearer {GPT_API_KEY}",
-    #     "OpenAI-Beta": "assistants=v2",
-    # }
-    # data = {}
-    # response = requests.post(url, headers=headers, json=data)
-    # response_data = response.json()
-    # thread_id = response_data.get("id")
     thread = client.beta.threads.create()
     user.thread_id = thread.id
 
