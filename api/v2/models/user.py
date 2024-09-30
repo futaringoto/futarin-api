@@ -9,7 +9,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    couple_id = Column(Integer, ForeignKey("couples.id"), nullable=True)
+    couple_id = Column(
+        Integer, ForeignKey("couples.id", ondelete="SET NULL"), nullable=True
+    )
     name = Column(String(20), nullable=False)
     thread_id = Column(String(45), nullable=False)
     raspi_id = Column(Integer, unique=True)
