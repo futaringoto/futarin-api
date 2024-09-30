@@ -1,9 +1,13 @@
+from openai import OpenAI
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.models.user as user_model
 import v2.schemas.user as user_schema
+from v2.utils.config import get_openai_api_key
+
+client = OpenAI(api_key=get_openai_api_key())
 
 
 async def create_user(
@@ -11,6 +15,22 @@ async def create_user(
 ) -> user_model.User:
     # 引数にスキーマuser_create: user_schema.UserCreateを受け取りDBモデルのuser_model.Userに変換する
     user = user_model.User(**user_create.dict())
+
+    # Chatgpt apiのthreadを作りthread_idに保存する
+    # GPT_API_KEY = get_openai_api_key()
+    # url = "https://api.openai.com/v1/threads"
+    # headers = {
+    #     "Content-Type": "application/json",
+    #     "Authorization": f"Bearer {GPT_API_KEY}",
+    #     "OpenAI-Beta": "assistants=v2",
+    # }
+    # data = {}
+    # response = requests.post(url, headers=headers, json=data)
+    # response_data = response.json()
+    # thread_id = response_data.get("id")
+    thread = client.beta.threads.create()
+    user.thread_id = thread.id
+
     db.add(user)
     await db.commit()
     await db.refresh(user)
@@ -23,6 +43,8 @@ async def get_users(db: AsyncSession):
             user_model.User.id,
             user_model.User.couple_id,
             user_model.User.name,
+            user_model.User.thread_id,
+            user_model.User.raspi_id,
             user_model.User.created_at,
             user_model.User.updated_at,
         )
@@ -43,6 +65,7 @@ async def update_user(
 ) -> user_model.User:
     original.couple_id = user_update.couple_id
     original.name = user_update.name
+    original.raspi_id = user_update.raspi_id
     db.add(original)
     await db.commit()
     await db.refresh(original)
