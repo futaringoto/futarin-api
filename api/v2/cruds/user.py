@@ -7,10 +7,7 @@ import v2.models.user as user_model
 import v2.schemas.user as user_schema
 from v2.utils.config import get_openai_api_key
 
-
-client = OpenAI(
-    api_key=get_openai_api_key()
-)
+client = OpenAI(api_key=get_openai_api_key())
 
 
 async def create_user(
