@@ -27,4 +27,4 @@ jobs:
         run: docker compose exec api flake8
 
       - name: Run test
-        run: docker compose exec api pytest
+        run: docker compose exec api pytest --asyncio-mode=auto

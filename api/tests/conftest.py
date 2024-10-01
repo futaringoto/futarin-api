@@ -1,10 +1,11 @@
 from typing import AsyncGenerator
+
 import pytest
-from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from db import get_db, Base
+from db import Base, get_db
 from main import app
 
 ASYNC_DB_URL = "sqlite+aiosqlite:///:memory:"
@@ -31,7 +32,9 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
     app.dependency_overrides[get_db] = get_test_db
 
     # テスト用に非同期HTTPクライアントを返却
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         yield client
 
     # クリーンアップ処理があればここに記述（必要に応じて）
