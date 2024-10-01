@@ -9,7 +9,7 @@ import v2.schemas.couple as couple_schema
 async def create_couple(
     db: AsyncSession, couple_create: couple_schema.CoupleCreate
 ) -> couple_model.Couple:
-    couple = couple_model.Couple(**couple_create.dict())
+    couple = couple_model.Couple(**couple_create.model_dump())
     db.add(couple)
     await db.commit()
     await db.refresh(couple)
