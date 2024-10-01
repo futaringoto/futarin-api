@@ -50,7 +50,6 @@ async def get_user(db: AsyncSession, user_id: int):
 async def update_user(
     db: AsyncSession, user_update: user_schema.UserUpdate, original: user_model.User
 ) -> user_model.User:
-    original.couple_id = user_update.couple_id
     original.name = user_update.name
     original.raspi_id = user_update.raspi_id
     db.add(original)
