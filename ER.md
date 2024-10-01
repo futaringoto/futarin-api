@@ -16,20 +16,19 @@ erDiagram
         timestamp created_at "作成日時"
         timestamp updated_at "更新日時"
     }
-    
+
     couple {
         int_unsigned id PK "ペアのID"
         varchar(20) name "ペアの名前"
         timestamp created_at "作成日時"
         timestamp updated_at "更新日時"
-    }                
-        
+    }
+
     message {
         int_unsigned id PK "メッセージID"
         int_unsigned user_id FK "ユーザー名"
         varchar(1000) send_message "メッセージ"
         varchar(50) voice_message_url "ボイスメッセージのURL"
-        timestamp created_at "作成日時"   
+        timestamp created_at "作成日時"
     }
-
 ```

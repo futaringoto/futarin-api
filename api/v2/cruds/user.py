@@ -50,7 +50,6 @@ async def get_user(db: AsyncSession, user_id: int):
 async def update_user(
     db: AsyncSession, user_update: user_schema.UserUpdate, original: user_model.User
 ) -> user_model.User:
-    original.couple_id = user_update.couple_id
     original.name = user_update.name
     original.raspi_id = user_update.raspi_id
     db.add(original)
@@ -61,4 +60,12 @@ async def update_user(
 
 async def delete_user(db: AsyncSession, original: user_model.User) -> None:
     await db.delete(original)
+    await db.commit()
+
+
+async def update_user_couple_id(
+    db: AsyncSession, user: user_model.User, couple_id: int
+):
+    user.couple_id = couple_id
+    db.add(user)
     await db.commit()

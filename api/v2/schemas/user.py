@@ -10,10 +10,6 @@ def generate_default_username() -> str:
 
 class UserBase(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    couple_id: Optional[int] = Field(
-        None,
-        description="couple_id is optional",
-    )
     name: str = Field(..., default_factory=generate_default_username)
     raspi_id: int = Field(...)
 
@@ -33,6 +29,10 @@ class UserResponse(UserBase):
     id: Optional[int] = Field(
         None,
         description="Auto-incremented ID, set by the database",
+    )
+    couple_id: Optional[int] = Field(
+        None,
+        description="couple_id is applied by couple_schema",
     )
     thread_id: str = Field(..., pattern=r"^thread_")
     created_at: datetime = Field(
