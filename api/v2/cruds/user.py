@@ -61,3 +61,11 @@ async def update_user(
 async def delete_user(db: AsyncSession, original: user_model.User) -> None:
     await db.delete(original)
     await db.commit()
+
+
+async def update_user_couple_id(
+    db: AsyncSession, user: user_model.User, couple_id: int
+):
+    user.couple_id = couple_id
+    db.add(user)
+    await db.commit()
