@@ -1,6 +1,6 @@
 from typing import Dict
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession, create_async_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from sqlalchemy.engine.url import URL
 
 from v2.utils.config import get_is_dev_mode, get_db_object
@@ -33,4 +33,12 @@ async_session = sessionmaker(
     autocommit=False, autoflush=False, bind=async_engine, class_=AsyncSession
 )
 
-Base = declarative_base()
+
+# Base = declarative_base()
+class Base(AsyncAttrs, DeclarativeBase):
+    pass
+
+
+async def get_db():
+    async with async_session() as session:
+        yield session
