@@ -13,6 +13,8 @@ class User(Base):
         Integer, ForeignKey("couples.id", ondelete="SET NULL"), nullable=True
     )
     name = Column(String(20), nullable=False)
+    thread_id = Column(String(45), nullable=False)
+    raspi_id = Column(Integer, unique=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
