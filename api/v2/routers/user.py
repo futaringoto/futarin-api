@@ -2,14 +2,21 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 import v2.cruds.user as user_crud
 import v2.schemas.user as user_schema
 from db import get_db
 from v2.utils.logging import get_logger
+from v2.utils.config import get_azure_sas_token
 
 router = APIRouter()
 logger = get_logger()
+
+#azureの認証
+account_url = "https://futarinstorageaccount.blob.core.windows.net"
+sas_token = get_azure_sas_token()
+blob_service_client = BlobServiceClient(account_url, credential=sas_token)
 
 
 @router.get(
@@ -29,7 +36,7 @@ async def list_users(db: AsyncSession = Depends(get_db)):
     response_model=user_schema.UserResponse,
 )
 async def create_user(user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
-    return await user_crud.create_user(db, user)
+    return await user_crud.create_user(db, user, blob_service_client)
 
 
 @router.put(
@@ -55,4 +62,4 @@ async def delete_user(id: int, db: AsyncSession = Depends(get_db)):
     user = await user_crud.get_user(db, user_id=id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return await user_crud.delete_user(db, original=user)
+    return await user_crud.delete_user(db, user, blob_service_client)

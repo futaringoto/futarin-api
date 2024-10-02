@@ -3,11 +3,11 @@ from openai import OpenAI
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from azure.storage.blob import BlobServiceClient
 
 import v2.models.user as user_model
 import v2.schemas.user as user_schema
-from v2.utils.config import get_openai_api_key, get_azure_sas_token
+from v2.utils.config import get_openai_api_key
 
 client = OpenAI(
     api_key=get_openai_api_key()
@@ -15,23 +15,20 @@ client = OpenAI(
 
 
 async def create_user(
-    db: AsyncSession, user_create: user_schema.UserCreate
+    db: AsyncSession, user_create: user_schema.UserCreate, blob_service_client: BlobServiceClient
 ) -> user_model.User:
     # 引数にスキーマuser_create: user_schema.UserCreateを受け取りDBモデルのuser_model.Userに変換する
     user = user_model.User(**user_create.dict())
     thread = client.beta.threads.create()
     user.thread_id = thread.id
-
-    # azure-blob-storageにユーザのコンテナーを作成する
-    account_url = "https://futarinstorageaccount.blob.core.windows.net"
-    sas_token = get_azure_sas_token()
-    blob_service_client = BlobServiceClient(account_url, credential=sas_token)
-    container_name = "user_" + str(user.id)
-    container_client = blob_service_client.create_container(container_name)
-
     db.add(user)
     await db.commit()
     await db.refresh(user)
+
+    # azure-blob-storageにユーザのコンテナーを作成する
+    container_name = "user" + str(user.id)
+    blob_service_client.create_container(container_name)
+
     return user
 
 
@@ -70,6 +67,11 @@ async def update_user(
     return original
 
 
-async def delete_user(db: AsyncSession, original: user_model.User) -> None:
+async def delete_user(db: AsyncSession, original: user_model.User, blob_service_client: BlobServiceClient) -> None:
+    #azure blob storageのコンテナを削除する
+    container_name = "user" + str(original.id)
+    container_client = blob_service_client.get_container_client(container=container_name)
+    container_client.delete_container()
+
     await db.delete(original)
     await db.commit()
