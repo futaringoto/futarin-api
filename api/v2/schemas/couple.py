@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 def generate_default_couplename() -> str:
-    return f"couple_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    return f"pair_{datetime.now().strftime('%Y%m%d%H%M%S')}"
 
 
 class CoupleBase(BaseModel):
@@ -14,7 +14,8 @@ class CoupleBase(BaseModel):
 
 
 class CoupleCreate(CoupleBase):
-    pass
+    user1_id: int
+    user2_id: int
 
 
 class CoupleUpdate(CoupleBase):

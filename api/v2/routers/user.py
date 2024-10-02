@@ -1,19 +1,19 @@
 from typing import List
 
+from azure.storage.blob import BlobServiceClient
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 import v2.cruds.user as user_crud
 import v2.schemas.user as user_schema
 from db import get_db
-from v2.utils.logging import get_logger
 from v2.utils.config import get_azure_sas_token
+from v2.utils.logging import get_logger
 
 router = APIRouter()
 logger = get_logger()
 
-#azureの認証
+# azureの認証
 account_url = "https://futarinstorageaccount.blob.core.windows.net"
 sas_token = get_azure_sas_token()
 blob_service_client = BlobServiceClient(account_url, credential=sas_token)
