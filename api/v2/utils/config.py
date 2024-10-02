@@ -44,5 +44,9 @@ def get_db_url():
     return url
 
 
+def get_azure_storage_account():
+    return os.getenv("AZURE_STORAGE_ACCOUNT")
+
+
 def get_azure_sas_token():
     return os.getenv("AZURE_SAS_TOKEN")

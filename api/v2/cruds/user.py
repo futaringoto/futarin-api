@@ -17,7 +17,7 @@ async def create_user(
     blob_service_client: BlobServiceClient,
 ) -> user_model.User:
     # 引数にスキーマuser_create: user_schema.UserCreateを受け取りDBモデルのuser_model.Userに変換する
-    user = user_model.User(**user_create.dict())
+    user = user_model.User(**user_create.model_dump())
     thread = client.beta.threads.create()
     user.thread_id = thread.id
     db.add(user)

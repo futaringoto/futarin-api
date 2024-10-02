@@ -7,14 +7,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import v2.cruds.user as user_crud
 import v2.schemas.user as user_schema
 from db import get_db
-from v2.utils.config import get_azure_sas_token
+from v2.utils.config import get_azure_sas_token, get_azure_storage_account
 from v2.utils.logging import get_logger
 
 router = APIRouter()
 logger = get_logger()
 
 # azureの認証
-account_url = "https://futarinstorageaccount.blob.core.windows.net"
+azure_storage_account = get_azure_storage_account()
+account_url = f"https://{azure_storage_account}.blob.core.windows.net"
 sas_token = get_azure_sas_token()
 blob_service_client = BlobServiceClient(account_url, credential=sas_token)
 

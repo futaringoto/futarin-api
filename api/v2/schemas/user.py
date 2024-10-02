@@ -41,5 +41,3 @@ class UserResponse(UserBase):
     updated_at: datetime = Field(
         default_factory=lambda: datetime.now(),
     )
-
-    # model_config = {"orm_mode": True}
