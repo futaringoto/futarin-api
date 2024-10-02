@@ -29,7 +29,7 @@ def check_env_variables():
 
 def get_is_dev_mode() -> bool:
     is_dev_mode = os.getenv("IS_DEV_MODE")
-    return int(is_dev_mode) == 1
+    return is_dev_mode == 1
 
 
 def get_openai_api_key():
