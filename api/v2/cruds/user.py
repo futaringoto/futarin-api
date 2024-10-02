@@ -1,11 +1,13 @@
+import os
 from openai import OpenAI
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 import v2.models.user as user_model
 import v2.schemas.user as user_schema
-from v2.utils.config import get_openai_api_key
+from v2.utils.config import get_openai_api_key, get_azure_sas_token
 
 client = OpenAI(
     api_key=get_openai_api_key()
@@ -19,6 +21,13 @@ async def create_user(
     user = user_model.User(**user_create.dict())
     thread = client.beta.threads.create()
     user.thread_id = thread.id
+
+    # azure-blob-storageにユーザのコンテナーを作成する
+    account_url = "https://futarinstorageaccount.blob.core.windows.net"
+    sas_token = get_azure_sas_token()
+    blob_service_client = BlobServiceClient(account_url, credential=sas_token)
+    container_name = "user_" + str(user.id)
+    container_client = blob_service_client.create_container(container_name)
 
     db.add(user)
     await db.commit()

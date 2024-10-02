@@ -42,3 +42,7 @@ def get_db_url():
     db_name = os.getenv("MYSQL_DATABASE")
     url = f"mysql+pymysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
     return url
+
+
+def get_azure_sas_token():
+    return os.getenv("AZURE_SAS_TOKEN")
