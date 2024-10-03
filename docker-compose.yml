@@ -16,6 +16,7 @@ services:
     image: futarin-api
     environment:
       - IS_DEV_MODE=0
+      - DB_CERT_PATH=/api/db-cert.pem
     env_file:
       - .env
     build:

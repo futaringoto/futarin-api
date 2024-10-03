@@ -15,7 +15,7 @@ def check_env_variables():
         "DB_HOST",
         "DB_USERNAME",
         "DB_PASSWORD",
-        "SSL_CERT_PATH",
+        "DB_CERT_PATH",
     ]
     if not is_dev_mode:
         env_vars.extend(env_vars_prod)
@@ -49,5 +49,5 @@ def get_db_object() -> Dict[str, str]:
     return obj
 
 
-def get_ssl_cert_path():
-    return os.getenv("SSL_CERT_PATH")
+def get_db_cert_path():
+    return os.getenv("DB_CERT_PATH")

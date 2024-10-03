@@ -5,7 +5,7 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from v2.utils.config import get_db_object, get_is_dev_mode, get_ssl_cert_path
+from v2.utils.config import get_db_object, get_is_dev_mode, get_db_cert_path
 
 IS_DEV_MODE: bool = get_is_dev_mode()
 
@@ -25,8 +25,8 @@ def create_dev_async_engine():
 
 def create_prod_async_engine():
     DB_OBJECT: Dict[str, str] = get_db_object()
-    SSL_CERT_PATH = get_ssl_cert_path()
-    ssl_context = ssl.create_default_context(cafile=SSL_CERT_PATH)
+    DB_CERT_PATH = get_db_cert_path()
+    ssl_context = ssl.create_default_context(cafile=DB_CERT_PATH)
     url = URL.create(
         drivername="mysql+aiomysql",
         username=DB_OBJECT["username"],
