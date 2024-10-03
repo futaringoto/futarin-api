@@ -17,6 +17,7 @@ def check_env_variables():
         "DB_HOST",
         "DB_USERNAME",
         "DB_PASSWORD",
+        "SSL_CERT_PATH",
     ]
     if not is_dev_mode:
         env_vars.extend(env_vars_prod)
@@ -29,7 +30,7 @@ def check_env_variables():
 
 def get_is_dev_mode() -> bool:
     is_dev_mode = os.getenv("IS_DEV_MODE")
-    return is_dev_mode == 1
+    return int(is_dev_mode) == 1
 
 
 def get_openai_api_key():
@@ -59,7 +60,7 @@ def get_db_object() -> Dict[str, str]:
         "username": os.getenv("DB_USERNAME"),
         "password": os.getenv("DB_PASSWORD"),
         "host": os.getenv("DB_HOST"),
-        "database": os.getenv("DB_NAME")
+        "database": os.getenv("DB_NAME"),
     }
     return obj
 
@@ -74,3 +75,7 @@ def get_db_password():
 
 def get_db_host():
     return os.getenv("DB_HOST")
+
+
+def get_ssl_cert_path():
+    return os.getenv("SSL_CERT_PATH")
