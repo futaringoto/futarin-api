@@ -75,8 +75,8 @@ sudo make stop
 | :----- | :-- | :-- | :-- |
 | POST | `/v2/raspi/{id}/` | 一連の処理全て |  |
 | POST | `/v2/raspi/{id}/messages/` | messageの作成 |  |
-| GET POST PUT DELETE | `/v2/users/` | ユーザ関連 | :check_box_with_check: |
-| GET POST PUT DELETE | `/v2/couples/` | ペア関連 | :check_box_with_check: |
+| GET POST PUT DELETE | `/v2/users/` | ユーザ関連 | ✔️ |
+| GET POST PUT DELETE | `/v2/couples/` | ペア関連 | ✔️ |
 
 ### v1
 | メソッド | パス | 概要 |
