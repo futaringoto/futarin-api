@@ -1,13 +1,24 @@
 import os
+from typing import Dict
 
 
 def check_env_variables():
     is_dev_mode: bool = get_is_dev_mode()
     env_vars: list[str] = [
+        "IS_DEV_MODE",
         "OPENAI_API_KEY",
         "VOICEVOX_API_KEY",
+        "MYSQL_DATABASE",
+        "MYSQL_ROOT_PASSWORD",
     ]
-    env_vars_prod: list[str] = []
+    env_vars_prod: list[str] = [
+        # 本番環境のみで使う環境変数
+        "DB_NAME",
+        "DB_HOST",
+        "DB_USERNAME",
+        "DB_PASSWORD",
+        "SSL_CERT_PATH",
+    ]
     if not is_dev_mode:
         env_vars.extend(env_vars_prod)
     missing_vars = [var for var in env_vars if os.getenv(var) is None]
@@ -42,3 +53,29 @@ def get_db_url():
     db_name = os.getenv("MYSQL_DATABASE")
     url = f"mysql+pymysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
     return url
+
+
+def get_db_object() -> Dict[str, str]:
+    obj = {
+        "username": os.getenv("DB_USERNAME"),
+        "password": os.getenv("DB_PASSWORD"),
+        "host": os.getenv("DB_HOST"),
+        "database": os.getenv("DB_NAME"),
+    }
+    return obj
+
+
+def get_db_username():
+    return os.getenv("DB_USERNAME")
+
+
+def get_db_password():
+    return os.getenv("DB_PASSWORD")
+
+
+def get_db_host():
+    return os.getenv("DB_HOST")
+
+
+def get_ssl_cert_path():
+    return os.getenv("SSL_CERT_PATH")
