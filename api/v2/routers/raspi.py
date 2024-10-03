@@ -5,15 +5,24 @@ from typing import Any
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
+from azure.storage.blob import BlobServiceClient
 
 import v2.schemas.raspi as raspi_schema
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
+from v2.azure.storage import upload_blob_file
 from v1.utils.logging import get_logger
+from v2.utils.config import get_azure_sas_token, get_azure_storage_account
 
 router = APIRouter()
 logger = get_logger()
+
+# azureの認証
+azure_storage_account = get_azure_storage_account()
+account_url = f"https://{azure_storage_account}.blob.core.windows.net"
+sas_token = get_azure_sas_token()
+blob_service_client = BlobServiceClient(account_url, credential=sas_token)
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -74,8 +83,12 @@ async def all(
 async def create_message(id: int, file: UploadFile = File(...)) -> Any:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     content: bytes = await file.read()
+    container_name = 'user'+ str(id)
     with open(file_location, "wb") as f:
         f.write(content)
+
+    with open(file_location, "rb") as data:
+        upload_blob_file(blob_service_client, container_name, data)
     os.remove(file_location)
 
     return {"id": id, "message": "successed!"}
