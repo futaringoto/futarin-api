@@ -3,9 +3,6 @@ name: Build container and push to ACR
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 env:
   IMAGE: 'futarin-api'
 
@@ -25,6 +22,11 @@ jobs:
           registry: ${{ vars.LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Add SSL certificates for DB
+        run: |
+          echo "${{ secrets.DB_SSL_CERT }}" > ${{ github.workspace }}/api/db-cert.pem
+          chmod 644 ${{ github.workspace }}/api/db-cert.pem
 
       - name: 'Compose Customized Docker Image'
         run: |
