@@ -8,8 +8,6 @@ def check_env_variables():
         "IS_DEV_MODE",
         "OPENAI_API_KEY",
         "VOICEVOX_API_KEY",
-        "MYSQL_DATABASE",
-        "MYSQL_ROOT_PASSWORD",
     ]
     env_vars_prod: list[str] = [
         # 本番環境のみで使う環境変数
@@ -41,20 +39,6 @@ def get_voicevox_api_key():
     return os.getenv("VOICEVOX_API_KEY")
 
 
-def get_async_db_url():
-    password = os.getenv("MYSQL_ROOT_PASSWORD")
-    db_name = os.getenv("MYSQL_DATABASE")
-    url = f"mysql+aiomysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
-    return url
-
-
-def get_db_url():
-    password = os.getenv("MYSQL_ROOT_PASSWORD")
-    db_name = os.getenv("MYSQL_DATABASE")
-    url = f"mysql+pymysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
-    return url
-
-
 def get_db_object() -> Dict[str, str]:
     obj = {
         "username": os.getenv("DB_USERNAME"),
@@ -63,18 +47,6 @@ def get_db_object() -> Dict[str, str]:
         "database": os.getenv("DB_NAME"),
     }
     return obj
-
-
-def get_db_username():
-    return os.getenv("DB_USERNAME")
-
-
-def get_db_password():
-    return os.getenv("DB_PASSWORD")
-
-
-def get_db_host():
-    return os.getenv("DB_HOST")
 
 
 def get_ssl_cert_path():
