@@ -35,9 +35,12 @@ echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
 echo "OPENAI_ASSISTANT_ID=[openAI assistant id]" >> .env
 echo "OPENAI_THREAD_ID=[openAI thread id]" >> .env
+echo "AZURE_STORAGE_ACCOUNT=[azure storage-account name]" >> .env
+echo "AZURE_SAS_TOKEN=[azure storage-account SAS token]" >> .env
 ```
-`VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
-`OPENAI_API_KEY` は https://platform.openai.com/docs/overview から取得します
+    - `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
+    - `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から
+    - `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から
 
 3. Dockerイメージのビルド
 ```

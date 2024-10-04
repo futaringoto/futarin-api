@@ -8,6 +8,8 @@ def check_env_variables():
         "IS_DEV_MODE",
         "OPENAI_API_KEY",
         "VOICEVOX_API_KEY",
+        "AZURE_SAS_TOKEN",
+        "AZURE_STORAGE_ACCOUNT",
     ]
     env_vars_prod: list[str] = [
         # 本番環境のみで使う環境変数
@@ -47,6 +49,14 @@ def get_db_object() -> Dict[str, str]:
         "database": os.getenv("DB_NAME"),
     }
     return obj
+
+
+def get_azure_storage_account():
+    return os.getenv("AZURE_STORAGE_ACCOUNT")
+
+
+def get_azure_sas_token():
+    return os.getenv("AZURE_SAS_TOKEN")
 
 
 def get_db_cert_path():
