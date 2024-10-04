@@ -8,6 +8,8 @@ def check_env_variables():
         "IS_DEV_MODE",
         "OPENAI_API_KEY",
         "VOICEVOX_API_KEY",
+        "AZURE_SAS_TOKEN",
+        "AZURE_STORAGE_ACCOUNT",
     ]
     env_vars_prod: list[str] = [
         # 本番環境のみで使う環境変数
