@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 
 
 def check_env_variables():
@@ -10,10 +11,17 @@ def check_env_variables():
         "VOICEVOX_API_KEY",
         "OPENAI_ASSISTANT_ID",
         "OPENAI_THREAD_ID",
-        "MYSQL_DATABASE",
-        "MYSQL_ROOT_PASSWORD"
+        "AZURE_STORAGE_ACCOUNT",
+        "AZURE_SAS_TOKEN",
     ]
-    env_vars_prod: list[str] = []
+    env_vars_prod: list[str] = [
+        # 本番環境のみで使う環境変数
+        "DB_NAME",
+        "DB_HOST",
+        "DB_USERNAME",
+        "DB_PASSWORD",
+        "DB_CERT_PATH",
+    ]
     if not is_dev_mode:
         env_vars.extend(env_vars_prod)
     missing_vars = [var for var in env_vars if os.getenv(var) is None]
@@ -48,15 +56,23 @@ def get_openai_thread_id():
     return os.getenv("OPENAI_THREAD_ID")
 
 
-def get_async_db_url():
-    password = os.getenv("MYSQL_ROOT_PASSWORD")
-    db_name = os.getenv("MYSQL_DATABASE")
-    url = f"mysql+aiomysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
-    return url
+def get_azure_storage_account():
+    return os.getenv("AZURE_STORAGE_ACCOUNT")
 
 
-def get_db_url():
-    password = os.getenv("MYSQL_ROOT_PASSWORD")
-    db_name = os.getenv("MYSQL_DATABASE")
-    url = f"mysql+pymysql://root:{password}@mysql:3306/{db_name}?charset=utf8"
-    return url
+def get_azure_sas_token():
+    return os.getenv("AZURE_SAS_TOKEN")
+
+
+def get_db_object() -> Dict[str, str]:
+    obj = {
+        "username": os.getenv("DB_USERNAME"),
+        "password": os.getenv("DB_PASSWORD"),
+        "host": os.getenv("DB_HOST"),
+        "database": os.getenv("DB_NAME"),
+    }
+    return obj
+
+
+def get_db_cert_path():
+    return os.getenv("DB_CERT_PATH")
