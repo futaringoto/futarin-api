@@ -126,6 +126,7 @@ sudo make test
 | REGISTRY_USERNAME | ACR　ユーザ名 |
 | REGISTRY_PASSWORD | ACR パスワード |
 | AZURE_WEBAPP_PUBLISH_PROFILE | Azure 認証情報 |
+| DB_SSL_CERT | Azure Database for MySQL SSL証明書 |
 | OPENAI_API_KEY | OpenAI Platform APIキー(テスト用) |
 | VOICEVOX_API_KEY | VOICEVOX API APIキー(テスト用) |
 

@@ -33,11 +33,20 @@ create-table: ## テーブル作成
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi
 
+.PHONY: migrate
+migrate: ## マイグレーション実行
+	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
+		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
+		docker compose exec $(CONTAINER_NAME) alembic upgrade head; \
+	else \
+		echo "Container $(CONTAINER_NAME) is not running."; \
+	fi
+
 .PHONY: test
 test: ## テスト
 	@if [ "$(CHECK_CONTAINER)" = "true" ]; then \
 		echo "Container $(CONTAINER_NAME) is running. Running your command..."; \
-		docker compose exec $(CONTAINER_NAME) pytest; \
+		docker compose exec $(CONTAINER_NAME) pytest --asyncio-mode=auto; \
 	else \
 		echo "Container $(CONTAINER_NAME) is not running."; \
 	fi

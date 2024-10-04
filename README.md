@@ -33,13 +33,14 @@ cd futarin-api
 touch .env
 echo "VOICEVOX_API_KEY=[voicevox api key]" >> .env
 echo "OPENAI_API_KEY=[openAI api key]" >> .env
-echo "MYSQL_DATABASE=futaringoto_db" >> .env
-echo "MYSQL_ROOT_PASSWORD=password" >> .env
 echo "OPENAI_ASSISTANT_ID=[openAI assistant id]" >> .env
 echo "OPENAI_THREAD_ID=[openAI thread id]" >> .env
+echo "AZURE_STORAGE_ACCOUNT=[azure storage-account name]" >> .env
+echo "AZURE_SAS_TOKEN=[azure storage-account SAS token]" >> .env
 ```
-`VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
-`OPENAI_API_KEY` は https://platform.openai.com/docs/overview から取得します
+    - `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
+    - `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から
+    - `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から
 
 3. Dockerイメージのビルド
 ```
@@ -61,18 +62,24 @@ sudo make create-table
 6. localhost でドキュメントを開いてみましょう
 http://localhost/docs
 
-7. コンテナの停止
+7. SSL証明書(`DigiCertGlobalRootCA.crt.pem`)の配置
+    - [Download the public SSL certificate - Azure Database for MySQL - Flexible Server | Microsoft Learn](https://learn.microsoft.com/en-gb/azure/mysql/flexible-server/how-to-connect-tls-ssl#download-the-public-ssl-certificate) から証明書を取得する。
+    - `DigiCertGlobalRootCA.crt.pem` を`/api`に含める。
+
+8. コンテナの停止
 ```
 sudo make stop
 ```
 
 ## APIエンドポイント
 詳しくは https://futaringoto.github.io/futarin-api/ を参照してください。
-### v2(未実装)
-| メソッド | パス | 概要 |
-| :----- | :-- | :-- |
-| GET POST PUT DELETE | `/v2/users/` | ユーザ関連 |
-| GET POST PUT DELETE | `/v2/couples/` | ペア関連 |
+### v2
+| メソッド | パス | 概要 | 実装状況 |
+| :----- | :-- | :-- | :-- |
+| POST | `/v2/raspi/{id}/` | 一連の処理全て |  |
+| POST | `/v2/raspi/{id}/messages/` | messageの作成 |  |
+| GET POST PUT DELETE | `/v2/users/` | ユーザ関連 | ✔️ |
+| GET POST PUT DELETE | `/v2/couples/` | ペア関連 | ✔️ |
 
 ### v1
 | メソッド | パス | 概要 |
@@ -104,6 +111,7 @@ sudo make stop
 ```
 .
 ├── CONTRIBUTING.md
+├── ER.md
 ├── LICENSE
 ├── Makefile
 ├── README.md
@@ -118,13 +126,26 @@ sudo make stop
 │       └── conf.d
 │           └── app.conf
 ├── api
+│   ├── DigiCertGlobalRootCA.crt.pem
+│   ├── alembic
+│   │   ├── README
+│   │   ├── env.py
+│   │   ├── script.py.mako
+│   │   └── versions
+│   │       ├── 46c6ca5a18f2_init.py
+│   │       └── c0a3f6001efc_initialize_tables.py
+│   ├── alembic.ini
+│   ├── db.py
 │   ├── main.py
+│   ├── migrate_db.py
 │   ├── poetry.lock
 │   ├── pyproject.toml
 │   ├── tests
 │   │   ├── __init__.py
 │   │   ├── audio1.wav
-│   │   └── test_v1_raspi.py
+│   │   ├── conftest.py
+│   │   ├── test_v1_raspi.py
+│   │   └── test_v2_user.py
 │   ├── uploads
 │   ├── v0
 │   │   ├── __init__.py
@@ -152,23 +173,39 @@ sudo make stop
 │   │   │   └── sandbox.py
 │   │   ├── services
 │   │   │   ├── __init__.py
-│   │   │   ├── db.py
+│   │   │   ├── assistants
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── assistants
+│   │   │   │       └── create.py
 │   │   │   ├── gpt.py
+│   │   │   ├── gpt_backup.py
 │   │   │   ├── voicevox_api.py
 │   │   │   └── whisper.py
 │   │   └── utils
 │   │       ├── __init__.py
+│   │       ├── cheering.txt
 │   │       ├── config.py
 │   │       └── logging.py
 │   └── v2
 │       ├── __init__.py
+│       ├── cruds
+│       │   ├── __init__.py
+│       │   ├── couple.py
+│       │   └── user.py
+│       ├── models
+│       │   ├── __init__.py
+│       │   ├── couple.py
+│       │   ├── message.py
+│       │   └── user.py
 │       ├── routers
 │       │   ├── __init__.py
 │       │   ├── couple.py
+│       │   ├── raspi.py
 │       │   └── user.py
 │       ├── schemas
 │       │   ├── __init__.py
 │       │   ├── couple.py
+│       │   ├── raspi.py
 │       │   ├── sandbox.py
 │       │   └── user.py
 │       ├── services
@@ -176,7 +213,8 @@ sudo make stop
 │       └── utils
 │           ├── __init__.py
 │           ├── config.py
-│           └── logging.py
+│           ├── logging.py
+│           └── query.py
 ├── docker-compose.dev.yml
 ├── docker-compose.yml
 └── init_mysql.sh
