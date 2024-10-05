@@ -2,9 +2,10 @@ import os
 import tempfile
 from typing import Any
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, File, Depends, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
+from sqlalchemy.ext.asyncio import AsyncSession
 from azure.storage.blob import BlobServiceClient
 
 import v2.schemas.raspi as raspi_schema
@@ -12,6 +13,7 @@ from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
 from v2.azure.storage import upload_blob_file
+from db import get_db
 from v1.utils.logging import get_logger
 from v2.utils.config import get_azure_sas_token, get_azure_storage_account
 
@@ -80,15 +82,14 @@ async def all(
     summary="メッセージ送信",
     response_model=raspi_schema.RaspiMessageResponse,
 )
-async def create_message(id: int, file: UploadFile = File(...)) -> Any:
+async def create_message(id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)) -> Any:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     content: bytes = await file.read()
-    container_name = 'user'+ str(id)
     with open(file_location, "wb") as f:
         f.write(content)
 
     with open(file_location, "rb") as data:
-        upload_blob_file(blob_service_client, container_name, data)
+        await upload_blob_file(id, blob_service_client, db, data)
     os.remove(file_location)
 
     return {"id": id, "message": "successed!"}
