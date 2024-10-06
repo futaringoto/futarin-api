@@ -9,10 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from azure.storage.blob import BlobServiceClient
 
 import v2.schemas.raspi as raspi_schema
+import v2.cruds.couple as couple_crud
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
-from v2.azure.storage import upload_blob_file
+from v2.azure.storage import upload_blob_file, download_blob_file
 from db import get_db
 from v1.utils.logging import get_logger
 from v2.utils.config import get_azure_sas_token, get_azure_storage_account
@@ -89,7 +90,24 @@ async def create_message(id: int, file: UploadFile = File(...), db: AsyncSession
         f.write(content)
 
     with open(file_location, "rb") as data:
-        await upload_blob_file(id, blob_service_client, db, data)
+        response = await upload_blob_file(id, blob_service_client, db, data)
     os.remove(file_location)
 
-    return {"id": id, "message": "successed!"}
+    return response
+
+
+@router.get(
+    "/{id}",
+    tags=["raspi"],
+    summary="同coupleのメッセージ取得",
+    response_model=raspi_schema.RaspiMessageResponse,
+)
+async def get_message(
+    id: int, db: AsyncSession = Depends(get_db)
+):
+    #同coupleのidを取得
+    boddy_id = await couple_crud.get_user_id_same_couple(db, id)
+
+    #azure blob storageにメッセージをアップロードしているか
+    blob_url = await download_blob_file(boddy_id, blob_service_client)
+    return {"id": id, "message": blob_url}

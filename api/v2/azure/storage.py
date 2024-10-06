@@ -22,3 +22,13 @@ async def upload_blob_file(
     db.add(message)
     await db.commit()
     await db.refresh(message)
+    return {"id": user_id, "message": blob_url}
+
+
+async def download_blob_file(
+    user_id: int, blob_service_client: BlobServiceClient
+):
+    container_name = "message"
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=str(user_id))
+    blob_url = blob_client.url
+    return blob_url
