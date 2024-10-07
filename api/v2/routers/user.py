@@ -37,7 +37,7 @@ async def list_users(db: AsyncSession = Depends(get_db)):
     response_model=user_schema.UserResponse,
 )
 async def create_user(user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
-    return await user_crud.create_user(db, user, blob_service_client)
+    return await user_crud.create_user(db, user)
 
 
 @router.put(

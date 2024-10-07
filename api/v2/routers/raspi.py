@@ -2,21 +2,23 @@ import os
 import tempfile
 from typing import Any
 
-from fastapi import APIRouter, File, Depends, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
 from sqlalchemy.ext.asyncio import AsyncSession
-from azure.storage.blob import BlobServiceClient
 
 import v2.schemas.raspi as raspi_schema
-import v2.cruds.couple as couple_crud
+from db import get_db
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
-from v2.azure.storage import upload_blob_file, download_blob_file, get_blob_storage_account
-from v2.utils.query import get_user_id_same_couple
-from db import get_db
 from v1.utils.logging import get_logger
+from v2.azure.storage import (
+    download_blob_file,
+    get_blob_storage_account,
+    upload_blob_file,
+)
+from v2.utils.query import get_user_id_same_couple
 
 router = APIRouter()
 logger = get_logger()
@@ -80,7 +82,9 @@ async def all(
     summary="メッセージ送信",
     response_model=raspi_schema.RaspiMessageResponse,
 )
-async def create_message(id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)) -> Any:
+async def create_message(
+    id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
+) -> Any:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     content: bytes = await file.read()
     with open(file_location, "wb") as f:
@@ -97,14 +101,10 @@ async def create_message(id: int, file: UploadFile = File(...), db: AsyncSession
     "/{id}",
     tags=["raspi"],
     summary="同coupleのメッセージ取得",
-    response_model=raspi_schema.RaspiMessageResponse,
+    # response_model=raspi_schema.RaspiMessageResponse,
 )
-async def get_message(
-    id: int, db: AsyncSession = Depends(get_db)
-):
-    #同coupleのidを取得
+async def get_message(id: int, db: AsyncSession = Depends(get_db)):
+    # 同coupleのidを取得
     boddy_id = await get_user_id_same_couple(db, id)
-
-    #azure blob storageにメッセージをアップロードしているか
-    blob_url = await download_blob_file(boddy_id, blob_service_client)
-    return {"id": id, "message": blob_url}
+    response = download_blob_file(id, boddy_id, blob_service_client)
+    return response

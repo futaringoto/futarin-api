@@ -1,6 +1,6 @@
+from azure.storage.blob import BlobServiceClient
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
-from azure.storage.blob import BlobServiceClient
 
 from db import Base
 from v2.models import Couple, Message, User  # noqa: F401
@@ -17,7 +17,7 @@ DB_URL = URL.create(
 
 engine = create_engine(DB_URL, echo=True)
 
-#azureの認証
+# azureの認証
 azure_storage_account = get_azure_storage_account()
 account_url = f"https://{azure_storage_account}.blob.core.windows.net"
 sas_token = get_azure_sas_token()
