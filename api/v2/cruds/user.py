@@ -1,3 +1,4 @@
+from azure.storage.blob import BlobServiceClient
 from openai import OpenAI
 from sqlalchemy import select
 from sqlalchemy.engine import Result
@@ -21,6 +22,11 @@ async def create_user(
     db.add(user)
     await db.commit()
     await db.refresh(user)
+
+    # azure-blob-storageにユーザのコンテナーを作成する
+    container_name = "user" + str(user.id)
+    blob_service_client.create_container(container_name)
+
     return user
 
 

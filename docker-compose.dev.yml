@@ -9,14 +9,34 @@ services:
       - ./api:/api
     command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
-      #  test:
-      #    build: .
-      #    environment:
-      #      - IS_DEV_MODE=1
-      #    env_file:
-      #      - .env
-      #    volumes:
-      #      - ./api:/api
-      #    command: pytest --disable-warnings --maxfail=1
-      #    depends_on:
-      #      - api
+  mysql:
+    platform: linux/amd64
+    image: mysql:8.0.27
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: futaringoto_db
+      TZ: Asia/Tokyo
+    cap_add:
+      - SYS_NICE
+    volumes:
+      - db-data:/var/lib/mysql
+      # - ./_docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      # - ./_docker/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    depends_on:
+      - mysql
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=password
+    ports:
+      - "3001:80"
+volumes:
+  db-data:

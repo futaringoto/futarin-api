@@ -11,12 +11,14 @@ from v1.utils.config import check_env_variables as v1_check_env_variables
 from v2.routers import couple as v2_couple
 from v2.routers import raspi as v2_raspi
 from v2.routers import user as v2_user
+from v2.utils.config import check_env_variables as v2_check_env_variables
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     v0_check_env_variables()
     v1_check_env_variables()
+    v2_check_env_variables()
     yield
     print("Shutting down...")
 

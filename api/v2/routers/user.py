@@ -1,5 +1,6 @@
 from typing import List
 
+from azure.storage.blob import BlobServiceClient
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,6 +12,12 @@ from v2.utils.logging import get_logger
 
 router = APIRouter()
 logger = get_logger()
+
+# azureの認証
+azure_storage_account = get_azure_storage_account()
+account_url = f"https://{azure_storage_account}.blob.core.windows.net"
+sas_token = get_azure_sas_token()
+blob_service_client = BlobServiceClient(account_url, credential=sas_token)
 
 
 @router.get(
@@ -30,7 +37,7 @@ async def list_users(db: AsyncSession = Depends(get_db)):
     response_model=user_schema.UserResponse,
 )
 async def create_user(user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
-    return await user_crud.create_user(db, user)
+    return await user_crud.create_user(db, user, blob_service_client)
 
 
 @router.put(
