@@ -29,11 +29,5 @@ def reset_database():
     Base.metadata.create_all(bind=engine)
 
 
-def create_azure_container():
-    container_name = "message"
-    blob_service_client.create_container(container_name)
-
-
 if __name__ == "__main__":
     reset_database()
-    create_azure_container()

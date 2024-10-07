@@ -13,19 +13,16 @@ import v2.cruds.couple as couple_crud
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
-from v2.azure.storage import upload_blob_file, download_blob_file
+from v2.azure.storage import upload_blob_file, download_blob_file, get_blob_storage_account
+from v2.utils.query import get_user_id_same_couple
 from db import get_db
 from v1.utils.logging import get_logger
-from v2.utils.config import get_azure_sas_token, get_azure_storage_account
 
 router = APIRouter()
 logger = get_logger()
 
 # azureの認証
-azure_storage_account = get_azure_storage_account()
-account_url = f"https://{azure_storage_account}.blob.core.windows.net"
-sas_token = get_azure_sas_token()
-blob_service_client = BlobServiceClient(account_url, credential=sas_token)
+blob_service_client = get_blob_storage_account()
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -106,7 +103,7 @@ async def get_message(
     id: int, db: AsyncSession = Depends(get_db)
 ):
     #同coupleのidを取得
-    boddy_id = await couple_crud.get_user_id_same_couple(db, id)
+    boddy_id = await get_user_id_same_couple(db, id)
 
     #azure blob storageにメッセージをアップロードしているか
     blob_url = await download_blob_file(boddy_id, blob_service_client)

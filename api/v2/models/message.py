@@ -9,6 +9,6 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    azure_url = Column(String(1000), nullable=False)
+    file_url = Column(String(1000), nullable=False)
 
     user = relationship("User", back_populates="messages")
