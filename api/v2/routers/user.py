@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import v2.cruds.user as user_crud
 import v2.schemas.user as user_schema
 from db import get_db
-from v2.utils.config import get_azure_sas_token, get_azure_storage_account
+from config import get_azure_sas_token, get_azure_storage_account
 from v2.utils.logging import get_logger
 
 router = APIRouter()

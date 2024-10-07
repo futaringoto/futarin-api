@@ -30,14 +30,6 @@ def get_voicevox_api_key():
     return os.getenv("VOICEVOX_API_KEY")
 
 
-def get_mysql_root_pass():
-    return os.getenv("MYSQL_ROOT_PASSWORD")
-
-
-def get_mysql_name():
-    return os.getenv("MYSQL_DATABASE")
-
-
 def get_openai_assistant_id():
     return os.getenv("OPENAI_ASSISTANT_ID")
 
