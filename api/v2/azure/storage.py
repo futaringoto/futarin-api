@@ -3,6 +3,7 @@ import os
 from azure.storage.blob import BlobServiceClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import v2.models.message as message_model
 from v2.utils.config import get_azure_sas_token, get_azure_storage_account
 
 DOWNLOAD_DIR = "downloads"
@@ -45,6 +46,13 @@ async def upload_blob_file(
     blob_client = container_client.get_blob_client(blob_name)
     # Blobをアップロード
     blob_client.upload_blob(data=data, overwrite=True)
+
+    #messageテーブルにUpdate
+    blob_url = blob_client.url
+    message = message_model.Message(user_id=user_id)
+    db.add(message)
+    await db.commit()
+    await db.refresh(message)
 
     return {"id": user_id, "message": "メッセージをアップロードしました"}
 

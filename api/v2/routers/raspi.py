@@ -101,7 +101,7 @@ async def create_message(
     "/{id}",
     tags=["raspi"],
     summary="同coupleのメッセージ取得",
-    # response_model=raspi_schema.RaspiMessageResponse,
+    response_model=raspi_schema.RaspiMessageResponse,
 )
 async def get_message(id: int, db: AsyncSession = Depends(get_db)):
     # 同coupleのidを取得
