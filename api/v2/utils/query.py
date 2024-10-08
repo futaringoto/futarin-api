@@ -3,7 +3,6 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
-import v2.models.message as message_model
 import v2.models.user as user_model
 
 
@@ -26,13 +25,3 @@ async def get_user_id_same_couple(db: AsyncSession, user_id: int):
     user = result.scalar_one_or_none()
     boddy_id = user.id
     return boddy_id
-
-
-async def get_message_file_url(db: AsyncSession, user_id: int):
-    result: Result = await db.execute(
-        select(message_model.Message).where(message_model.Message.user_id == user_id)
-    )
-    message = result.scalar_one_or_none()
-    if message:
-        message_url = message.file_url
-        return message_url
