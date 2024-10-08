@@ -53,7 +53,9 @@ def download_blob_file(
     user_id: int, boddy_id: str, blob_service_client: BlobServiceClient
 ):
     container_name = "message"
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=str(boddy_id))
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name, blob=str(boddy_id)
+    )
     download_file_path = os.path.join(DOWNLOAD_DIR, f"{boddy_id}.wav")
 
     if not blob_client.exists():
@@ -62,6 +64,6 @@ def download_blob_file(
     with open(file=download_file_path, mode="wb") as download_file:
         download_data = blob_client.download_blob()
         download_file.write(download_data.readall())
-    
+
     blob_client.delete_blob()
     return {"id": user_id, "message": "ダウンロードが完了しました"}

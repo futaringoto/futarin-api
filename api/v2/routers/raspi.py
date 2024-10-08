@@ -106,6 +106,6 @@ async def create_message(
 async def get_message(id: int, db: AsyncSession = Depends(get_db)):
     # 同coupleのidを取得
     boddy_id = await get_user_id_same_couple(db, id)
-    #同coupleのファイルをダウンロード
+    # 同coupleのファイルをダウンロード
     response = download_blob_file(id, str(boddy_id), blob_service_client)
     return response
