@@ -1,17 +1,15 @@
 import os
 
 from azure.storage.blob import BlobServiceClient
-from sqlalchemy.ext.asyncio import AsyncSession
 
-import v2.models.message as message_model
 from v2.utils.config import get_azure_sas_token, get_azure_storage_account
 
 DOWNLOAD_DIR = "downloads"
+AZURE_STORAGE_ACCOUNT = get_azure_storage_account()
 
 
 def get_blob_storage_account():
-    azure_storage_account = get_azure_storage_account()
-    account_url = f"https://{azure_storage_account}.blob.core.windows.net"
+    account_url = f"https://{AZURE_STORAGE_ACCOUNT}.blob.core.windows.net"
     sas_token = get_azure_sas_token()
     blob_service_client = BlobServiceClient(account_url, credential=sas_token)
     return blob_service_client
@@ -33,9 +31,7 @@ def has_blob_file(id: int, blob_service_client: BlobServiceClient):
         return False
 
 
-async def upload_blob_file(
-    user_id: int, blob_service_client: BlobServiceClient, db: AsyncSession, data
-):
+async def upload_blob_file(user_id: int, blob_service_client: BlobServiceClient, data):
     container_name = "message"
     # コンテナクライアントの取得
     container_client = blob_service_client.get_container_client(
@@ -46,12 +42,6 @@ async def upload_blob_file(
     blob_client = container_client.get_blob_client(blob_name)
     # Blobをアップロード
     blob_client.upload_blob(data=data, overwrite=True)
-
-    # messageテーブルにUpdate
-    message = message_model.Message(user_id=user_id)
-    db.add(message)
-    await db.commit()
-    await db.refresh(message)
 
     return {"id": user_id, "message": "メッセージをアップロードしました"}
 
