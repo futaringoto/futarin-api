@@ -47,8 +47,7 @@ async def upload_blob_file(
     # Blobをアップロード
     blob_client.upload_blob(data=data, overwrite=True)
 
-    #messageテーブルにUpdate
-    blob_url = blob_client.url
+    # messageテーブルにUpdate
     message = message_model.Message(user_id=user_id)
     db.add(message)
     await db.commit()

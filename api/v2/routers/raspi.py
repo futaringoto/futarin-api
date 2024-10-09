@@ -9,7 +9,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.schemas.raspi as raspi_schema
 from db import get_db
-from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
 from v1.utils.logging import get_logger
@@ -18,6 +17,7 @@ from v2.azure.storage import (
     get_blob_storage_account,
     upload_blob_file,
 )
+from v2.services.gpt import generate_text
 from v2.utils.query import get_user_id_same_couple
 
 router = APIRouter()
@@ -45,6 +45,7 @@ async def all(
     id: int,
     file: UploadFile = File(...),
     speaker: int = 1,
+    db: AsyncSession = Depends(get_db),
 ) -> FileResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
@@ -58,7 +59,7 @@ async def all(
         logger.info(f"transcription: {transcription.text}")
 
         # chatgpt
-        generated_text: str = generate_text(transcription.text)
+        generated_text: str = await generate_text(id, transcription.text, db)
         logger.info(f"generated text: {generated_text}")
 
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
