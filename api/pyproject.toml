@@ -17,6 +17,7 @@ azure-storage-blob = "^12.21.0"
 sqlalchemy = "^2.0.35"
 aiomysql = "^0.2.0"
 azure-identity = "^1.18.0"
+azure-messaging-webpubsubservice = "^1.2.1"
 
 
 [tool.poetry.group.dev.dependencies]

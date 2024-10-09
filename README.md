@@ -37,6 +37,7 @@ echo "OPENAI_ASSISTANT_ID=[openAI assistant id]" >> .env
 echo "OPENAI_THREAD_ID=[openAI thread id]" >> .env
 echo "AZURE_STORAGE_ACCOUNT=[azure storage-account name]" >> .env
 echo "AZURE_SAS_TOKEN=[azure storage-account SAS token]" >> .env
+echo "PUBSUB_CONNECTION_STRING=[azure Web PubSub connection string]" >> .env
 ```
     - `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
     - `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から
