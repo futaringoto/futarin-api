@@ -22,6 +22,7 @@ jobs:
           echo "OPENAI_THREAD_ID =${{ vars.OPENAI_THREAD_ID }}" >> .env
           echo "AZURE_SAS_TOKEN=${{ secrets.AZURE_SAS_TOKEN }}" >> .env
           echo "AZURE_STORAGE_ACCOUNT=${{ vars.AZURE_STORAGE_ACCOUNT }}" >> .env
+          echo "PUBSUB_CONNECTION_STRING=${{ secrets.PUBSUB_CONNECTION_STRING }}" >> .env
 
       - name: Run docker-compose Build
         run: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d

@@ -11,10 +11,10 @@ from v1.utils.config import check_env_variables as v1_check_env_variables
 from v2.routers import couple as v2_couple
 from v2.routers import raspi as v2_raspi
 from v2.routers import user as v2_user
-from v2.utils.config import check_env_variables as v2_check_env_variables
 
-#from v2.routers import pubsub as v2_pubsub
+# from v2.routers import pubsub as v2_pubsub
 from v2.services.pubsub import push_id
+from v2.utils.config import check_env_variables as v2_check_env_variables
 
 
 @asynccontextmanager
@@ -63,7 +63,7 @@ app.include_router(v1_sandbox.router, prefix="/v1/sandbox")
 app.include_router(v2_raspi.router, prefix="/v2/raspis")
 app.include_router(v2_user.router, prefix="/v2/users")
 app.include_router(v2_couple.router, prefix="/v2/couples")
-#app.include_router(v2_pubsub.router, prefix="/v2")
+# app.include_router(v2_pubsub.router, prefix="/v2")
 
 
 @app.get("/")

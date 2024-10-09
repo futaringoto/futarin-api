@@ -11,6 +11,7 @@ from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
 from v1.utils.logging import get_logger
+from v2.services.pubsub import get_service
 
 router = APIRouter()
 logger = get_logger()
@@ -79,3 +80,12 @@ async def create_message(id: int, file: UploadFile = File(...)) -> Any:
     os.remove(file_location)
 
     return {"id": id, "message": "successed!"}
+
+
+@router.post("/{id}/negotiate", tags=["raspi"])
+async def negotiate(id: int):
+    if not id:
+        return "missing user id", 400
+    service = get_service()
+    token = service.get_client_access_token(user_id=id)
+    return {"url": token["url"]}
