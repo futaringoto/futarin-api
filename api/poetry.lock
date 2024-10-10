@@ -124,6 +124,23 @@ msal-extensions = ">=1.2.0"
 typing-extensions = ">=4.0.0"
 
 [[package]]
+name = "azure-messaging-webpubsubservice"
+version = "1.2.1"
+description = "Microsoft Azure WebPubSub Service Client Library for Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "azure-messaging-webpubsubservice-1.2.1.tar.gz", hash = "sha256:fa4659e26d2a5751e25e701e68cc442eec867d44254b4bdd917a805d6fe681c4"},
+    {file = "azure_messaging_webpubsubservice-1.2.1-py3-none-any.whl", hash = "sha256:2924c1d7fd7e4ef5f3c3a11791118f44270dc08fe3ad5bd8b8377a1d3516dea6"},
+]
+
+[package.dependencies]
+azure-core = ">=1.30.0"
+isodate = ">=0.6.1"
+pyjwt = ">=2.6.0"
+typing-extensions = ">=4.6.0"
+
+[[package]]
 name = "azure-storage-blob"
 version = "12.23.1"
 description = "Microsoft Azure Blob Storage Client Library for Python"
@@ -2018,4 +2035,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "8696933d8a52ea89cc71bf9e40cc3ec13ffff141b7f0870f399d5c6e956b9cb9"
+content-hash = "04b342ba1172d6fd99b39e31be8ff81fd0151b4961b1c32a53b9b7a8539809db"

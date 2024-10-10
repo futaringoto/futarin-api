@@ -10,6 +10,7 @@ def check_env_variables():
         "VOICEVOX_API_KEY",
         "AZURE_SAS_TOKEN",
         "AZURE_STORAGE_ACCOUNT",
+        "PUBSUB_CONNECTION_STRING",
     ]
     env_vars_prod: list[str] = [
         # 本番環境のみで使う環境変数
@@ -61,3 +62,7 @@ def get_azure_sas_token():
 
 def get_db_cert_path():
     return os.getenv("DB_CERT_PATH")
+
+
+def get_pubsub_connection_string():
+    return os.getenv("PUBSUB_CONNECTION_STRING")
