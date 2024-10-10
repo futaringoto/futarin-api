@@ -11,7 +11,11 @@ def get_user_by_raspi_id(db: Session, id: int):
 
 
 async def get_user_id_same_couple(db: AsyncSession, user_id: int):
-    subquery = select(user_model.User.couple_id).where(user_model.User.id == user_id).scalar_subquery()
+    subquery = (
+        select(user_model.User.couple_id)
+        .where(user_model.User.id == user_id)
+        .scalar_subquery()
+    )
     stmt = select(user_model.User).where(user_model.User.couple_id == subquery)
     results = await db.execute(stmt)
     users = results.scalars().all()

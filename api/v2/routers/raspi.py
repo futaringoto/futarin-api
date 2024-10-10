@@ -18,7 +18,7 @@ from v2.azure.storage import (
     upload_blob_file,
 )
 from v2.services.gpt import generate_text
-from v2.utils.query import get_user_id_same_couple, get_thread_id
+from v2.utils.query import get_thread_id, get_user_id_same_couple
 
 router = APIRouter()
 logger = get_logger()
