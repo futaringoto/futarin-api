@@ -8,7 +8,7 @@ from db import Base
 class Raspi(Base):
     __tablename__ = "raspis"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     connection_id = Column(String(50), nullable=True)
     name = Column(String(20), nullable=False)
     created_at = Column(TIMESTAMP, server_default=func.now())

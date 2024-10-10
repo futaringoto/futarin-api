@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 
 from db import Base
-from v2.models import Couple, Message, User, Raspi # noqa: F401
+from v2.models import Couple, Message, Raspi, User  # noqa: F401
 
 DB_URL = URL.create(
     drivername="mysql+pymysql",
