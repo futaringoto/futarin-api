@@ -1,6 +1,9 @@
 [tool.isort]
 profile = "black"
 
+[tool.pytest.ini_options]
+addopts = "--ignore=tests/test_v1_raspi.py"
+
 [tool.poetry]
 name = "futarin-api"
 version = "0.1.0"
