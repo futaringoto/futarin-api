@@ -104,7 +104,7 @@ async def negotiate(id: int):
     service = get_service()
     token = service.get_client_access_token(user_id=id)
     return {"url": token["url"]}
-
+  
 
 @router.get(
     "/{id}",
