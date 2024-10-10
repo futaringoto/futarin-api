@@ -1,12 +1,13 @@
 import os
 import tempfile
-from typing import Any
+from typing import Any, List
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import v2.cruds.raspi as raspi_crud
 import v2.schemas.raspi as raspi_schema
 from db import get_db
 from v1.services.voicevox_api import get_voicevox_audio
@@ -18,6 +19,7 @@ from v2.azure.storage import (
     upload_blob_file,
 )
 from v2.services.gpt import generate_text
+from v2.services.pubsub import get_service
 from v2.utils.query import get_thread_id, get_user_id_same_couple
 
 router = APIRouter()
@@ -95,8 +97,16 @@ async def create_message(
     with open(file_location, "rb") as data:
         response = await upload_blob_file(id, blob_service_client, db, data)
     os.remove(file_location)
-
     return response
+
+
+@router.post("/{id}/negotiate", tags=["raspi"], summary="websocketsのURL発行")
+async def negotiate(id: int):
+    if not id:
+        return "missing user id", 400
+    service = get_service()
+    token = service.get_client_access_token(user_id=id)
+    return {"url": token["url"]}
 
 
 @router.get(
@@ -111,3 +121,48 @@ async def get_message(id: int, db: AsyncSession = Depends(get_db)):
     # 同coupleのファイルをダウンロード
     response = download_blob_file(id, str(boddy_id), blob_service_client)
     return response
+
+
+@router.get(
+    "/",
+    tags=["raspi"],
+    summary="ラズパイ一覧の取得",
+    response_model=List[raspi_schema.RaspiResponse],
+)
+async def list_raspi(db: AsyncSession = Depends(get_db)):
+    return await raspi_crud.get_raspis(db)
+
+
+@router.post(
+    "/",
+    tags=["raspi"],
+    summary="新規ラズパイの作成",
+    response_model=raspi_schema.RaspiResponse,
+)
+async def create_raspi(
+    raspi: raspi_schema.RaspiCreate, db: AsyncSession = Depends(get_db)
+):
+    return await raspi_crud.create_raspi(db, raspi)
+
+
+@router.put(
+    "/{id}",
+    tags=["raspi"],
+    summary="ラズパイの更新",
+    response_model=raspi_schema.RaspiResponse,
+)
+async def update_raspi(
+    id: int, raspi_body: raspi_schema.RaspiUpdate, db: AsyncSession = Depends(get_db)
+):
+    raspi = await raspi_crud.get_raspi(db, raspi_id=id)
+    if raspi is None:
+        raise HTTPException(status_code=404, detail="Raspi not found")
+    return await raspi_crud.update_raspi(db, raspi_body, original=raspi)
+
+
+@router.delete("/{id}", tags=["raspi"], summary="ラズパイの削除", response_model=None)
+async def delete_raspi(id: int, db: AsyncSession = Depends(get_db)):
+    raspi = await raspi_crud.get_raspi(db, raspi_id=id)
+    if raspi is None:
+        raise HTTPException(status_code=404, detail="Raspi not found")
+    return await raspi_crud.delete_raspi(db, raspi)

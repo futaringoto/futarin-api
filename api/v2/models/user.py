@@ -14,9 +14,12 @@ class User(Base):
     )
     name = Column(String(20), nullable=False)
     thread_id = Column(String(45), nullable=False)
-    raspi_id = Column(Integer, unique=True)
+    raspi_id = Column(
+        Integer, ForeignKey("raspis.id", ondelete="SET NULL"), nullable=True
+    )
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
+    raspi = relationship("Raspi", back_populates="user")
     couple = relationship("Couple", back_populates="users")
     messages = relationship("Message", back_populates="user")
