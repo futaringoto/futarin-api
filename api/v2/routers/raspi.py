@@ -19,6 +19,7 @@ from v2.azure.storage import (
     get_blob_storage_account,
     upload_blob_file,
 )
+from v2.services.pubsub import get_service
 from v2.utils.query import get_user_id_same_couple
 
 router = APIRouter()
@@ -94,8 +95,16 @@ async def create_message(
     with open(file_location, "rb") as data:
         response = await upload_blob_file(id, blob_service_client, db, data)
     os.remove(file_location)
-
     return response
+
+
+@router.post("/{id}/negotiate", tags=["raspi"], summary="websocketsのURL発行")
+async def negotiate(id: int):
+    if not id:
+        return "missing user id", 400
+    service = get_service()
+    token = service.get_client_access_token(user_id=id)
+    return {"url": token["url"]}
 
 
 @router.get(
