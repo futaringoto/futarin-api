@@ -1,7 +1,4 @@
-import os
-
 from openai import OpenAI
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from v1.utils.config import get_openai_assistant_id
 from v2.utils.config import get_openai_api_key
