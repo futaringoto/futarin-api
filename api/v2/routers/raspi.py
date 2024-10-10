@@ -1,6 +1,6 @@
 import os
 import tempfile
-from typing import Any
+from typing import Any, List
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
@@ -111,4 +111,55 @@ async def get_message(id: int, db: AsyncSession = Depends(get_db)):
     return response
 
 
+@router.get(
+    "/",
+    tags=["raspi"],
+    summary="ラズパイ一覧の取得",
+    response_model=List[raspi_schema.RaspiResponse]
+)
+async def list_raspi(
+    #db: AsyncSession = Depends(get_db)
+    ):
+    return [raspi_schema.RaspiResponse(id=1)]
+
+
+@router.post(
+    "/",
+    tags=["raspi"],
+    summary="新規ラズパイの作成",
+    response_model=raspi_schema.RaspiResponse
+)
+async def create_raspi(
+    raspi: raspi_schema.RaspiCreate,
+    #db: AsyncSession = Depends(get_db)
+    ):
+    return raspi_schema.RaspiResponse(**raspi.model_dump())
+
+
+
+@router.put(
+    "/{id}",
+    tags=["raspi"],
+    summary="ラズパイの更新",
+    response_model=raspi_schema.RaspiResponse
+)
+async def update_raspi(
+    id: int,
+    raspi: raspi_schema.RaspiUpdate,
+    #db: AsyncSession = Depends(get_db)
+    ):
+    return raspi_schema.RaspiResponse(id=id, **raspi.model_dump())
+
+
+@router.delete(
+    "/{id}",
+    tags=["raspi"],
+    summary="ラズパイの削除",
+    response_model=None
+)
+async def update_raspi(
+    id: int,
+    #db: AsyncSession = Depends(get_db)
+    ):
+    return {"id": id}
 
