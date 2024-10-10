@@ -1,6 +1,6 @@
 import os
 import tempfile
-from typing import Any, Union
+from typing import Any
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
@@ -93,7 +93,7 @@ async def create_message(
         f.write(content)
 
     with open(file_location, "rb") as data:
-        response = await upload_blob_file(id, blob_service_client, data)
+        response = await upload_blob_file(id, blob_service_client, db, data)
     os.remove(file_location)
 
     return response
@@ -103,19 +103,11 @@ async def create_message(
     "/{id}",
     tags=["raspi"],
     summary="同coupleのメッセージ取得",
-    # response_model=Union[FileResponse, raspi_schema.RaspiMessageResponse],
+    response_model=raspi_schema.RaspiMessageResponse,
 )
-async def get_message(
-    id: int, db: AsyncSession = Depends(get_db)
-):
+async def get_message(id: int, db: AsyncSession = Depends(get_db)):
     # 同coupleのidを取得
     boddy_id = await get_user_id_same_couple(db, id)
     # 同coupleのファイルをダウンロード
     response = download_blob_file(id, str(boddy_id), blob_service_client)
-
-    if response["message"]:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, f"../../downloads/{boddy_id}.wav")
-        return FileResponse(path=file_path, media_type="audio/wav", filename=f"{boddy_id}.wav")
-    
-    return {"id": id, "message": "相方のファイルは見つかりませんでした"}
+    return response
