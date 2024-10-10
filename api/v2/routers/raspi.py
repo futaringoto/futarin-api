@@ -98,7 +98,7 @@ async def create_message(
     return response
 
 
-@router.post("/{id}/negotiate", tags=["raspi"])
+@router.post("/{id}/negotiate", tags=["raspi"], summary="websocketsのURL発行")
 async def negotiate(id: int):
     if not id:
         return "missing user id", 400
