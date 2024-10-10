@@ -77,8 +77,10 @@ sudo make stop
 ### v2
 | メソッド | パス | 概要 | 実装状況 |
 | :----- | :-- | :-- | :-- |
-| POST | `/v2/raspi/{id}/` | 一連の処理全て |  |
-| POST | `/v2/raspi/{id}/messages/` | messageの作成 |  |
+| GET POST PUT DELETE | `/v2/raspis` | ラズパイ関連 |  |
+| POST | `/v2/raspis/{id}/` | 一連の処理全て |  |
+| POST | `/v2/raspis/{id}/messages/` | messageの作成 |  |
+| POST | `/v2/raspis/{id}/negotiate/` | websockets接続 |  |
 | GET POST PUT DELETE | `/v2/users/` | ユーザ関連 | ✔️ |
 | GET POST PUT DELETE | `/v2/couples/` | ペア関連 | ✔️ |
 
