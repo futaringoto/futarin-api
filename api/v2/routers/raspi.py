@@ -2,19 +2,30 @@ import os
 import tempfile
 from typing import Any
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.schemas.raspi as raspi_schema
+from db import get_db
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
 from v1.utils.logging import get_logger
+from v2.azure.storage import (
+    download_blob_file,
+    get_blob_storage_account,
+    upload_blob_file,
+)
 from v2.services.pubsub import get_service
+from v2.utils.query import get_user_id_same_couple
 
 router = APIRouter()
 logger = get_logger()
+
+# azureの認証
+blob_service_client = get_blob_storage_account()
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -72,14 +83,18 @@ async def all(
     summary="メッセージ送信",
     response_model=raspi_schema.RaspiMessageResponse,
 )
-async def create_message(id: int, file: UploadFile = File(...)) -> Any:
+async def create_message(
+    id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
+) -> Any:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     content: bytes = await file.read()
     with open(file_location, "wb") as f:
         f.write(content)
-    os.remove(file_location)
 
-    return {"id": id, "message": "successed!"}
+    with open(file_location, "rb") as data:
+        response = await upload_blob_file(id, blob_service_client, db, data)
+    os.remove(file_location)
+    return response
 
 
 @router.post("/{id}/negotiate", tags=["raspi"])
@@ -89,3 +104,17 @@ async def negotiate(id: int):
     service = get_service()
     token = service.get_client_access_token(user_id=id)
     return {"url": token["url"]}
+
+
+@router.get(
+    "/{id}",
+    tags=["raspi"],
+    summary="同coupleのメッセージ取得",
+    response_model=raspi_schema.RaspiMessageResponse,
+)
+async def get_message(id: int, db: AsyncSession = Depends(get_db)):
+    # 同coupleのidを取得
+    boddy_id = await get_user_id_same_couple(db, id)
+    # 同coupleのファイルをダウンロード
+    response = download_blob_file(id, str(boddy_id), blob_service_client)
+    return response
