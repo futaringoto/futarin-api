@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import v2.cruds.raspi as raspi_crud
 import v2.schemas.raspi as raspi_schema
 from db import get_db
 from v1.services.gpt import generate_text
@@ -115,51 +116,42 @@ async def get_message(id: int, db: AsyncSession = Depends(get_db)):
     "/",
     tags=["raspi"],
     summary="ラズパイ一覧の取得",
-    response_model=List[raspi_schema.RaspiResponse]
+    response_model=List[raspi_schema.RaspiResponse],
 )
-async def list_raspi(
-    #db: AsyncSession = Depends(get_db)
-    ):
-    return [raspi_schema.RaspiResponse(id=1)]
+async def list_raspi(db: AsyncSession = Depends(get_db)):
+    return await raspi_crud.get_raspis(db)
 
 
 @router.post(
     "/",
     tags=["raspi"],
     summary="新規ラズパイの作成",
-    response_model=raspi_schema.RaspiResponse
+    response_model=raspi_schema.RaspiResponse,
 )
 async def create_raspi(
-    raspi: raspi_schema.RaspiCreate,
-    #db: AsyncSession = Depends(get_db)
-    ):
-    return raspi_schema.RaspiResponse(**raspi.model_dump())
-
+    raspi: raspi_schema.RaspiCreate, db: AsyncSession = Depends(get_db)
+):
+    return await raspi_crud.create_raspi(db, raspi)
 
 
 @router.put(
     "/{id}",
     tags=["raspi"],
     summary="ラズパイの更新",
-    response_model=raspi_schema.RaspiResponse
+    response_model=raspi_schema.RaspiResponse,
 )
 async def update_raspi(
-    id: int,
-    raspi: raspi_schema.RaspiUpdate,
-    #db: AsyncSession = Depends(get_db)
-    ):
-    return raspi_schema.RaspiResponse(id=id, **raspi.model_dump())
+    id: int, raspi_body: raspi_schema.RaspiUpdate, db: AsyncSession = Depends(get_db)
+):
+    raspi = await raspi_crud.get_raspi(db, raspi_id=id)
+    if raspi is None:
+        raise HTTPException(status_code=404, detail="Raspi not found")
+    return await raspi_crud.update_raspi(db, raspi_body, original=raspi)
 
 
-@router.delete(
-    "/{id}",
-    tags=["raspi"],
-    summary="ラズパイの削除",
-    response_model=None
-)
-async def update_raspi(
-    id: int,
-    #db: AsyncSession = Depends(get_db)
-    ):
-    return {"id": id}
-
+@router.delete("/{id}", tags=["raspi"], summary="ラズパイの削除", response_model=None)
+async def delete_raspi(id: int, db: AsyncSession = Depends(get_db)):
+    raspi = await raspi_crud.get_raspi(db, raspi_id=id)
+    if raspi is None:
+        raise HTTPException(status_code=404, detail="Raspi not found")
+    return await raspi_crud.delete_raspi(db, raspi)
