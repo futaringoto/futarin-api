@@ -3,50 +3,16 @@ import os
 from openai import OpenAI
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from v1.utils.config import get_openai_assistant_id
 from v2.utils.config import get_openai_api_key
-from v2.utils.query import get_thread_id
 
 OpenAI.api_key = get_openai_api_key()
 client = OpenAI()
 
+ASSISTANT_ID = get_openai_assistant_id()
 
-async def generate_text(id: int, prompt: str, db: AsyncSession) -> str:
-    thread_id = await get_thread_id(db, id)
 
-    assistant = client.beta.assistants.create(
-        name="futarin",
-        instructions="あなたは、プロのカウンセラーです。\
-            与えられたファイルをもとに相談者の気持ちに寄り添い、解決策を提示しながら、簡潔でフレンドリーなひとまとまりのメッセージを生成してください。\
-            日本語で50文字程度でお願いします。\
-        ",
-        model="gpt-4o-mini",
-        tools=[{"type": "file_search"}],
-    )
-
-    vs_name = "professional counselor"
-    vector_store = client.beta.vector_stores.create(name=vs_name)
-
-    # このスクリプトが存在するディレクトリのパスを取得
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # cheering.txt への相対パスを作成
-    file_path = os.path.join(current_dir, "../utils/file_search.txt")
-
-    # ファイルを開く
-    # with open(file_path, 'r') as file:
-    #     file_streams = file.read()
-
-    file_streams = [open(file_path, "rb")]
-
-    client.beta.vector_stores.file_batches.upload_and_poll(
-        vector_store_id=vector_store.id, files=file_streams
-    )
-
-    assistant = client.beta.assistants.update(
-        assistant_id=assistant.id,
-        tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
-    )
-
+def generate_text(thread_id: int, prompt: str) -> str:
     client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
@@ -55,7 +21,7 @@ async def generate_text(id: int, prompt: str, db: AsyncSession) -> str:
 
     run = client.beta.threads.runs.create_and_poll(
         thread_id=thread_id,
-        assistant_id=assistant.id,
+        assistant_id=ASSISTANT_ID,
     )
 
     messages = list(

@@ -18,7 +18,7 @@ from v2.azure.storage import (
     upload_blob_file,
 )
 from v2.services.gpt import generate_text
-from v2.utils.query import get_user_id_same_couple
+from v2.utils.query import get_user_id_same_couple, get_thread_id
 
 router = APIRouter()
 logger = get_logger()
@@ -59,7 +59,8 @@ async def all(
         logger.info(f"transcription: {transcription.text}")
 
         # chatgpt
-        generated_text: str = await generate_text(id, transcription.text, db)
+        thread_id = await get_thread_id(db, id)
+        generated_text: str = generate_text(thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
 
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
