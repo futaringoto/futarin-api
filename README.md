@@ -37,6 +37,7 @@ echo "OPENAI_ASSISTANT_ID=[openAI assistant id]" >> .env
 echo "OPENAI_THREAD_ID=[openAI thread id]" >> .env
 echo "AZURE_STORAGE_ACCOUNT=[azure storage-account name]" >> .env
 echo "AZURE_SAS_TOKEN=[azure storage-account SAS token]" >> .env
+echo "PUBSUB_CONNECTION_STRING=[azure Web PubSub connection string]" >> .env
 ```
     - `VOICEVOX_API_KEY` は https://su-shiki.com/api/ から、
     - `OPENAI_API_KEY` は https://platform.openai.com/docs/overview から
@@ -76,8 +77,10 @@ sudo make stop
 ### v2
 | メソッド | パス | 概要 | 実装状況 |
 | :----- | :-- | :-- | :-- |
-| POST | `/v2/raspi/{id}/` | 一連の処理全て |  |
-| POST | `/v2/raspi/{id}/messages/` | messageの作成 |  |
+| GET POST PUT DELETE | `/v2/raspis` | ラズパイ関連 |  |
+| POST | `/v2/raspis/{id}/` | 一連の処理全て |  |
+| POST | `/v2/raspis/{id}/messages/` | messageの作成 |  |
+| POST | `/v2/raspis/{id}/negotiate/` | websockets接続 |  |
 | GET POST PUT DELETE | `/v2/users/` | ユーザ関連 | ✔️ |
 | GET POST PUT DELETE | `/v2/couples/` | ペア関連 | ✔️ |
 
