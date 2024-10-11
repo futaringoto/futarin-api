@@ -13,9 +13,11 @@ def get_service() -> WebPubSubServiceClient:
     return service
 
 
-def push_id_to_raspi_id(raspi_id: int, user_id: int):
-    service = get_service()
+async def push_id_to_raspi_id(
+    service: WebPubSubServiceClient, receiver_raspi_id: int, sender_user_id: int
+):
     res = service.send_to_user(
-        user_id=str(raspi_id), message={"type": "message", "id": str(user_id)}
+        user_id=str(receiver_raspi_id),
+        message={"type": "message", "id": str(sender_user_id)},
     )
     return res

@@ -2,6 +2,7 @@ import os
 import tempfile
 from typing import Any, List
 
+from azure.messaging.webpubsubservice import WebPubSubServiceClient
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
@@ -19,8 +20,8 @@ from v2.azure.storage import (
     upload_blob_file,
 )
 from v2.services.gpt import generate_text
-from v2.services.pubsub import get_service
-from v2.utils.query import get_thread_id
+from v2.services.pubsub import get_service, push_id_to_raspi_id
+from v2.utils.query import get_thread_id, get_user_id_same_couple
 
 router = APIRouter()
 logger = get_logger()
@@ -81,31 +82,38 @@ async def all(
 
 
 @router.post(
-    "/{id}/messages",
+    "/{raspi_id}/messages",
     tags=["futarin-raspi"],
     summary="メッセージ送信",
     response_model=raspi_schema.RaspiMessageResponse,
 )
 async def create_message(
-    id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
+    raspi_id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
 ) -> Any:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     content: bytes = await file.read()
     with open(file_location, "wb") as f:
         f.write(content)
-
     with open(file_location, "rb") as data:
-        response = await upload_blob_file(id, blob_service_client, data)
+        response = await upload_blob_file(raspi_id, blob_service_client, data)
     os.remove(file_location)
+    service: WebPubSubServiceClient = get_service()
+    # TODO 本来は自分のraspi_id -> 相手のraspi_id が必要
+    # boddy_id = await get_user_id_same_couple(db, id)
+    # TODO: raspi_idに変換してない。
+    receiver_id = await get_user_id_same_couple(db, raspi_id)
+    push_id_to_raspi_id(service, receiver_id, raspi_id)
     return response
 
 
-@router.post("/{id}/negotiate", tags=["futarin-raspi"], summary="websocketsのURL発行")
-async def negotiate(id: int):
-    if not id:
+@router.post(
+    "/{raspi_id}/negotiate", tags=["futarin-raspi"], summary="websocketsのURL発行"
+)
+async def negotiate(raspi_id: int):
+    if not raspi_id:
         return "missing user id", 400
     service = get_service()
-    token = service.get_client_access_token(user_id=id)
+    token = service.get_client_access_token(user_id=raspi_id)
     return {"url": token["url"]}
 
 
@@ -119,8 +127,6 @@ async def get_message(
     raspi_id: int,
     message_id: int,
 ):
-    # 同coupleのidを取得
-    # boddy_id = await get_user_id_same_couple(db, id)
     # 同coupleのファイルをダウンロード
     is_downloaded = is_downloaded_blob(str(message_id), blob_service_client)
 
