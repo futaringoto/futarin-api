@@ -1,6 +1,6 @@
 import os
 import tempfile
-from typing import Any, Union, List
+from typing import Any, List
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
@@ -14,8 +14,8 @@ from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
 from v1.utils.logging import get_logger
 from v2.azure.storage import (
-    download_blob_file,
     get_blob_storage_account,
+    is_downloaded_blob,
     upload_blob_file,
 )
 from v2.services.gpt import generate_text
@@ -115,19 +115,19 @@ async def negotiate(id: int):
     summary="同coupleのメッセージ取得",
     # response_model=Union[FileResponse, raspi_schema.RaspiMessageResponse],
 )
-async def get_message(
-    id: int, db: AsyncSession = Depends(get_db)
-):
+async def get_message(id: int, db: AsyncSession = Depends(get_db)):
     # 同coupleのidを取得
     boddy_id = await get_user_id_same_couple(db, id)
     # 同coupleのファイルをダウンロード
-    response = download_blob_file(id, str(boddy_id), blob_service_client)
+    is_downloaded = is_downloaded_blob(str(boddy_id), blob_service_client)
 
-    if response["is_downloaded_blob"]:
+    if is_downloaded:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(current_dir, f"../../downloads/{boddy_id}.wav")
-        return FileResponse(path=file_path, media_type="audio/wav", filename=f"{boddy_id}.wav")
-    
+        return FileResponse(
+            path=file_path, media_type="audio/wav", filename=f"{boddy_id}.wav"
+        )
+
     return {"id": id, "message": "相方のファイルは見つかりませんでした"}
 
 

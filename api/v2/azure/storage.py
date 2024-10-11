@@ -46,9 +46,7 @@ async def upload_blob_file(user_id: int, blob_service_client: BlobServiceClient,
     return {"id": user_id, "message": "メッセージをアップロードしました"}
 
 
-def download_blob_file(
-    user_id: int, boddy_id: str, blob_service_client: BlobServiceClient
-):
+def is_downloaded_blob(boddy_id: str, blob_service_client: BlobServiceClient):
     container_name = "message"
     blob_client = blob_service_client.get_blob_client(
         container=container_name, blob=str(boddy_id)
@@ -56,11 +54,11 @@ def download_blob_file(
     download_file_path = os.path.join(DOWNLOAD_DIR, f"{boddy_id}.wav")
 
     if not blob_client.exists():
-        return {"id": user_id, "is_downloaded_blob": False}
+        return False
 
     with open(file=download_file_path, mode="wb") as download_file:
         download_data = blob_client.download_blob()
         download_file.write(download_data.readall())
 
     blob_client.delete_blob()
-    return {"id": user_id, "is_downloaded_blob": True}
+    return True
