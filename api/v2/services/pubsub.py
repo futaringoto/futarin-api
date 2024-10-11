@@ -13,7 +13,35 @@ def get_service() -> WebPubSubServiceClient:
     return service
 
 
+def get_service_demo() -> WebPubSubServiceClient:
+    service = WebPubSubServiceClient.from_connection_string(
+        CONNECTION_STRING,
+        hub="demo",
+    )
+    return service
+
+
 def push_id(id: int):
     service = get_service()
     res = service.send_to_all({"user_id": str(id)})
+    return res
+
+
+def push_transcription(raspi_id: int, transcription: str):
+    service = get_service_demo()
+    res = service.send_to_all({
+        "type": "transcription",
+        "raspi_id": str(raspi_id),
+        "transcription": transcription,
+    })
+    return res
+
+
+def push_text(raspi_id: int, generated_text: str):
+    service = get_service_demo()
+    res = service.send_to_all({
+        "type": "generated_text",
+        "raspi_id": str(raspi_id),
+        "generated_text": generated_text,
+    })
     return res

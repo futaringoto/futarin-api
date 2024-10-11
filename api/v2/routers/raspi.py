@@ -19,13 +19,13 @@ from v2.azure.storage import (
     upload_blob_file,
 )
 from v2.services.gpt import generate_text
-from v2.services.pubsub import get_service
+from v2.services.pubsub import get_service, push_transcription, push_text
 from v2.utils.query import get_thread_id, get_user_id_same_couple
 
 router = APIRouter()
 logger = get_logger()
 
-# azureの認証
+# azure-blob-storageの認証
 blob_service_client = get_blob_storage_account()
 
 UPLOAD_DIR = "uploads"
@@ -59,11 +59,13 @@ async def all(
         transcription: str = speech2text(file_location)
         os.remove(file_location)
         logger.info(f"transcription: {transcription.text}")
+        push_transcription(id, transcription.text)
 
         # chatgpt
         thread_id = await get_thread_id(db, id)
         generated_text: str = generate_text(thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
+        push_text(id, generated_text)
 
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
