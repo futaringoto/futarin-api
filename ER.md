@@ -11,7 +11,7 @@ erDiagram
     raspi {
         int_unsigned id PK "ラズパイID"
         varchar(20) name "ラズパイ名"
-        varchar(50) connection_id "コネクションID"
+        boolean ws_active "websockets接続状況"
         timestamp created_at "作成日時"
         timestamp updated_at "更新日時"
     }
