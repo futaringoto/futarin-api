@@ -19,7 +19,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @router.post(
     "/",
-    tags=["raspi"],
+    tags=["v1"],
     summary="一連の動作全て",
     response_class=FileResponse,
     responses={

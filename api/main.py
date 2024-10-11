@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from datetime import datetime
 from typing import Union
 
 from fastapi import FastAPI
@@ -27,12 +28,25 @@ async def lifespan(app: FastAPI):
 
 tags_metadata = [
     {
-        "name": "raspi",
+        "name": "futarin-raspi",
         "description": "[futairn-raspi]()から使用するエンドポイント",
     },
     {
         "name": "sandbox",
         "description": "デバッグ用",
+    },
+    {
+        "name": "raspis",
+    },
+    {
+        "name": "users",
+    },
+    {
+        "name": "couples",
+    },
+    {
+        "name": "v1",
+        "description": "**Deprecated (非推奨)**",
     },
     {
         "name": "v0 (deprecated)",
@@ -78,3 +92,8 @@ def read_item(item_id: int, q: Union[str, None] = None):
 @app.post("/push/{raspi_id}/messages/{user_id}")
 def push(raspi_id, user_id):
     return push_id_to_raspi_id(raspi_id, user_id)
+
+
+@app.get("/ping")
+def ping():
+    return {"message": "pong", "timestamp": datetime.now()}
