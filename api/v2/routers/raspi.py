@@ -34,7 +34,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @router.post(
     "/{id}",
-    tags=["raspi"],
+    tags=["futarin-raspi"],
     summary="一連の動作全て",
     response_class=FileResponse,
     responses={
@@ -82,7 +82,7 @@ async def all(
 
 @router.post(
     "/{id}/messages",
-    tags=["raspi"],
+    tags=["futarin-raspi"],
     summary="メッセージ送信",
     response_model=raspi_schema.RaspiMessageResponse,
 )
@@ -100,7 +100,11 @@ async def create_message(
     return response
 
 
-@router.post("/{id}/negotiate", tags=["raspi"], summary="websocketsのURL発行")
+@router.post(
+    "/{id}/negotiate",
+    tags=["futarin-raspi"],
+    summary="websocketsのURL発行"
+)
 async def negotiate(id: int):
     if not id:
         return "missing user id", 400
@@ -111,7 +115,7 @@ async def negotiate(id: int):
 
 @router.get(
     "/{id}",
-    tags=["raspi"],
+    tags=["futarin-raspi"],
     summary="同coupleのメッセージ取得",
     # response_model=Union[FileResponse, raspi_schema.RaspiMessageResponse],
 )
@@ -133,7 +137,7 @@ async def get_message(id: int, db: AsyncSession = Depends(get_db)):
 
 @router.get(
     "/",
-    tags=["raspi"],
+    tags=["raspis"],
     summary="ラズパイ一覧の取得",
     response_model=List[raspi_schema.RaspiResponse],
 )
@@ -143,7 +147,7 @@ async def list_raspi(db: AsyncSession = Depends(get_db)):
 
 @router.post(
     "/",
-    tags=["raspi"],
+    tags=["raspis"],
     summary="新規ラズパイの作成",
     response_model=raspi_schema.RaspiResponse,
 )
@@ -155,7 +159,7 @@ async def create_raspi(
 
 @router.put(
     "/{id}",
-    tags=["raspi"],
+    tags=["raspis"],
     summary="ラズパイの更新",
     response_model=raspi_schema.RaspiResponse,
 )
@@ -168,7 +172,12 @@ async def update_raspi(
     return await raspi_crud.update_raspi(db, raspi_body, original=raspi)
 
 
-@router.delete("/{id}", tags=["raspi"], summary="ラズパイの削除", response_model=None)
+@router.delete(
+    "/{id}",
+    tags=["raspis"],
+    summary="ラズパイの削除",
+    response_model=None
+)
 async def delete_raspi(id: int, db: AsyncSession = Depends(get_db)):
     raspi = await raspi_crud.get_raspi(db, raspi_id=id)
     if raspi is None:

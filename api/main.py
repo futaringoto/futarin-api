@@ -28,12 +28,25 @@ async def lifespan(app: FastAPI):
 
 tags_metadata = [
     {
-        "name": "raspi",
+        "name": "futarin-raspi",
         "description": "[futairn-raspi]()から使用するエンドポイント",
     },
     {
         "name": "sandbox",
         "description": "デバッグ用",
+    },
+    {
+        "name": "raspis",
+    },
+    {
+        "name": "users",
+    },
+    {
+        "name": "couples",
+    },
+    {
+        "name": "v1",
+        "description": "**Deprecated (非推奨)**",
     },
     {
         "name": "v0 (deprecated)",
