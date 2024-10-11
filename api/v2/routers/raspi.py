@@ -20,7 +20,12 @@ from v2.azure.storage import (
     upload_blob_file,
 )
 from v2.services.gpt import generate_text
-from v2.services.pubsub import get_service, push_id_to_raspi_id, push_text, push_transcription
+from v2.services.pubsub import (
+    get_service,
+    push_id_to_raspi_id,
+    push_text,
+    push_transcription,
+)
 from v2.utils.query import get_thread_id, get_user_id_same_couple
 
 router = APIRouter()
@@ -104,7 +109,7 @@ async def create_message(
     # boddy_id = await get_user_id_same_couple(db, id)
     # TODO: raspi_idに変換してない。
     receiver_id = await get_user_id_same_couple(db, raspi_id)
-    push_id_to_raspi_id(service, receiver_id, raspi_id)
+    await push_id_to_raspi_id(service, receiver_id, raspi_id)
     return response
 
 
