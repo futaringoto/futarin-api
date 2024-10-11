@@ -14,7 +14,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @router.post(
     "/transcript",
-    tags=["sandbox"],
+    tags=["sandbox", "v1"],
     summary="whisperによる文字起こし",
     response_model=TextResponse,
 )
@@ -34,7 +34,7 @@ async def transcript(file: UploadFile = File(...)) -> TextResponse:
 
 @router.post(
     "/gpt",
-    tags=["sandbox"],
+    tags=["sandbox", "v1"],
     summary="chatGPTによる文章生成",
     response_model=TextResponse,
 )
