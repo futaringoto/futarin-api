@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from datetime import datetime
 from typing import Union
 
 from fastapi import FastAPI
@@ -13,7 +14,7 @@ from v2.routers import pubsub as v2_pubsub
 from v2.routers import raspi as v2_raspi
 from v2.routers import user as v2_user
 from v2.routers import demo as v2_demo
-from v2.services.pubsub import push_id
+from v2.services.pubsub import push_id_to_raspi_id
 from v2.utils.config import check_env_variables as v2_check_env_variables
 
 
@@ -28,12 +29,25 @@ async def lifespan(app: FastAPI):
 
 tags_metadata = [
     {
-        "name": "raspi",
+        "name": "futarin-raspi",
         "description": "[futairn-raspi]()から使用するエンドポイント",
     },
     {
         "name": "sandbox",
         "description": "デバッグ用",
+    },
+    {
+        "name": "raspis",
+    },
+    {
+        "name": "users",
+    },
+    {
+        "name": "couples",
+    },
+    {
+        "name": "v1",
+        "description": "**Deprecated (非推奨)**",
     },
     {
         "name": "v0 (deprecated)",
@@ -77,6 +91,11 @@ def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
-@app.post("/push")
-def push():
-    return push_id(1)
+@app.post("/push/{raspi_id}/messages/{user_id}")
+def push(raspi_id, user_id):
+    return push_id_to_raspi_id(raspi_id, user_id)
+
+
+@app.get("/ping")
+def ping():
+    return {"message": "pong", "timestamp": datetime.now()}
