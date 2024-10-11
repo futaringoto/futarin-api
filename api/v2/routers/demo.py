@@ -1,19 +1,16 @@
-import os
 import json
+import os
+
 import aiofiles
 from fastapi import APIRouter, Header, HTTPException, Request, Response
-from fastapi.responses import HTMLResponse
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from v2.services.pubsub import get_service_demo
 
 router = APIRouter()
 
-@router.get(
-    "/get/logs",
-    summary="ログの取得",
-    response_class=HTMLResponse
-)
+
+@router.get("/get/logs", summary="ログの取得", response_class=HTMLResponse)
 async def get_logs():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, "../utils/index.html")

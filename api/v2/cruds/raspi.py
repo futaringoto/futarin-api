@@ -54,3 +54,13 @@ async def update_raspi(
 async def delete_raspi(db: AsyncSession, original: raspi_model.Raspi) -> None:
     await db.delete(original)
     await db.commit()
+
+
+async def update_ws_active(
+    is_active: bool,
+    db: AsyncSession,
+    raspi: raspi_model.Raspi,
+):
+    raspi.ws_active = is_active
+    db.add(raspi)
+    await db.commit()

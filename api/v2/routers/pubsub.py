@@ -1,8 +1,11 @@
 import json
 
-from fastapi import APIRouter, Header, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from db import get_db
+from v2.cruds.raspi import get_raspi, update_ws_active
 from v2.services.pubsub import get_service
 from v2.utils.logging import get_logger
 
@@ -23,7 +26,10 @@ async def handle_options(request: Request):
 
 @router.post("/eventhandler")
 async def handle_event(
-    request: Request, ce_userid: str = Header(None), ce_type: str = Header(None)
+    request: Request,
+    ce_userid: str = Header(None),
+    ce_type: str = Header(None),
+    db: AsyncSession = Depends(get_db),
 ):
     print("Received event of type:", ce_type)
 
@@ -49,6 +55,8 @@ async def handle_event(
             return JSONResponse(content="missing user id", status_code=401)
 
     elif ce_type == "azure.webpubsub.sys.connected":
+        # raspi = await get_raspi(db, raspi_id=int(ce_userid))
+        # await update_ws_active(True, db, raspi)
         return Response(content=f"{ce_userid} connected", status_code=200)
 
     elif ce_type == "azure.webpubsub.user.message":
@@ -63,6 +71,11 @@ async def handle_event(
         )
 
         return Response(status_code=204, media_type="text/plain")
+
+    elif ce_type == "azure.webpubsub.sys.disconnected":
+        raspi = await get_raspi(db, raspi_id=int(ce_userid))
+        await update_ws_active(False, db, raspi)
+        return Response(content=f"{ce_userid} disconnected", status_code=200)
 
     else:
         return Response(content="Bad Request", status_code=400)
