@@ -21,6 +21,7 @@ sqlalchemy = "^2.0.35"
 aiomysql = "^0.2.0"
 azure-identity = "^1.18.0"
 azure-messaging-webpubsubservice = "^1.2.1"
+aiofiles = "^24.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
