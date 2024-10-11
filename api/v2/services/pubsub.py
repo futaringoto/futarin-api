@@ -32,7 +32,7 @@ def push_transcription(raspi_id: int, transcription: str):
     res = service.send_to_all({
         "type": "transcription",
         "raspi_id": str(raspi_id),
-        "transcription": transcription,
+        "text": transcription,
     })
     return res
 
@@ -42,6 +42,6 @@ def push_text(raspi_id: int, generated_text: str):
     res = service.send_to_all({
         "type": "generated_text",
         "raspi_id": str(raspi_id),
-        "generated_text": generated_text,
+        "text": generated_text,
     })
     return res

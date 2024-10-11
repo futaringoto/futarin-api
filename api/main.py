@@ -64,7 +64,7 @@ app.include_router(v2_raspi.router, prefix="/v2/raspis")
 app.include_router(v2_user.router, prefix="/v2/users")
 app.include_router(v2_couple.router, prefix="/v2/couples")
 app.include_router(v2_pubsub.router, prefix="/v2")
-app.include_router(v2_demo.router, prefix="/v2")
+app.include_router(v2_demo.router)
 
 
 @app.get("/")
