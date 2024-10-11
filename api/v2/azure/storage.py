@@ -56,11 +56,11 @@ def download_blob_file(
     download_file_path = os.path.join(DOWNLOAD_DIR, f"{boddy_id}.wav")
 
     if not blob_client.exists():
-        return {"id": user_id, "message": False}
+        return {"id": user_id, "is_downloaded_blob": False}
 
     with open(file=download_file_path, mode="wb") as download_file:
         download_data = blob_client.download_blob()
         download_file.write(download_data.readall())
 
     blob_client.delete_blob()
-    return {"id": user_id, "message": True}
+    return {"id": user_id, "is_downloaded_blob": True}

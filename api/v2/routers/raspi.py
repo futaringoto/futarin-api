@@ -113,7 +113,7 @@ async def get_message(
     # 同coupleのファイルをダウンロード
     response = download_blob_file(id, str(boddy_id), blob_service_client)
 
-    if response["message"]:
+    if response["is_downloaded_blob"]:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(current_dir, f"../../downloads/{boddy_id}.wav")
         return FileResponse(path=file_path, media_type="audio/wav", filename=f"{boddy_id}.wav")
