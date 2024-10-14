@@ -8,7 +8,7 @@ DOWNLOAD_DIR = "downloads"
 AZURE_STORAGE_ACCOUNT = get_azure_storage_account()
 
 
-def get_blob_storage_account():
+def get_blob_service_client():
     account_url = f"https://{AZURE_STORAGE_ACCOUNT}.blob.core.windows.net"
     sas_token = get_azure_sas_token()
     blob_service_client = BlobServiceClient(account_url, credential=sas_token)
