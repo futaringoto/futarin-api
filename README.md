@@ -63,11 +63,7 @@ sudo make create-table
 6. localhost でドキュメントを開いてみましょう
 http://localhost/docs
 
-7. SSL証明書(`DigiCertGlobalRootCA.crt.pem`)の配置
-    - [Download the public SSL certificate - Azure Database for MySQL - Flexible Server | Microsoft Learn](https://learn.microsoft.com/en-gb/azure/mysql/flexible-server/how-to-connect-tls-ssl#download-the-public-ssl-certificate) から証明書を取得する。
-    - `DigiCertGlobalRootCA.crt.pem` を`/api`に含める。
-
-8. コンテナの停止
+7. コンテナの停止
 ```
 sudo make stop
 ```
