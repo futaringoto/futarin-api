@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import v2.cruds.raspi as raspi_crud
 import v2.schemas.raspi as raspi_schema
 from db import get_db
-from v1.services.voicevox_api import get_voicevox_audio
 from v2.services.blob_storage import (
     get_blob_service_client,
     is_downloaded_blob,
