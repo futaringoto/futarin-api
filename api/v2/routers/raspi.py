@@ -14,8 +14,8 @@ from db import get_db
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
 from v1.utils.logging import get_logger
-from v2.azure.storage import (
-    get_blob_storage_account,
+from v2.services.blob_storage import (
+    get_blob_service_client,
     is_downloaded_blob,
     upload_blob_file,
 )
@@ -32,7 +32,7 @@ router = APIRouter()
 logger = get_logger()
 
 # azure-blob-storageの認証
-blob_service_client = get_blob_storage_account()
+blob_service_client = get_blob_service_client()
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)

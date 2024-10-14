@@ -1,23 +1,19 @@
-from openai import OpenAI
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.models.user as user_model
 import v2.schemas.user as user_schema
-from config import get_openai_api_key
-
-client = OpenAI(api_key=get_openai_api_key())
 
 
 async def create_user(
     db: AsyncSession,
     user_create: user_schema.UserCreate,
+    thread_id: str,
 ) -> user_model.User:
     # 引数にスキーマuser_create: user_schema.UserCreateを受け取りDBモデルのuser_model.Userに変換する
     user = user_model.User(**user_create.model_dump())
-    thread = client.beta.threads.create()
-    user.thread_id = thread.id
+    user.thread_id = thread_id
     db.add(user)
     await db.commit()
     await db.refresh(user)

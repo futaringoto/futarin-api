@@ -8,6 +8,11 @@ client = OpenAI()
 ASSISTANT_ID = get_openai_assistant_id()
 
 
+def create_new_thread_id() -> str:
+    thread = client.beta.threads.create()
+    return thread.id
+
+
 def generate_text(thread_id: int, prompt: str) -> str:
     client.beta.threads.messages.create(
         thread_id=thread_id,
