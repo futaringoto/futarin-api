@@ -6,8 +6,11 @@ from sqlalchemy.orm import Session
 import v2.models.user as user_model
 
 
-def get_user_by_raspi_id(db: Session, id: int):
-    return db.query(user_model.User).filter(user_model.User.raspi_id == id).first()
+async def get_user_by_raspi_id(db: Session, raspi_id: int):
+    result = await db.execute(
+        select(user_model.User).where(user_model.User.raspi_id == raspi_id)
+    )
+    return result.scalars().first()
 
 
 async def get_user_id_same_couple(db: AsyncSession, user_id: int):

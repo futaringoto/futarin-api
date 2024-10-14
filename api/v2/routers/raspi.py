@@ -1,3 +1,4 @@
+import asyncio
 import os
 import tempfile
 from typing import Any, List
@@ -11,9 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import v2.cruds.raspi as raspi_crud
 import v2.schemas.raspi as raspi_schema
 from db import get_db
-from v1.services.voicevox_api import get_voicevox_audio
-from v1.services.whisper import speech2text
-from v1.utils.logging import get_logger
 from v2.services.blob_storage import (
     get_blob_service_client,
     is_downloaded_blob,
@@ -26,7 +24,10 @@ from v2.services.pubsub import (
     push_text,
     push_transcription,
 )
-from v2.utils.query import get_thread_id, get_user_id_same_couple
+from v2.services.voicevox_api import get_voicevox_audio
+from v2.services.whisper import speech2text
+from v2.utils.logging import get_logger
+from v2.utils.query import get_user_by_raspi_id, get_user_id_same_couple
 
 router = APIRouter()
 logger = get_logger()
@@ -39,7 +40,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post(
-    "/{id}",
+    "/{raspi_id}",
     tags=["futarin-raspi"],
     summary="一連の動作全て",
     response_class=FileResponse,
@@ -50,29 +51,34 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
     },
 )
 async def all(
-    id: int,
+    raspi_id: int,
     file: UploadFile = File(...),
     speaker: int = 1,
     db: AsyncSession = Depends(get_db),
 ) -> FileResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
-        print(id)
-        # whisper
-        content: bytes = await file.read()
+        get_user_task = asyncio.create_task(get_user_by_raspi_id(db, raspi_id))
+        file_read_task = asyncio.create_task(file.read())
+
+        content: bytes = await file_read_task
         with open(file_location, "wb") as f:
             f.write(content)
-        transcription: str = speech2text(file_location)
+
+        # whisper
+        transcription: str = await speech2text(file_location)
         os.remove(file_location)
         logger.info(f"transcription: {transcription.text}")
-        push_transcription(id, transcription.text)
+        push_transcription(raspi_id, transcription.text)
 
         # chatgpt
-        thread_id = await get_thread_id(db, id)
-        generated_text: str = generate_text(thread_id, transcription.text)
+        user = await get_user_task
+        thread_id = user.thread_id
+        generated_text: str = await generate_text(thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
-        push_text(id, generated_text)
+        push_text(raspi_id, generated_text)
 
+        # voicevox
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
         with open(temp_file.name, "wb") as f:

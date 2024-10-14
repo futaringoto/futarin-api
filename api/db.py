@@ -5,7 +5,7 @@ from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from config import get_db_object, get_is_dev_mode, get_db_cert_path
+from config import get_db_cert_path, get_db_object, get_is_dev_mode
 
 IS_DEV_MODE: bool = get_is_dev_mode()
 

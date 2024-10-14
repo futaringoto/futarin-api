@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.cruds.user as user_crud
 import v2.schemas.user as user_schema
-from db import get_db
 from config import get_azure_sas_token, get_azure_storage_account
+from db import get_db
 from v2.services.gpt import create_new_thread_id
 from v2.utils.logging import get_logger
 
@@ -38,7 +38,7 @@ async def list_users(db: AsyncSession = Depends(get_db)):
     response_model=user_schema.UserResponse,
 )
 async def create_user(user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
-    thread_id = create_new_thread_id()
+    thread_id = await create_new_thread_id()
     return await user_crud.create_user(db, user, thread_id)
 
 

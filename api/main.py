@@ -4,6 +4,7 @@ from typing import Union
 
 from fastapi import FastAPI
 
+from config import check_env_variables
 from v0.routers import raspi as v0_raspi
 from v0.utils.config import check_env_variables as v0_check_env_variables
 from v1.routers import raspi as v1_raspi
@@ -15,7 +16,6 @@ from v2.routers import pubsub as v2_pubsub
 from v2.routers import raspi as v2_raspi
 from v2.routers import user as v2_user
 from v2.services.pubsub import get_service, push_id_to_raspi_id
-from config import check_env_variables
 
 service = get_service()
 
