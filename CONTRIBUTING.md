@@ -104,7 +104,24 @@ sudo make test
 ```
 
 ## マイグレーション
-リモートのマイグレーション
+1. .env に本番環境の情報を追加
+```
+echo "DB_USERNAME=[username]" >> .env
+echo "DB_PASSWORD=[password]" >> .env
+echo "DB_HOST=[host]" >> .env
+echo "DB_NAME=[database name]" >> .env
+```
+2. SSL証明書(`DigiCertGlobalRootCA.crt.pem`)の配置
+    - [Download the public SSL certificate - Azure Database for MySQL - Flexible Server | Microsoft Learn](https://learn.microsoft.com/en-gb/azure/mysql/flexible-server/how-to-connect-tls-ssl#download-the-public-ssl-certificate) から証明書を取得する。
+    - `DigiCertGlobalRootCA.crt.pem` を`/api`に含める。
+3. テーブルの更新
+```
+docker compose exec api alembic revision --autogenerate -m "update tables"
+```
+4. テーブルの更新を反映
+```
+alembic upgrade head
+```
 
 ## GitHub Actions
 ### Workflows
