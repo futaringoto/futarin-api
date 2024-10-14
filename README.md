@@ -129,15 +129,14 @@ sudo make stop
 │       └── conf.d
 │           └── app.conf
 ├── api
-│   ├── DigiCertGlobalRootCA.crt.pem
 │   ├── alembic
 │   │   ├── README
 │   │   ├── env.py
 │   │   ├── script.py.mako
 │   │   └── versions
-│   │       ├── 46c6ca5a18f2_init.py
-│   │       └── c0a3f6001efc_initialize_tables.py
 │   ├── alembic.ini
+│   ├── config.py
+│   ├── db-cert.pem
 │   ├── db.py
 │   ├── main.py
 │   ├── migrate_db.py
@@ -147,62 +146,33 @@ sudo make stop
 │   │   ├── __init__.py
 │   │   ├── audio1.wav
 │   │   ├── conftest.py
+│   │   ├── cruds
+│   │   │   └── conftest.py
 │   │   ├── test_v1_raspi.py
+│   │   ├── test_v2_raspi.py
 │   │   └── test_v2_user.py
 │   ├── uploads
 │   ├── v0
-│   │   ├── __init__.py
-│   │   ├── routers
-│   │   │   ├── __init__.py
-│   │   │   └── raspi.py
-│   │   ├── services
-│   │   │   ├── __init__.py
-│   │   │   ├── gpt.py
-│   │   │   ├── tts.py
-│   │   │   ├── voicevox.py
-│   │   │   ├── voicevox_api.py
-│   │   │   └── whisper.py
-│   │   └── utils
-│   │       ├── __init__.py
-│   │       └── config.py
 │   ├── v1
-│   │   ├── __init__.py
-│   │   ├── routers
-│   │   │   ├── __init__.py
-│   │   │   ├── raspi.py
-│   │   │   └── sandbox.py
-│   │   ├── schemas
-│   │   │   ├── __init__.py
-│   │   │   └── sandbox.py
-│   │   ├── services
-│   │   │   ├── __init__.py
-│   │   │   ├── assistants
-│   │   │   │   ├── __init__.py
-│   │   │   │   └── assistants
-│   │   │   │       └── create.py
-│   │   │   ├── gpt.py
-│   │   │   ├── gpt_backup.py
-│   │   │   ├── voicevox_api.py
-│   │   │   └── whisper.py
-│   │   └── utils
-│   │       ├── __init__.py
-│   │       ├── cheering.txt
-│   │       ├── config.py
-│   │       └── logging.py
 │   └── v2
 │       ├── __init__.py
+│       ├── azure
 │       ├── cruds
 │       │   ├── __init__.py
 │       │   ├── couple.py
+│       │   ├── raspi.py
 │       │   └── user.py
 │       ├── models
 │       │   ├── __init__.py
 │       │   ├── couple.py
 │       │   ├── message.py
+│       │   ├── raspi.py
 │       │   └── user.py
 │       ├── routers
 │       │   ├── __init__.py
 │       │   ├── couple.py
+│       │   ├── demo.py
+│       │   ├── pubsub.py
 │       │   ├── raspi.py
 │       │   └── user.py
 │       ├── schemas
@@ -212,15 +182,22 @@ sudo make stop
 │       │   ├── sandbox.py
 │       │   └── user.py
 │       ├── services
-│       │   └── __init__.py
+│       │   ├── __init__.py
+│       │   ├── blob_storage.py
+│       │   ├── gpt.py
+│       │   ├── pubsub.py
+│       │   ├── voicevox_api.py
+│       │   └── whisper.py
 │       └── utils
 │           ├── __init__.py
-│           ├── config.py
+│           ├── file_search.txt
+│           ├── index.html
 │           ├── logging.py
 │           └── query.py
 ├── docker-compose.dev.yml
 ├── docker-compose.yml
-└── init_mysql.sh
+├── init_mysql.sh
+└── ws_client.py
 ```
 
 ## VOICEVOX
