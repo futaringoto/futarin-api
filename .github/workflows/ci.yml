@@ -2,8 +2,8 @@ name: CI
 
 on:
   pull_request:
-    paths:
-      - "api/**.py"
+    #    paths:
+    #      - "api/**.py"
 
 jobs:
   test:
@@ -16,6 +16,7 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
+          echo "IS_DEV_MODE=1" >> .env
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
           echo "VOICEVOX_API_KEY=${{ secrets.VOICEVOX_API_KEY }}" >> .env
           echo "OPENAI_ASSISTANT_ID=${{ vars.OPENAI_ASSISTANT_ID }}" >> .env
@@ -24,10 +25,18 @@ jobs:
           echo "AZURE_STORAGE_ACCOUNT=${{ vars.AZURE_STORAGE_ACCOUNT }}" >> .env
           echo "PUBSUB_CONNECTION_STRING=${{ secrets.PUBSUB_CONNECTION_STRING }}" >> .env
 
-      - name: Run docker-compose Build
-        run: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+      - name: Build docker image
+        run: |
+          docker build \
+            --build-arg ENV=development \
+            -t futarin-api:latest . \
+            -f ./_docker/api/Dockerfile
+
+      - name: Run docker container
+        run: docker run -d --name api futarin-api:latest
+
       - name: Run flake8
-        run: docker compose exec api flake8
+        run: docker exec api flake8
 
       - name: Run test
-        run: docker compose exec api pytest --asyncio-mode=auto
+        run: docker exec api pytest --asyncio-mode=auto
