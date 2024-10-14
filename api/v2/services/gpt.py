@@ -8,8 +8,8 @@ client = AsyncOpenAI()
 ASSISTANT_ID = get_openai_assistant_id()
 
 
-def create_new_thread_id() -> str:
-    thread = client.beta.threads.create()
+async def create_new_thread_id() -> str:
+    thread = await client.beta.threads.create()
     return thread.id
 
 
