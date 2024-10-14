@@ -1,6 +1,6 @@
 from azure.messaging.webpubsubservice import WebPubSubServiceClient
 
-from v2.utils.config import get_pubsub_connection_string
+from config import get_pubsub_connection_string
 
 CONNECTION_STRING = get_pubsub_connection_string()
 

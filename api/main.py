@@ -15,16 +15,16 @@ from v2.routers import pubsub as v2_pubsub
 from v2.routers import raspi as v2_raspi
 from v2.routers import user as v2_user
 from v2.services.pubsub import get_service, push_id_to_raspi_id
-from v2.utils.config import check_env_variables as v2_check_env_variables
+from config import check_env_variables
 
 service = get_service()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    check_env_variables()
     v0_check_env_variables()
     v1_check_env_variables()
-    v2_check_env_variables()
     yield
     print("Shutting down...")
 

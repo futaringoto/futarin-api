@@ -1,7 +1,6 @@
 from openai import OpenAI
 
-from v1.utils.config import get_openai_assistant_id
-from v2.utils.config import get_openai_api_key
+from config import get_openai_api_key, get_openai_assistant_id
 
 OpenAI.api_key = get_openai_api_key()
 client = OpenAI()
