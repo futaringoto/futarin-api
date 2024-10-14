@@ -9,6 +9,6 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    send_message = Column(String(1000))
+    content = Column(String(1000))
 
     user = relationship("User", back_populates="messages")
