@@ -18,10 +18,7 @@ async def test_crud_raspi_no_name(async_client):
     assert len(res_get) == 1
 
     # 更新：ラズパイの名前を変更
-    res_3 = await async_client.put(
-        f"/v2/raspis/{raspi_id}",
-        json={"name": "hoge"}
-    )
+    res_3 = await async_client.put(f"/v2/raspis/{raspi_id}", json={"name": "hoge"})
     assert res_3.status_code == starlette.status.HTTP_200_OK
     res_put = res_3.json()
     assert res_put["name"] == "hoge"
