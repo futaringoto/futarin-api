@@ -1,5 +1,6 @@
 import os
 import tempfile
+import asyncio
 from typing import Any, List
 
 from azure.messaging.webpubsubservice import WebPubSubServiceClient
@@ -57,23 +58,27 @@ async def all(
 ) -> FileResponse:
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
-        user = await get_user_by_raspi_id(db, raspi_id)
+        get_user_task = asyncio.create_task(get_user_by_raspi_id(db, raspi_id))
+        file_read_task = asyncio.create_task(file.read())
 
-        # whisper
-        content: bytes = await file.read()
+        content: bytes = await file_read_task
         with open(file_location, "wb") as f:
             f.write(content)
+
+        # whisper
         transcription: str = await speech2text(file_location)
         os.remove(file_location)
         logger.info(f"transcription: {transcription.text}")
         push_transcription(raspi_id, transcription.text)
 
         # chatgpt
+        user = await get_user_task
         thread_id = user.thread_id
         generated_text: str = await generate_text(thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
         push_text(raspi_id, generated_text)
 
+        # voicevox
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
         with open(temp_file.name, "wb") as f:
