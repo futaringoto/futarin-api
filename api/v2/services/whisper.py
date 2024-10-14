@@ -1,9 +1,9 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 from v1.utils.config import get_openai_api_key
 
-OpenAI.api_key = get_openai_api_key()
-client = OpenAI()
+AsyncOpenAI.api_key = get_openai_api_key()
+client = AsyncOpenAI()
 
 
 async def speech2text(file_location: str) -> str:
