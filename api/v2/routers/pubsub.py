@@ -3,7 +3,6 @@ import json
 from fastapi import APIRouter, Header, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 
-
 # from v2.cruds.raspi import get_raspi, update_ws_active
 from v2.services.pubsub import get_service
 from v2.utils.logging import get_logger
