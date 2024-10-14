@@ -1,6 +1,6 @@
+import asyncio
 import os
 import tempfile
-import asyncio
 from typing import Any, List
 
 from azure.messaging.webpubsubservice import WebPubSubServiceClient
@@ -24,6 +24,7 @@ from v2.services.pubsub import (
     push_text,
     push_transcription,
 )
+from v2.services.voicevox_api import get_voicevox_audio
 from v2.services.whisper import speech2text
 from v2.utils.logging import get_logger
 from v2.utils.query import get_user_by_raspi_id, get_user_id_same_couple
