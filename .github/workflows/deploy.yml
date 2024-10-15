@@ -23,6 +23,25 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      - name: Create .env file
+        run: |
+          cat <<EOL > ${{ github.workspace }}/api/.env
+          IS_DEV_MODE=0
+          VOICEVOX_URL=${{ vars.VOICEVOX_URL }}
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          VOICEVOX_API_KEY=${{ secrets.VOICEVOX_API_KEY }}
+          OPENAI_ASSISTANT_ID=${{ vars.OPENAI_ASSISTANT_ID }}
+          OPENAI_THREAD_ID=${{ vars.OPENAI_THREAD_ID }}
+          AZURE_STORAGE_ACCOUNT=${{ vars.AZURE_STORAGE_ACCOUNT }}
+          AZURE_SAS_TOKEN=${{ secrets.AZURE_SAS_TOKEN }}
+          PUBSUB_CONNECTION_STRING=${{ secrets.PUBSUB_CONNECTION_STRING }}
+          DB_NAME=${{ vars.DB_NAME }}
+          DB_HOST=${{ vars.DB_HOST }}
+          DB_USERNAME=${{ vars.DB_USERNAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_CERT_PATH=${{ env.PROJECT_ROOT }}/api/db-cert.pem
+          EOL
+
       - name: Add SSL certificates for DB
         run: |
           echo "${{ secrets.DB_SSL_CERT }}" > ${{ github.workspace }}/api/db-cert.pem
