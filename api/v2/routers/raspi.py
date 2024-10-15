@@ -93,25 +93,30 @@ async def all(
 async def create_message(
     raspi_id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
 ) -> Any:
-    file_read_task = asyncio.create_task(file.read())
-    user = await get_user_by_raspi_id(db, raspi_id)
-    user_paired = await get_user_paired_by_couple_id(db, user)
-    file_location = os.path.join(UPLOAD_DIR, file.filename)
-    content: bytes = await file_read_task
-    with open(file_location, "wb") as f:
-        f.write(content)
-    with open(file_location, "rb") as data:
+    try:
+        user = await get_user_by_raspi_id(db, raspi_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        user_paired = await get_user_paired_by_couple_id(db, user)
+        if not user_paired:
+            raise HTTPException(status_code=404, detail="Paired user not found")
+
+        content: bytes = await file.read()
         # TODO raspi_idで登録している
-        response = await upload_blob_file(raspi_id, blob_service_client, data)
-    os.remove(file_location)
-    service: WebPubSubServiceClient = get_service()
-    await push_id_to_raspi_id(
-        service,
-        receiver_raspi_id=user_paired.raspi_id,
-        # TODO raspi_idで送信している
-        sender_user_id=raspi_id,
-    )
-    return response
+        await upload_blob_file(raspi_id, blob_service_client, content)
+
+        service: WebPubSubServiceClient = get_service()
+        await push_id_to_raspi_id(
+            service,
+            receiver_raspi_id=user_paired.raspi_id,
+            # TODO raspi_idで送信している
+            sender_user_id=raspi_id,
+        )
+        return {"id": raspi_id, "message": "success"}
+    except Exception as e:
+        logger.error(f"Error occurred while processing the message: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred")
 
 
 @router.post(
