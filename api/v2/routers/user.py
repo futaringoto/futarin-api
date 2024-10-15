@@ -38,12 +38,8 @@ async def list_users(db: AsyncSession = Depends(get_db)):
     response_model=user_schema.UserResponse,
 )
 async def create_user(user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
-    try:
-        thread_id = await create_new_thread_id()
-        user_result = await user_crud.create_user(db, user, thread_id)
-        return user_result
-    except user_crud.ForeignKeyError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    thread_id = await create_new_thread_id()
+    return await user_crud.create_user(db, user, thread_id)
 
 
 @router.put(

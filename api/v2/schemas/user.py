@@ -34,8 +34,6 @@ class UserResponse(UserBase):
         None,
         description="couple_id is applied by couple_schema",
     )
-    # override
-    raspi_id: Optional[int]
     thread_id: str = Field(..., pattern=r"^thread_")
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(),

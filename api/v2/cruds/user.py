@@ -1,14 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.engine import Result
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.models.user as user_model
 import v2.schemas.user as user_schema
-
-
-class ForeignKeyError(Exception):
-    pass
 
 
 async def create_user(
@@ -16,18 +11,13 @@ async def create_user(
     user_create: user_schema.UserCreate,
     thread_id: str,
 ) -> user_model.User:
-    try:
-        # 引数にスキーマuser_create: user_schema.UserCreateを受け取りDBモデルのuser_model.Userに変換する
-        user = user_model.User(**user_create.model_dump())
-        user.thread_id = thread_id
-        db.add(user)
-        await db.commit()
-        await db.refresh(user)
-        return user
-    except IntegrityError as e:
-        if "foreign key" in str(e.orig):
-            raise ForeignKeyError("Related resource not found")
-        raise
+    # 引数にスキーマuser_create: user_schema.UserCreateを受け取りDBモデルのuser_model.Userに変換する
+    user = user_model.User(**user_create.model_dump())
+    user.thread_id = thread_id
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return user
 
 
 async def get_users(db: AsyncSession):
