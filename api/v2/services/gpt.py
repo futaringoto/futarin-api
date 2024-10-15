@@ -17,7 +17,21 @@ async def delete_thread_id(thread_id: str):
     await client.beta.threads.delete(thread_id)
 
 
-async def generate_text(thread_id: int, prompt: str) -> str:
+async def generate_text(mode: int, thread_id: int, prompt: str) -> str:
+    mode_dispatch = {
+        0: generate_text_normal,
+        1: generate_text_normal,
+    }
+
+    try:
+        handler = mode_dispatch[mode]
+        return await handler(thread_id, prompt)
+
+    except KeyError:
+        raise ValueError(f"Invalid mode: {mode}.")
+
+
+async def generate_text_normal(thread_id: int, prompt: str) -> str:
     await client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
