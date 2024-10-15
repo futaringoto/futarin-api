@@ -56,18 +56,15 @@ async def all(
     speaker: int = 1,
     db: AsyncSession = Depends(get_db),
 ) -> FileResponse:
-    file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
         get_user_task = asyncio.create_task(get_user_by_raspi_id(db, raspi_id))
-        file_read_task = asyncio.create_task(file.read())
-
-        content: bytes = await file_read_task
-        with open(file_location, "wb") as f:
-            f.write(content)
+        content: bytes = await file.read()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
+            temp_file.write(content)
+            temp_file_path = temp_file.name
 
         # whisper
-        transcription: str = await speech2text(file_location)
-        os.remove(file_location)
+        transcription: str = await speech2text(temp_file_path)
         logger.info(f"transcription: {transcription.text}")
         push_transcription(raspi_id, transcription.text)
 
@@ -80,17 +77,10 @@ async def all(
 
         # voicevox
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
-        with open(temp_file.name, "wb") as f:
-            f.write(audio)
-    except RequestError as e:
-        raise HTTPException(
-            status_code=500, detail=f"RequestError fetching data: {str(e)}"
-        )
-    except HTTPStatusError as e:
-        raise HTTPException(
-            status_code=e.response.status_code, detail=f"Error fetching data: {str(e)}"
-        )
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
+            temp_file.write(audio)
+    except (RequestError, HTTPStatusError) as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     return FileResponse(temp_file.name, media_type="audio/wav", filename="audio.wav")
 
 
