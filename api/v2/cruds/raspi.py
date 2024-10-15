@@ -64,3 +64,11 @@ async def update_ws_active(
     raspi.ws_active = is_active
     db.add(raspi)
     await db.commit()
+
+
+async def get_raspi_name(db: AsyncSession, id: int):
+    result = await db.execute(
+        select(raspi_model.Raspi.name).where(raspi_model.Raspi.id == id)
+    )
+    raspi = result.scalars().first()
+    return raspi

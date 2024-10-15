@@ -1,8 +1,10 @@
 from azure.messaging.webpubsubservice import WebPubSubServiceClient
 
+from v1.utils.logging import get_logger
 from v2.utils.config import get_pubsub_connection_string
 
 CONNECTION_STRING = get_pubsub_connection_string()
+logger = get_logger()
 
 
 def get_service() -> WebPubSubServiceClient:
@@ -35,6 +37,7 @@ def push_transcription(raspi_id: int, transcription: str):
         "raspi_id": str(raspi_id),
         "text": transcription,
     })
+    logger.info(f"res: {res}")
     return res
 
 
@@ -45,4 +48,5 @@ def push_text(raspi_id: int, generated_text: str):
         "raspi_id": str(raspi_id),
         "text": generated_text,
     })
+    logger.info(f"res: {res}")
     return res

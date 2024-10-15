@@ -1,13 +1,21 @@
 import os
 import json
 import aiofiles
-from fastapi import APIRouter, Header, HTTPException, Request, Response
+from fastapi import APIRouter, Header, HTTPException, Request, Response, WebSocket
 from fastapi.responses import HTMLResponse
 from fastapi.responses import JSONResponse
 
 from v2.services.pubsub import get_service_demo
 
 router = APIRouter()
+
+
+@router.websocket("/ws")
+async def websocket_endopoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Message text was: {data}")
 
 @router.get(
     "/get/logs",

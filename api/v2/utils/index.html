@@ -1,11 +1,59 @@
 <!DOCTYPE html>
 <html lang="ja">
     <head>
-        meta charset="UTF-8">
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Azure Web PubSub Demo</title>
+        <title>ふたりんごと ログ</title>
     </head>
     <body>
-        
+        <h1>ふたりんごと　ログ</h1>
+        <div id="message"></div>
+        </ul>
+        <script>
+            var ws = new WebSocket("wss://futarin.webpubsub.azure.com/client/hubs/demo?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2Z1dGFyaW4ud2VicHVic3ViLmF6dXJlLmNvbS9jbGllbnQvaHVicy9kZW1vIiwiaWF0IjoxNzI4OTk5NjgyLCJleHAiOjE3MjkwMDMyODIsInN1YiI6M30.M8TRCM9CjV_4d_DqY5ZdUPFuLQg0ukqYZC3d1Y-Hlxs");
+            ws.onmessage = async function(event) {
+                console.log("data received");
+                const data = JSON.parse(event.data);
+                const raspi_id = parseInt(data.raspi_id, 10);
+                const apiUrl = `http://localhost:80/v2/raspis/raspi/${raspi_id}/name`
+                let raspi_name = "";
+                console.log(data);
+
+                await fetch(apiUrl).then(
+                    response => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    }
+                ).then(data => {
+                    raspi_name = data;
+                    console.log(raspi_name);
+                })
+                .catch(error => {
+                    console.error("Fetch error,", error);
+                });
+                
+                if (data.type === "transcription") {
+                    console.log("Transcription data received:", data);
+                    document.getElementById("message").innerHTML += `<p><strong>${raspi_name}:</strong> ${data.text}</p>`;
+                } else if (data.type === "generated_text") {
+                    console.log("Generated text data received:", data);
+                    document.getElementById("message").innerHTML += `<p><strong>ふたりん:</strong> ${data.text}</p>`;
+                }
+            };
+
+            ws.onopen = () => {
+                console.log("WebSocket connection established");
+            }
+
+            ws.onclose = () => {
+                console.log("WebSocket connection closed")
+            };
+
+            ws.onerror = (error) => {
+                console.error("WebSocket error:", error)
+            };
+        </script>
     </body>
 </html>
