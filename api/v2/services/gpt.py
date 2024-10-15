@@ -13,6 +13,10 @@ async def create_new_thread_id() -> str:
     return thread.id
 
 
+async def delete_thread_id(thread_id: str):
+    await client.beta.threads.delete(thread_id)
+
+
 async def generate_text(thread_id: int, prompt: str) -> str:
     await client.beta.threads.messages.create(
         thread_id=thread_id,
