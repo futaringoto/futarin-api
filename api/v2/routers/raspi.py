@@ -27,7 +27,7 @@ from v2.services.pubsub import (
 from v2.services.voicevox_api import get_voicevox_audio
 from v2.services.whisper import speech2text
 from v2.utils.logging import get_logger
-from v2.utils.query import get_user_by_raspi_id, get_user_id_same_couple
+from v2.utils.query import get_user_by_raspi_id, get_user_paired_by_couple_id
 
 router = APIRouter()
 logger = get_logger()
@@ -103,19 +103,24 @@ async def all(
 async def create_message(
     raspi_id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
 ) -> Any:
+    file_read_task = asyncio.create_task(file.read())
+    user = await get_user_by_raspi_id(db, raspi_id)
+    user_paired = await get_user_paired_by_couple_id(db, user)
     file_location = os.path.join(UPLOAD_DIR, file.filename)
-    content: bytes = await file.read()
+    content: bytes = await file_read_task
     with open(file_location, "wb") as f:
         f.write(content)
     with open(file_location, "rb") as data:
+        # TODO raspi_idで登録している
         response = await upload_blob_file(raspi_id, blob_service_client, data)
     os.remove(file_location)
     service: WebPubSubServiceClient = get_service()
-    # TODO 本来は自分のraspi_id -> 相手のraspi_id が必要
-    # boddy_id = await get_user_id_same_couple(db, id)
-    # TODO: raspi_idに変換してない。
-    receiver_id = await get_user_id_same_couple(db, raspi_id)
-    await push_id_to_raspi_id(service, receiver_id, raspi_id)
+    await push_id_to_raspi_id(
+        service,
+        receiver_raspi_id=user_paired.raspi_id,
+        # TODO raspi_idで送信している
+        sender_user_id=raspi_id,
+    )
     return response
 
 
