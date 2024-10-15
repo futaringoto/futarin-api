@@ -42,7 +42,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 @router.post(
     "/{raspi_id}",
     tags=["futarin-raspi"],
-    summary="一連の動作全て",
+    summary="返答の生成",
     response_class=FileResponse,
     responses={
         200: {
@@ -54,6 +54,7 @@ async def all(
     raspi_id: int,
     file: UploadFile = File(...),
     speaker: int = 1,
+    mode: int = 0,
     db: AsyncSession = Depends(get_db),
 ) -> FileResponse:
     try:
@@ -71,7 +72,7 @@ async def all(
         # chatgpt
         user = await get_user_task
         thread_id = user.thread_id
-        generated_text: str = await generate_text(thread_id, transcription.text)
+        generated_text: str = await generate_text(mode, thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
         push_text(raspi_id, generated_text)
 
