@@ -34,20 +34,19 @@ async def test_crud_user_no_name(async_client, create_raspi):
     res_put = res_3.json()
     assert res_put["name"] == "hoge"
 
-    # TODO:ラズパイを削除した時、raspi_idがnullになるか？
-    # res_4 = await async_client.delete(f"/v2/raspis/{raspi_id}")
-    # assert res_4.status_code == starlette.status.HTTP_200_OK
-    # res_5 = await async_client.get("/v2/users/")
-    # assert res_5.status_code == starlette.status.HTTP_200_OK
-    # res_get_2 = res_5.json()
-    # assert res_get_2[0]["raspi_id"] == None
+    # ラズパイを削除した時、raspi_idがnullになるか？
+    res_4 = await async_client.delete(f"/v2/raspis/{raspi_id}")
+    assert res_4.status_code == starlette.status.HTTP_200_OK
+    res_5 = await async_client.get("/v2/users/")
+    assert res_5.status_code == starlette.status.HTTP_200_OK
+    res_get_2 = res_5.json()
+    assert res_get_2[0]["raspi_id"] is None
 
-    # TODO:登録されていないラズパイを紐付けようとした場合404を返す
-    # res_5 = await async_client.put(
-    #    f"/v2/users/{user_id}",
-    #    json={"name": "hoge", "raspi_id": 2}
-    # )
-    # assert res_5.status_code == starlette.status.HTTP_404_NOT_FOUND
+    # 登録されていないラズパイを紐付けようとした場合404を返す
+    res_5 = await async_client.put(
+        f"/v2/users/{user_id}", json={"name": "hoge", "raspi_id": 2}
+    )
+    assert res_5.status_code == starlette.status.HTTP_404_NOT_FOUND
 
     # 削除：ユーザを消去
     res_6 = await async_client.delete(f"/v2/users/{user_id}")
