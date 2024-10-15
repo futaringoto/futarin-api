@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy.exc import IntegrityError
 import starlette.status
 
 
@@ -43,10 +44,11 @@ async def test_crud_user_no_name(async_client, create_raspi):
     assert res_get_2[0]["raspi_id"] is None
 
     # 登録されていないラズパイを紐付けようとした場合404を返す
-    res_5 = await async_client.put(
-        f"/v2/users/{user_id}", json={"name": "hoge", "raspi_id": 2}
-    )
-    assert res_5.status_code == starlette.status.HTTP_404_NOT_FOUND
+    with pytest.raises(IntegrityError):
+        res_5 = await async_client.put(
+            f"/v2/users/{user_id}", json={"name": "hoge", "raspi_id": 2}
+        )
+        assert res_5.status_code == starlette.status.HTTP_404_NOT_FOUND
 
     # 削除：ユーザを消去
     res_6 = await async_client.delete(f"/v2/users/{user_id}")
