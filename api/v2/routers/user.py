@@ -6,8 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import v2.cruds.user as user_crud
 import v2.schemas.user as user_schema
+from config import get_azure_sas_token, get_azure_storage_account
 from db import get_db
-from v2.utils.config import get_azure_sas_token, get_azure_storage_account
+from v2.services.gpt import create_new_thread_id, delete_thread_id
 from v2.utils.logging import get_logger
 
 router = APIRouter()
@@ -37,7 +38,12 @@ async def list_users(db: AsyncSession = Depends(get_db)):
     response_model=user_schema.UserResponse,
 )
 async def create_user(user: user_schema.UserCreate, db: AsyncSession = Depends(get_db)):
-    return await user_crud.create_user(db, user)
+    try:
+        thread_id = await create_new_thread_id()
+        user_result = await user_crud.create_user(db, user, thread_id)
+        return user_result
+    except user_crud.ForeignKeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.put(
@@ -63,4 +69,5 @@ async def delete_user(id: int, db: AsyncSession = Depends(get_db)):
     user = await user_crud.get_user(db, user_id=id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    await delete_thread_id(user.thread_id)
     return await user_crud.delete_user(db, user)

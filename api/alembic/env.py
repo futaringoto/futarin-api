@@ -3,9 +3,9 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context
+from config import get_db_object
 from db import Base
 from v2.models import Couple, Message, Raspi, User  # noqa: F401
-from v2.utils.config import get_db_object
 
 DB_OBJ = get_db_object()
 

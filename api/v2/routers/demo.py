@@ -85,7 +85,7 @@ async def handle_event(
     else:
         return Response(content="Bad Request", status_code=400)
 
-
+      
 @router.api_route(
     "/demo/negotiate", summary="websocketsのURL発行", methods=["GET", "POST"]
 )

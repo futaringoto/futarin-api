@@ -1,30 +1,52 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 
-from v1.utils.config import get_openai_assistant_id
-from v2.utils.config import get_openai_api_key
+from config import get_openai_api_key, get_openai_assistant_id
 
-OpenAI.api_key = get_openai_api_key()
-client = OpenAI()
+AsyncOpenAI.api_key = get_openai_api_key()
+client = AsyncOpenAI()
 
 ASSISTANT_ID = get_openai_assistant_id()
 
 
-def generate_text(thread_id: int, prompt: str) -> str:
-    client.beta.threads.messages.create(
+async def create_new_thread_id() -> str:
+    thread = await client.beta.threads.create()
+    return thread.id
+
+
+async def delete_thread_id(thread_id: str):
+    await client.beta.threads.delete(thread_id)
+
+
+async def generate_text(mode: int, thread_id: int, prompt: str) -> str:
+    mode_dispatch = {
+        0: generate_text_normal,
+        1: generate_text_normal,
+    }
+
+    try:
+        handler = mode_dispatch[mode]
+        return await handler(thread_id, prompt)
+
+    except KeyError:
+        raise ValueError(f"Invalid mode: {mode}.")
+
+
+async def generate_text_normal(thread_id: int, prompt: str) -> str:
+    await client.beta.threads.messages.create(
         thread_id=thread_id,
         role="user",
         content=prompt,
     )
 
-    run = client.beta.threads.runs.create_and_poll(
+    run = await client.beta.threads.runs.create_and_poll(
         thread_id=thread_id,
         assistant_id=ASSISTANT_ID,
     )
 
-    messages = list(
-        client.beta.threads.messages.list(thread_id=thread_id, run_id=run.id)
+    messages = await client.beta.threads.messages.list(
+        thread_id=thread_id, run_id=run.id
     )
-    message_content = messages[0].content[0].text
+    message_content = messages.data[0].content[0].text
     annotations = message_content.annotations
     citations = []
 

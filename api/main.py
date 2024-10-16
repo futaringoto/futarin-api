@@ -5,6 +5,7 @@ from typing import Union
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from config import check_env_variables
 from v0.routers import raspi as v0_raspi
 from v0.utils.config import check_env_variables as v0_check_env_variables
 from v1.routers import raspi as v1_raspi
@@ -15,15 +16,16 @@ from v2.routers import demo as v2_demo
 from v2.routers import pubsub as v2_pubsub
 from v2.routers import raspi as v2_raspi
 from v2.routers import user as v2_user
-from v2.services.pubsub import push_id_to_raspi_id
-from v2.utils.config import check_env_variables as v2_check_env_variables
+from v2.services.pubsub import get_service, push_id_to_raspi_id
+
+service = get_service()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    check_env_variables()
     v0_check_env_variables()
     v1_check_env_variables()
-    v2_check_env_variables()
     yield
     print("Shutting down...")
 
@@ -81,6 +83,7 @@ app.include_router(v2_couple.router, prefix="/v2/couples")
 app.include_router(v2_pubsub.router, prefix="/v2")
 app.include_router(v2_demo.router)
 
+
 # cssファイルを読み込むための設定
 app.mount("/static", StaticFiles(directory="v2/utils"), name="static")
 
@@ -95,9 +98,9 @@ def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
-@app.post("/push/{raspi_id}/messages/{user_id}")
-def push(raspi_id, user_id):
-    return push_id_to_raspi_id(raspi_id, user_id)
+@app.post("/push/{receiver_raspi_id}/messages/{sender_user_id}")
+async def push(receiver_raspi_id, sender_user_id):
+    return await push_id_to_raspi_id(service, receiver_raspi_id, sender_user_id)
 
 
 @app.get("/ping")

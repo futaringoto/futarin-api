@@ -2,6 +2,7 @@ from typing import AsyncGenerator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -21,6 +22,7 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
 
     # テスト用にオンメモリのSQLiteテーブルを初期化（関数ごとにリセット）
     async with async_engine.begin() as conn:
+        await conn.execute(text("PRAGMA foreign_keys = ON"))
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
