@@ -12,7 +12,7 @@ from main import app
 ASYNC_DB_URL = "sqlite+aiosqlite:///:memory:"
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 async def async_client() -> AsyncGenerator[AsyncClient, None]:
     # Async用のengineとsessionを作成
     async_engine = create_async_engine(ASYNC_DB_URL, echo=True)
