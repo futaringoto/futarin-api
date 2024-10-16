@@ -19,9 +19,11 @@ from v2.azure.storage import (
     upload_blob_file,
 )
 from v2.services.gpt import generate_text
-from v2.services.pubsub import get_service, push_transcription, push_text, get_service_demo
-from v2.utils.query import get_thread_id
-from v2.services.pubsub import get_service
+from v2.services.pubsub import (
+    get_service,
+    push_text,
+    push_transcription,
+)
 from v2.utils.query import get_thread_id
 
 router = APIRouter()
@@ -112,14 +114,6 @@ async def negotiate(id: int):
     token = service.get_client_access_token(user_id=id)
     return {"url": token["url"]}
 
-@router.post("/{id}/negotiate/demo", tags=["futarin-raspi"], summary="websockets(demo)のURL発行")
-async def negotiate_demo(id: int):
-    if not id:
-        return "missing user id", 400
-    service = get_service_demo()
-    token = service.get_client_access_token(user_id=id)
-    return {"url": token["url"]}
-
 
 @router.get(
     "/{raspi_id}/messages/{message_id}",
@@ -191,6 +185,8 @@ async def delete_raspi(id: int, db: AsyncSession = Depends(get_db)):
     return await raspi_crud.delete_raspi(db, raspi)
 
 
-@router.get("/raspi/{id}/name", tags=["raspis"], summary="ラズパイIDからラズパイの名前を取得")
+@router.get(
+    "/raspi/{id}/name", tags=["raspis"], summary="ラズパイIDからラズパイの名前を取得"
+)
 async def get_raspi_name(id: int, db: AsyncSession = Depends(get_db)):
     return await raspi_crud.get_raspi_name(db, id)

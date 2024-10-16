@@ -1,0 +1,82 @@
+body {
+    background-color: lightblue;
+}
+
+h1 {
+    text-align: center;
+}
+
+.raspi_name {
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: right;
+    margin: 5px 0;
+    float: right;
+    clear: both;
+    max-width: 80%;
+}
+
+.futarin_name {
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px 0;
+    max-width: 80%;
+    float: left;
+    clear: both;
+}
+
+.transcription {
+    font-size: 25px;
+    background-color: #d4edda; /* 緑の背景色 */
+    color: #155724; /* テキスト色 */
+    padding: 15px;
+    border-radius: 10px;
+    text-align: right;
+    margin: 5px 0;
+    float: right;
+    clear: both;
+    max-width: 70%;
+    position: relative;
+}
+
+.transcription:after {
+    content: "";
+    position: absolute;
+    top: 50%;                 /* 吹き出しの真ん中に矢印を配置 */
+    right: -10px;             /* テキストボックスにぴったりくっつける */
+    transform: translateY(-50%); /* 矢印の位置調整 */
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 10px 15px;
+    border-color: transparent transparent transparent #d4edda;
+}
+  
+/* generated_text用のスタイル */
+.generated_text {
+    font-size: 25px;
+    background-color: #ffffff; /* 白の背景色 */
+    color: #333333; /* テキスト色 */
+    padding: 15px;
+    border-radius: 10px;
+    margin: 5px 0;
+    max-width: 70%;
+    float: left;
+    clear: both;
+    position: relative;
+}
+
+.generated_text:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -10px;              /* テキストボックスにぴったりくっつける */
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 15px 10px 0;
+    border-color: transparent #ffffff transparent transparent;
+}

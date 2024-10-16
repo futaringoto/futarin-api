@@ -1,9 +1,9 @@
-import os
 import json
+import os
+
 import aiofiles
 from fastapi import APIRouter, Header, HTTPException, Request, Response, WebSocket
-from fastapi.responses import HTMLResponse
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from v2.services.pubsub import get_service_demo
 
@@ -17,11 +17,8 @@ async def websocket_endopoint(websocket: WebSocket):
         data = await websocket.receive_text()
         await websocket.send_text(f"Message text was: {data}")
 
-@router.get(
-    "/get/logs",
-    summary="ログの取得",
-    response_class=HTMLResponse
-)
+
+@router.get("/get/logs", summary="ログの取得", response_class=HTMLResponse)
 async def get_logs():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, "../utils/index.html")
@@ -89,10 +86,10 @@ async def handle_event(
         return Response(content="Bad Request", status_code=400)
 
 
-@router.post("/demo/negotiate/{id}", summary="websocketsのURL発行")
-async def negotiate(id: int):
-    if not id:
-        return "missing user id", 400
+@router.api_route(
+    "/demo/negotiate", summary="websocketsのURL発行", methods=["GET", "POST"]
+)
+async def negotiate():
     service = get_service_demo()
-    token = service.get_client_access_token(user_id=id)
+    token = service.get_client_access_token()
     return {"url": token["url"]}
