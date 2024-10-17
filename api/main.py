@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Union
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from config import check_env_variables
 from v0.routers import raspi as v0_raspi
@@ -81,6 +82,10 @@ app.include_router(v2_user.router, prefix="/v2/users")
 app.include_router(v2_couple.router, prefix="/v2/couples")
 app.include_router(v2_pubsub.router, prefix="/v2")
 app.include_router(v2_demo.router)
+
+
+# cssファイルを読み込むための設定
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")
