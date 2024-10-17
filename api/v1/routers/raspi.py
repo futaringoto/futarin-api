@@ -8,7 +8,7 @@ from httpx import HTTPStatusError, RequestError
 from v1.services.gpt import generate_text
 from v1.services.voicevox_api import get_voicevox_audio
 from v1.services.whisper import speech2text
-from v1.utils.logging import get_logger
+from v2.utils.logging import get_logger
 
 router = APIRouter()
 logger = get_logger()

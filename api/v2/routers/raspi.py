@@ -1,7 +1,9 @@
+import asyncio
 import os
 import tempfile
 from typing import Any, List
 
+from azure.messaging.webpubsubservice import WebPubSubServiceClient
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from httpx import HTTPStatusError, RequestError
@@ -10,11 +12,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import v2.cruds.raspi as raspi_crud
 import v2.schemas.raspi as raspi_schema
 from db import get_db
-from v1.services.voicevox_api import get_voicevox_audio
-from v1.services.whisper import speech2text
-from v1.utils.logging import get_logger
-from v2.azure.storage import (
-    get_blob_storage_account,
+from v2.services.blob_storage import (
+    get_blob_service_client,
     is_downloaded_blob,
     upload_blob_file,
 )
@@ -22,25 +21,30 @@ from v2.services.gpt import generate_text
 from v2.services.pubsub import (
     get_service,
     get_service_demo,
+    push_id_to_raspi_id,
     push_text,
     push_transcription,
 )
-from v2.utils.query import get_thread_id
+from v2.services.voicevox_api import get_voicevox_audio
+from v2.services.whisper import speech2text
+from v2.utils.logging import get_logger
+from v2.utils.query import get_user_by_raspi_id, get_user_paired_by_couple_id, get_thread_id
 
 router = APIRouter()
 logger = get_logger()
 
 # azure-blob-storageの認証
-blob_service_client = get_blob_storage_account()
+blob_service_client = get_blob_service_client()
+
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post(
-    "/{id}",
+    "/{raspi_id}",
     tags=["futarin-raspi"],
-    summary="一連の動作全て",
+    summary="返答の生成",
     response_class=FileResponse,
     responses={
         200: {
@@ -49,71 +53,97 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
     },
 )
 async def all(
-    id: int,
+    raspi_id: int,
     file: UploadFile = File(...),
     speaker: int = 1,
+    mode: int = 0,
     db: AsyncSession = Depends(get_db),
 ) -> FileResponse:
-    file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
+<<<<<<< HEAD
         print(id)
         service = get_service_demo()
         # whisper
+=======
+        get_user_task = asyncio.create_task(get_user_by_raspi_id(db, raspi_id))
+>>>>>>> af737f5b19b75db5a32249064ee14ad5b2daa140
         content: bytes = await file.read()
-        with open(file_location, "wb") as f:
-            f.write(content)
-        transcription: str = speech2text(file_location)
-        os.remove(file_location)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
+            temp_file.write(content)
+            temp_file_path = temp_file.name
+
+        # whisper
+        transcription: str = await speech2text(temp_file_path)
         logger.info(f"transcription: {transcription.text}")
+<<<<<<< HEAD
         push_transcription(service, id, transcription.text)
+=======
+        push_transcription(raspi_id, transcription.text)
+>>>>>>> af737f5b19b75db5a32249064ee14ad5b2daa140
 
         # chatgpt
-        thread_id = await get_thread_id(db, id)
-        generated_text: str = generate_text(thread_id, transcription.text)
+        user = await get_user_task
+        thread_id = user.thread_id
+        generated_text: str = await generate_text(mode, thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
+<<<<<<< HEAD
         push_text(service, id, generated_text)
+=======
+        push_text(raspi_id, generated_text)
+>>>>>>> af737f5b19b75db5a32249064ee14ad5b2daa140
 
+        # voicevox
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
-        with open(temp_file.name, "wb") as f:
-            f.write(audio)
-    except RequestError as e:
-        raise HTTPException(
-            status_code=500, detail=f"RequestError fetching data: {str(e)}"
-        )
-    except HTTPStatusError as e:
-        raise HTTPException(
-            status_code=e.response.status_code, detail=f"Error fetching data: {str(e)}"
-        )
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
+            temp_file.write(audio)
+    except (RequestError, HTTPStatusError) as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     return FileResponse(temp_file.name, media_type="audio/wav", filename="audio.wav")
 
 
 @router.post(
-    "/{id}/messages",
+    "/{raspi_id}/messages",
     tags=["futarin-raspi"],
     summary="メッセージ送信",
     response_model=raspi_schema.RaspiMessageResponse,
 )
 async def create_message(
-    id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
+    raspi_id: int, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
 ) -> Any:
-    file_location = os.path.join(UPLOAD_DIR, file.filename)
-    content: bytes = await file.read()
-    with open(file_location, "wb") as f:
-        f.write(content)
+    try:
+        user = await get_user_by_raspi_id(db, raspi_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
 
-    with open(file_location, "rb") as data:
-        response = await upload_blob_file(id, blob_service_client, data)
-    os.remove(file_location)
-    return response
+        user_paired = await get_user_paired_by_couple_id(db, user)
+        if not user_paired:
+            raise HTTPException(status_code=404, detail="Paired user not found")
+
+        content: bytes = await file.read()
+        # TODO raspi_idで登録している
+        await upload_blob_file(raspi_id, blob_service_client, content)
+
+        service: WebPubSubServiceClient = get_service()
+        await push_id_to_raspi_id(
+            service,
+            receiver_raspi_id=user_paired.raspi_id,
+            # TODO raspi_idで送信している
+            sender_user_id=raspi_id,
+        )
+        return {"id": raspi_id, "message": "success"}
+    except Exception as e:
+        logger.error(f"Error occurred while processing the message: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred")
 
 
-@router.post("/{id}/negotiate", tags=["futarin-raspi"], summary="websocketsのURL発行")
-async def negotiate(id: int):
-    if not id:
+@router.post(
+    "/{raspi_id}/negotiate", tags=["futarin-raspi"], summary="websocketsのURL発行"
+)
+async def negotiate(raspi_id: int):
+    if not raspi_id:
         return "missing user id", 400
     service = get_service()
-    token = service.get_client_access_token(user_id=id)
+    token = service.get_client_access_token(user_id=raspi_id)
     return {"url": token["url"]}
 
 
@@ -127,8 +157,6 @@ async def get_message(
     raspi_id: int,
     message_id: int,
 ):
-    # 同coupleのidを取得
-    # boddy_id = await get_user_id_same_couple(db, id)
     # 同coupleのファイルをダウンロード
     is_downloaded = is_downloaded_blob(str(message_id), blob_service_client)
 
