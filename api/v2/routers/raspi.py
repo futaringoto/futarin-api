@@ -60,13 +60,10 @@ async def all(
     db: AsyncSession = Depends(get_db),
 ) -> FileResponse:
     try:
-<<<<<<< HEAD
         print(id)
         service = get_service_demo()
         # whisper
-=======
         get_user_task = asyncio.create_task(get_user_by_raspi_id(db, raspi_id))
->>>>>>> af737f5b19b75db5a32249064ee14ad5b2daa140
         content: bytes = await file.read()
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
             temp_file.write(content)
@@ -75,22 +72,15 @@ async def all(
         # whisper
         transcription: str = await speech2text(temp_file_path)
         logger.info(f"transcription: {transcription.text}")
-<<<<<<< HEAD
         push_transcription(service, id, transcription.text)
-=======
         push_transcription(raspi_id, transcription.text)
->>>>>>> af737f5b19b75db5a32249064ee14ad5b2daa140
 
         # chatgpt
         user = await get_user_task
         thread_id = user.thread_id
         generated_text: str = await generate_text(mode, thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
-<<<<<<< HEAD
         push_text(service, id, generated_text)
-=======
-        push_text(raspi_id, generated_text)
->>>>>>> af737f5b19b75db5a32249064ee14ad5b2daa140
 
         # voicevox
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
