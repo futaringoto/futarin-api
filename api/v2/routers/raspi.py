@@ -28,7 +28,10 @@ from v2.services.pubsub import (
 from v2.services.voicevox_api import get_voicevox_audio
 from v2.services.whisper import speech2text
 from v2.utils.logging import get_logger
-from v2.utils.query import get_user_by_raspi_id, get_user_paired_by_couple_id, get_thread_id
+from v2.utils.query import (
+    get_user_by_raspi_id,
+    get_user_paired_by_couple_id,
+)
 
 router = APIRouter()
 logger = get_logger()
@@ -72,8 +75,7 @@ async def all(
         # whisper
         transcription: str = await speech2text(temp_file_path)
         logger.info(f"transcription: {transcription.text}")
-        push_transcription(service, id, transcription.text)
-        push_transcription(raspi_id, transcription.text)
+        await push_transcription(db, service, raspi_id, transcription.text)
 
         # chatgpt
         user = await get_user_task

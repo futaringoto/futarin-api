@@ -1,6 +1,6 @@
 import pytest
-from sqlalchemy.exc import IntegrityError
 import starlette.status
+from sqlalchemy.exc import IntegrityError
 
 
 @pytest.fixture

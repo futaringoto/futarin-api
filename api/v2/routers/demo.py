@@ -1,12 +1,10 @@
 import json
-import os
 
-import aiofiles
-from fastapi import APIRouter, Header, HTTPException, Request, Response, WebSocket, Request
+from fastapi import APIRouter, Header, HTTPException, Request, Response, WebSocket
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
-from v2.services.pubsub import get_service_demo, get_negotiation_url
+from v2.services.pubsub import get_negotiation_url, get_service_demo
 
 router = APIRouter()
 templates = Jinja2Templates(directory="/api/static")
@@ -24,16 +22,8 @@ async def websocket_endopoint(websocket: WebSocket):
 async def get_logs(request: Request):
     service = get_service_demo()
     url = get_negotiation_url(service)
-    data = {
-        "url": url
-    }
+    data = {"url": url}
     return templates.TemplateResponse("index.html", {"request": request, "data": data})
-    # current_dir = os.path.dirname(os.path.abspath(__file__))
-    # file_path = os.path.join(current_dir, "../../static/index.html")
-
-    # async with aiofiles.open(file_path, "r", encoding="utf-8") as file:
-    #     html_content = await file.read()
-    # return html_content
 
 
 @router.options("/demo/eventhandler")
@@ -93,7 +83,7 @@ async def handle_event(
     else:
         return Response(content="Bad Request", status_code=400)
 
-      
+
 @router.api_route(
     "/demo/negotiate", summary="websocketsのURL発行", methods=["GET", "POST"]
 )
