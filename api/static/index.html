@@ -11,24 +11,9 @@
         <div id="message"></div>
         </ul>
         <script>
-            let wsUrl = "";
+            const data = JSON.parse('{{data|tojson|safe}}');
             window.addEventListener("load", async () => {
-                const apiUrl = "http://localhost:80/demo/negotiate"
-                await fetch(apiUrl).then(
-                    response => {
-                        if (!response.ok) {
-                            throw new Error("Network response was not ok");
-                        }
-                        return response.json();
-                    }
-                ).then(data => {
-                    wsUrl = data["url"];
-                })
-                .catch(error => {
-                    console.error("Fetch error ", error)
-                })
-
-                var ws = new WebSocket(wsUrl);
+                var ws = new WebSocket(data["url"]);
                 ws.onmessage = async function(event) {
                     const data = JSON.parse(event.data);
                     const raspi_id = parseInt(data.raspi_id, 10);

@@ -82,7 +82,7 @@ app.include_router(v2_pubsub.router, prefix="/v2")
 app.include_router(v2_demo.router)
 
 # cssファイルを読み込むための設定
-app.mount("/static", StaticFiles(directory="v2/utils"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")

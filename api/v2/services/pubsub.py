@@ -31,8 +31,9 @@ def push_id_to_raspi_id(raspi_id: int, user_id: int):
     return res
 
 
-def push_transcription(raspi_id: int, transcription: str):
-    service = get_service_demo()
+def push_transcription(
+    service: WebPubSubServiceClient, raspi_id: int, transcription: str
+):
     res = service.send_to_all(
         {
             "type": "transcription",
@@ -44,8 +45,9 @@ def push_transcription(raspi_id: int, transcription: str):
     return res
 
 
-def push_text(raspi_id: int, generated_text: str):
-    service = get_service_demo()
+def push_text(
+    service: WebPubSubServiceClient, raspi_id: int, generated_text: str
+):
     res = service.send_to_all(
         {
             "type": "generated_text",
@@ -55,3 +57,10 @@ def push_text(raspi_id: int, generated_text: str):
     )
     logger.info(f"res: {res}")
     return res
+
+
+def get_negotiation_url(
+    service: WebPubSubServiceClient
+):
+    token = service.get_client_access_token()
+    return token["url"]

@@ -21,6 +21,7 @@ from v2.azure.storage import (
 from v2.services.gpt import generate_text
 from v2.services.pubsub import (
     get_service,
+    get_service_demo,
     push_text,
     push_transcription,
 )
@@ -56,6 +57,7 @@ async def all(
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     try:
         print(id)
+        service = get_service_demo()
         # whisper
         content: bytes = await file.read()
         with open(file_location, "wb") as f:
@@ -63,13 +65,13 @@ async def all(
         transcription: str = speech2text(file_location)
         os.remove(file_location)
         logger.info(f"transcription: {transcription.text}")
-        push_transcription(id, transcription.text)
+        push_transcription(service, id, transcription.text)
 
         # chatgpt
         thread_id = await get_thread_id(db, id)
         generated_text: str = generate_text(thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
-        push_text(id, generated_text)
+        push_text(service, id, generated_text)
 
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
