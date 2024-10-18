@@ -12,6 +12,8 @@
         </ul>
         <script>
             const data = JSON.parse('{{data|tojson|safe}}');
+            const messageContainer = document.getElementById("message");
+
             window.addEventListener("load", async () => {
                 var ws = new WebSocket(data["url"]);
                 ws.onmessage = async function(event) {
@@ -20,16 +22,14 @@
                     if (data.type === "transcription") {
                         console.log("Transcription data received:", data);
                         let raspi_name = data.raspi_name;
-                        document.getElementById("message").innerHTML += 
+                        messageContainer.innerHTML += 
                             `<p class="raspi_name"><strong>${raspi_name}</strong></p><br><p class="transcription">${data.text}</p>`;
                     } else if (data.type === "generated_text") {
                         console.log("Generated text data received:", data);
-                        document.getElementById("message").innerHTML += 
+                        messageContainer.innerHTML += 
                             `<p class="futarin_name"><strong>ふたりん</strong></p><br><p class="generated_text">${data.text}</p>`;
                     }
-
-                    const futarinLog = document.getElementById("message");
-                    futarinLog.scrollTop = futarinLog.scrollHeight;
+                    messageContainer.lastElementChild.scrollIntoView({ behavior: "smooth" });
                 };
 
                 ws.onopen = () => {
