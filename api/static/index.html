@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ふたりんごと ログ</title>
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+        <h1>ふたりんごと~この感じどう伝えようかな~</h1>
+        <div id="message"></div>
+        </ul>
+        <script>
+            const data = JSON.parse('{{data|tojson|safe}}');
+            window.addEventListener("load", async () => {
+                var ws = new WebSocket(data["url"]);
+                ws.onmessage = async function(event) {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === "transcription") {
+                        console.log("Transcription data received:", data);
+                        let raspi_name = data.raspi_name;
+                        document.getElementById("message").innerHTML += 
+                            `<p class="raspi_name"><strong>${raspi_name}</strong></p><br><p class="transcription">${data.text}</p>`;
+                    } else if (data.type === "generated_text") {
+                        console.log("Generated text data received:", data);
+                        document.getElementById("message").innerHTML += 
+                            `<p class="futarin_name"><strong>ふたりん</strong></p><br><p class="generated_text">${data.text}</p>`;
+                    }
+                };
+
+                ws.onopen = () => {
+                    console.log("WebSocket connection established");
+                }
+
+                ws.onclose = () => {
+                    console.log("WebSocket connection closed")
+                };
+
+                ws.onerror = (error) => {
+                    console.error("WebSocket error:", error)
+                };
+            });
+        </script>
+    </body>
+</html>

@@ -1,23 +1,29 @@
 import json
-import os
 
-import aiofiles
-from fastapi import APIRouter, Header, HTTPException, Request, Response
+from fastapi import APIRouter, Header, HTTPException, Request, Response, WebSocket
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
 
-from v2.services.pubsub import get_service_demo
+from v2.services.pubsub import get_negotiation_url, get_service_demo
 
 router = APIRouter()
+templates = Jinja2Templates(directory="/api/static")
 
 
-@router.get("/get/logs", summary="ログの取得", response_class=HTMLResponse)
-async def get_logs():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(current_dir, "../utils/index.html")
+@router.websocket("/ws")
+async def websocket_endopoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Message text was: {data}")
 
-    async with aiofiles.open(file_path, "r", encoding="utf-8") as file:
-        html_content = await file.read()
-    return html_content
+
+@router.get("/demo", summary="ログの取得", response_class=HTMLResponse)
+async def get_logs(request: Request):
+    service = get_service_demo()
+    url = get_negotiation_url(service)
+    data = {"url": url}
+    return templates.TemplateResponse("index.html", {"request": request, "data": data})
 
 
 @router.options("/demo/eventhandler")
@@ -78,10 +84,10 @@ async def handle_event(
         return Response(content="Bad Request", status_code=400)
 
 
-@router.post("/demo/negotiate/{id}", summary="websocketsのURL発行")
-async def negotiate(id: int):
-    if not id:
-        return "missing user id", 400
-    service = get_service_demo()
-    token = service.get_client_access_token(user_id=id)
-    return {"url": token["url"]}
+@router.api_route(
+    "/demo/negotiate", summary="websocketsのURL発行", methods=["GET", "POST"]
+)
+async def negotiate():
+    service = get_service_demo
+    url = get_negotiation_url(service)
+    return {"url": url}
