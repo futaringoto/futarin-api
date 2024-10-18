@@ -20,6 +20,7 @@ from v2.services.blob_storage import (
 from v2.services.gpt import generate_text
 from v2.services.pubsub import (
     get_service,
+    get_service_demo,
     push_id_to_raspi_id,
     push_text,
     push_transcription,
@@ -27,13 +28,17 @@ from v2.services.pubsub import (
 from v2.services.voicevox_api import get_voicevox_audio
 from v2.services.whisper import speech2text
 from v2.utils.logging import get_logger
-from v2.utils.query import get_user_by_raspi_id, get_user_paired_by_couple_id
+from v2.utils.query import (
+    get_user_by_raspi_id,
+    get_user_paired_by_couple_id,
+)
 
 router = APIRouter()
 logger = get_logger()
 
 # azure-blob-storageの認証
 blob_service_client = get_blob_service_client()
+
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -58,6 +63,9 @@ async def all(
     db: AsyncSession = Depends(get_db),
 ) -> FileResponse:
     try:
+        print(id)
+        service = get_service_demo()
+        # whisper
         get_user_task = asyncio.create_task(get_user_by_raspi_id(db, raspi_id))
         content: bytes = await file.read()
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
@@ -67,14 +75,14 @@ async def all(
         # whisper
         transcription: str = await speech2text(temp_file_path)
         logger.info(f"transcription: {transcription.text}")
-        push_transcription(raspi_id, transcription.text)
+        await push_transcription(db, service, raspi_id, transcription.text)
 
         # chatgpt
         user = await get_user_task
         thread_id = user.thread_id
         generated_text: str = await generate_text(mode, thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
-        push_text(raspi_id, generated_text)
+        push_text(service, id, generated_text)
 
         # voicevox
         audio: bytes = await get_voicevox_audio(generated_text, speaker)
@@ -197,3 +205,10 @@ async def delete_raspi(id: int, db: AsyncSession = Depends(get_db)):
     if raspi is None:
         raise HTTPException(status_code=404, detail="Raspi not found")
     return await raspi_crud.delete_raspi(db, raspi)
+
+
+@router.get(
+    "/raspi/{id}/name", tags=["raspis"], summary="ラズパイIDからラズパイの名前を取得"
+)
+async def get_raspi_name(id: int, db: AsyncSession = Depends(get_db)):
+    return await raspi_crud.get_raspi_name(db, id)
