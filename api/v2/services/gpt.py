@@ -21,7 +21,7 @@ async def delete_thread_id(thread_id: str):
 async def generate_text(mode: int, thread_id: int, prompt: str) -> str:
     mode_dispatch = {
         0: generate_text_normal,
-        1: generate_text_normal,
+        1: generate_text_change,
     }
 
     try:
