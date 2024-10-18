@@ -27,6 +27,9 @@
                         document.getElementById("message").innerHTML += 
                             `<p class="futarin_name"><strong>ふたりん</strong></p><br><p class="generated_text">${data.text}</p>`;
                     }
+
+                    const futarinLog = document.getElementById("message");
+                    futarinLog.scrollTop = futarinLog.scrollHeight;
                 };
 
                 ws.onopen = () => {
