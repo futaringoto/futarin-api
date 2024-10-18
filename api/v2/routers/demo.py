@@ -18,7 +18,7 @@ async def websocket_endopoint(websocket: WebSocket):
         await websocket.send_text(f"Message text was: {data}")
 
 
-@router.get("/get/logs", summary="ログの取得", response_class=HTMLResponse)
+@router.get("/demo", summary="ログの取得", response_class=HTMLResponse)
 async def get_logs(request: Request):
     service = get_service_demo()
     url = get_negotiation_url(service)
