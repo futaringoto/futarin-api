@@ -56,6 +56,7 @@ def get_openai_assistant_id():
 def get_openai_assistant_id_paraphrase():
     return os.getenv("OPENAI_ASSISTANT_ID_PARAPHRASE")
 
+
 def get_openai_thread_id():
     return os.getenv("OPENAI_THREAD_ID")
 

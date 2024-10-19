@@ -1,6 +1,10 @@
 from openai import AsyncOpenAI
 
-from config import get_openai_api_key, get_openai_assistant_id, get_openai_assistant_id_paraphrase
+from config import (
+    get_openai_api_key,
+    get_openai_assistant_id,
+    get_openai_assistant_id_paraphrase,
+)
 
 AsyncOpenAI.api_key = get_openai_api_key()
 client = AsyncOpenAI()
