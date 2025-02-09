@@ -1,11 +1,16 @@
 from openai import AsyncOpenAI
 
-from config import get_openai_api_key, get_openai_assistant_id
+from config import (
+    get_openai_api_key,
+    get_openai_assistant_id,
+    get_openai_assistant_id_paraphrase,
+)
 
 AsyncOpenAI.api_key = get_openai_api_key()
 client = AsyncOpenAI()
 
 ASSISTANT_ID = get_openai_assistant_id()
+ASSISTANT_ID_PARAPHRASE = get_openai_assistant_id_paraphrase()
 
 
 async def create_new_thread_id() -> str:
@@ -20,7 +25,7 @@ async def delete_thread_id(thread_id: str):
 async def generate_text(mode: int, thread_id: int, prompt: str) -> str:
     mode_dispatch = {
         0: generate_text_normal,
-        1: generate_text_normal,
+        1: generate_text_change,
     }
 
     try:
@@ -60,3 +65,23 @@ async def generate_text_normal(thread_id: int, prompt: str) -> str:
             citations.append(f"[{index}] {cited_file.filename}")
 
     return message_content.value
+
+
+async def generate_text_change(thread_id: int, input_text: str) -> str:
+    print(f"do not use {thread_id}")
+    completion = await client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": """
+                    あなたは、対人コミュニケーションに関するスキルを上手に活用しながら、
+                    人間の強い言葉や乱暴な言葉を優しく、伝わる言い方に変換してくれます。
+                    入力されたメッセージを優しい言い方に変換して、家族や恋人に伝える口調にしてください。
+                    長くても日本語で50文字程度でお願いします。
+                """,
+            },
+            {"role": "user", "content": input_text},
+        ],
+    )
+    return completion.choices[0].message.content

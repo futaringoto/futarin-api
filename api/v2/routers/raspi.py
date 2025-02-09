@@ -28,10 +28,7 @@ from v2.services.pubsub import (
 from v2.services.voicevox_api import get_voicevox_audio
 from v2.services.whisper import speech2text
 from v2.utils.logging import get_logger
-from v2.utils.query import (
-    get_user_by_raspi_id,
-    get_user_paired_by_couple_id,
-)
+from v2.utils.query import get_user_by_raspi_id, get_user_paired_by_couple_id
 
 router = APIRouter()
 logger = get_logger()
@@ -82,6 +79,7 @@ async def all(
         thread_id = user.thread_id
         generated_text: str = await generate_text(mode, thread_id, transcription.text)
         logger.info(f"generated text: {generated_text}")
+        logger.info(f"generate mode: {mode}")
         push_text(service, id, generated_text)
 
         # voicevox
