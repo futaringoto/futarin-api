@@ -23,6 +23,7 @@ jobs:
           echo "AZURE_SAS_TOKEN=${{ secrets.AZURE_SAS_TOKEN }}" >> .env
           echo "AZURE_STORAGE_ACCOUNT=${{ vars.AZURE_STORAGE_ACCOUNT }}" >> .env
           echo "PUBSUB_CONNECTION_STRING=${{ secrets.PUBSUB_CONNECTION_STRING }}" >> .env
+          echo "OPENAI_ASSISTANT_ID_PARAPHRASE=${{ secrets.OPENAI_ASSISTANT_ID_PARAPHRASE}}" >> .env
 
       - name: Run docker-compose Build
         run: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
