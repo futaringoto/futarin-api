@@ -16,6 +16,7 @@ from v2.routers import demo as v2_demo
 from v2.routers import pubsub as v2_pubsub
 from v2.routers import raspi as v2_raspi
 from v2.routers import user as v2_user
+from v2.routers import rag as v2_rag
 from v2.services.pubsub import get_service, push_id_to_raspi_id
 
 service = get_service()
@@ -82,6 +83,7 @@ app.include_router(v2_user.router, prefix="/v2/users")
 app.include_router(v2_couple.router, prefix="/v2/couples")
 app.include_router(v2_pubsub.router, prefix="/v2")
 app.include_router(v2_demo.router)
+app.include_router(v2_rag.router, prefix="/rag")
 
 
 # cssファイルを読み込むための設定
