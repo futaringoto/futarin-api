@@ -1,6 +1,6 @@
-from langchain.chains import LLMChain
+from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
-from langchain.chat_models import ChatOpenAI
+from langchain.schema.runnable import RunnableSequence
 
 
 llm = ChatOpenAI()
@@ -15,10 +15,10 @@ prompt = PromptTemplate(
     """
 )
 
-chain = LLMChain(llm=llm, prompt=prompt)
+chain = RunnableSequence(prompt | llm)
 
 def generate_question(raspi_id: int):
     with open(f"./v2/rag/text/{raspi_id}_prompt.txt") as f:
         conversation_history = f.read()
-    response = chain.run(conversation=conversation_history)
+    response = chain.invoke({"conversation": conversation_history})
     return response
