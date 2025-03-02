@@ -1,7 +1,9 @@
-from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.schema.runnable import RunnableSequence
+from langchain_openai import ChatOpenAI
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from v2.cruds.message import get_histories
 
 llm = ChatOpenAI()
 prompt = PromptTemplate(
@@ -12,13 +14,13 @@ prompt = PromptTemplate(
     {conversation}
 
     この会話に基づいて、ユーザに対して一つ質問を生成してください。
-    """
+    """,
 )
 
 chain = RunnableSequence(prompt | llm)
 
-def generate_question(raspi_id: int):
-    with open(f"./v2/rag/text/{raspi_id}_prompt.txt") as f:
-        conversation_history = f.read()
+
+async def generate_question(db: AsyncSession, user_id: int):
+    conversation_history = await get_histories(db, user_id)
     response = chain.invoke({"conversation": conversation_history})
     return response
