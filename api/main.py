@@ -83,7 +83,7 @@ app.include_router(v2_user.router, prefix="/v2/users")
 app.include_router(v2_couple.router, prefix="/v2/couples")
 app.include_router(v2_pubsub.router, prefix="/v2")
 app.include_router(v2_demo.router)
-app.include_router(v2_rag.router, prefix="/rag")
+app.include_router(v2_rag.router, prefix="/v2/rag")
 
 
 # cssファイルを読み込むための設定
