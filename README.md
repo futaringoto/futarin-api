@@ -80,6 +80,7 @@ sudo make stop
 | POST | `/v2/raspis/{id}/negotiate/` | websockets接続 |  |
 | GET POST PUT DELETE | `/v2/users/` | ユーザ関連 | ✔️ |
 | GET POST PUT DELETE | `/v2/couples/` | ペア関連 | ✔️ |
+| GET POST | `/v2/rag/` | RAG（質問生成）関連 | ✔️ |
 
 ### v1
 | メソッド | パス | 概要 |
