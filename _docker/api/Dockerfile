@@ -1,11 +1,11 @@
 ARG ENV
 # devlopment stage
-FROM python:3.12-alpine as development
+FROM python:3.12-slim as development
 
 WORKDIR /api
 
-RUN apk update && apk add --no-cache \
-    gcc musl-dev libffi-dev build-base curl rust cargo
+RUN apt update && apt install -y --no-install-recommends \
+    gcc libffi-dev build-essential curl rustc cargo
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/root/.local/bin:$PATH"
@@ -20,12 +20,12 @@ COPY ./api/ .
 
 ARG ENV
 # production stage
-FROM python:3.12-alpine as production
+FROM python:3.12-slim as production
 
 WORKDIR /api
 
-RUN apk update && apk add --no-cache \
-    gcc musl-dev libffi-dev build-base curl rust cargo
+RUN apt update && apt install -y --no-install-recommends \
+    gcc libffi-dev build-essential curl rustc cargo
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/root/.local/bin:$PATH"
